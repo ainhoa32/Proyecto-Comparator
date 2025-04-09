@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-    Hola
+    <form th:action="@{/prueba}" method="post">
+        <label for="producto">Introduce el nombre del producto</label>
+        <input type="text" name="producto" id="producto">
+    </form>
 </body>
 </html>
