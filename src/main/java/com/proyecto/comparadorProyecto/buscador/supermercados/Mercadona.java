@@ -45,6 +45,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
             System.out.println("--------------------MERCADONA---------------------");
 
+            System.out.println(respuesta);
             listaProductos.forEach(productoBuscado -> {
                 System.out.println(productoBuscado);
             });

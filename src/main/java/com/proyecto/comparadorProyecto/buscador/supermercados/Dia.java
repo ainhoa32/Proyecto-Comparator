@@ -1,5 +1,7 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
 
@@ -7,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,8 @@ public class Dia extends Peticion implements ObtenerProductos {
     @Override
     public void hacerPeticionSupermercado(String producto) {
         try {
-            String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=almendras&sort=rating,desc&page=1&page_size=30&filters=";
+            String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=almendras&sort=rating,desc&page=1&page_size=30&filters=" +
+                    "&attributesToRetrieve=search_products_analytics";
 
             //Headers
             Map<String, String> headers = new HashMap<>();
@@ -43,12 +47,12 @@ public class Dia extends Peticion implements ObtenerProductos {
             List<List> listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------Dia---------------------");
-            System.out.println("Productos Carrefour: ");
-//            listaProductos.forEach(productoBuscado -> {
-//                System.out.println(productoBuscado);
-//            });
+            System.out.println("Productos Dia: ");
+            listaProductos.forEach(productoBuscado -> {
+                System.out.println(productoBuscado);
+            });
 
-            System.out.println("Respuesta:");
+//            System.out.println("Respuesta:");
 //            System.out.println(respuesta);
 
         } catch (Exception e) {
@@ -58,6 +62,21 @@ public class Dia extends Peticion implements ObtenerProductos {
 
     @Override
     public List<List> convertirJsonALista(String responseStr) {
-        return List.of();
+        List<List> listaProductos = new ArrayList<>();
+
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(responseStr);
+
+            JsonNode productoBuscado = jsonNode.path("search_products_analytics");
+            for(JsonNode productoJson : productoBuscado) {
+                String nombre = productoJson.path("item_name").asText();
+                List<Object> prod = List.of(nombre);
+                listaProductos.add(prod);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return listaProductos;
     }
 }
