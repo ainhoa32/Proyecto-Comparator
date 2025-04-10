@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 public class ComparadorProyectoController {
 
@@ -20,16 +22,10 @@ public class ComparadorProyectoController {
 
     @PostMapping("/prueba")
     public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
-        Mercadona mercadona = new Mercadona();
-        Carrefour carrefour = new Carrefour();
-        Dia dia = new Dia();
-        mercadona.obtenerListaSupermercado(producto);
-        carrefour.obtenerListaSupermercado(producto);
-        dia.obtenerListaSupermercado(producto);
 
         ServicioComparador servicioComparador = new ServicioComparador();
-        servicioComparador.obtenerListaProductosComparados(producto);
-
+        List<List> productosComparados = servicioComparador.obtenerListaProductosComparados(producto);
+        model.addAttribute("productosComparados", productosComparados);
         return "prueba";
     }
 }

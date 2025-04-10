@@ -26,10 +26,14 @@ public class ServicioComparador {
                                 .collect(Collectors.toList());
 
         //Comparamos el primer campo, es decir el de precio por kg/l de cada producto
-        listaTotales.sort(Comparator.comparing(prod -> (Double) prod.get(3)));
+        listaTotales.sort(Comparator.comparing(prod -> (Double) prod.get(2)));
 
-        System.out.println(listaTotales);
-        return listaComparada;
+        System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
+        listaTotales.forEach(productoBuscado -> {
+            System.out.println(productoBuscado);
+        });
+
+        return listaTotales;
     }
 
 }

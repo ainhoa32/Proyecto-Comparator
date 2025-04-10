@@ -9,5 +9,15 @@
         <label for="producto">Introduce el nombre del producto</label>
         <input type="text" name="producto" id="producto">
     </form>
+
+    <div th:if="${productosComparados}">
+        <div>hola</div>
+    </div>
+
+    <div th:if="${productosComparados}">
+        <ul>
+            <li th:each="producto : ${productosComparados}" th:text="${producto}" ></li>
+        </ul>
+    </div>
 </body>
 </html>
