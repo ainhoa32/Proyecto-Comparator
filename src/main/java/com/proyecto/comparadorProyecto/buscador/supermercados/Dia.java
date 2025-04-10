@@ -7,8 +7,11 @@ import com.proyecto.comparadorProyecto.buscador.Peticion;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +20,13 @@ import java.util.Map;
 public class Dia extends Peticion implements ObtenerProductos {
 
     @Override
-    public void hacerPeticionSupermercado(String producto) {
+    public List<List> obtenerListaSupermercado(String producto) {
+
+        List<List> listaProductos = new ArrayList<>();
+        String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
+
         try {
-            String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=almendras&sort=rating,desc&page=1&page_size=30&filters=" +
+            String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=" + productoCodificado +"&sort=rating,desc&page=1&page_size=30&filters=" +
                     "&attributesToRetrieve=search_products_analytics";
 
             //Headers
@@ -44,7 +51,7 @@ public class Dia extends Peticion implements ObtenerProductos {
             headers.put("x-requested-with", "XMLHttpRequest");
 
             String respuesta = peticionHttpPost("GET", url, headers, null);
-            List<List> listaProductos = convertirJsonALista(respuesta);
+            listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------Dia---------------------");
             System.out.println("Productos Dia: ");
@@ -58,6 +65,8 @@ public class Dia extends Peticion implements ObtenerProductos {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return listaProductos;
     }
 
     @Override
@@ -71,7 +80,47 @@ public class Dia extends Peticion implements ObtenerProductos {
             JsonNode productoBuscado = jsonNode.path("search_products_analytics");
             for(JsonNode productoJson : productoBuscado) {
                 String nombre = productoJson.path("item_name").asText();
-                List<Object> prod = List.of(nombre);
+                double precio = productoJson.path("price").asDouble(0.0);
+                String unidadMedida;
+                double tamanoUnidad;
+                String [] producto = nombre.split(" ");
+
+                if (producto[producto.length-1].equals("aprox")){
+                    unidadMedida = producto[producto.length-2];
+                    tamanoUnidad = Double.parseDouble(producto[producto.length-3]);
+                }else{
+                    unidadMedida = producto[producto.length-1];
+                    tamanoUnidad = Double.parseDouble(producto[producto.length-2]);
+                }
+
+                //Hay un problema con como devuelve la api del Dia las bebidas, en vez de poner
+                //2.5 litros, aparecen como 25 litros, como no consta que haya líquidos de más
+                //de 10 litros, si aparece algún líquido mayor es porque es un líquido cuyo formato
+                //no es correcto como he puesto antes, si aparecen 25 litros, obviamente no serán 25 litros
+                //serán 2.5 así que lo divido entre 10 para que aparezca correctamente
+                if(unidadMedida.equals("l") && tamanoUnidad > 10){
+                   tamanoUnidad = tamanoUnidad / 10;
+                }
+
+                if(unidadMedida.equals("ml")){
+                    tamanoUnidad = tamanoUnidad / 1000;
+                    unidadMedida = "l";
+                }
+
+                if(unidadMedida.equals("g")){
+                    tamanoUnidad = tamanoUnidad / 1000;
+                    unidadMedida = "kg";
+                }
+
+                double tamanoTotal = tamanoUnidad;
+                if(producto[producto.length-3].equals("x")){
+                    tamanoTotal = tamanoUnidad * Double.parseDouble(producto[producto.length-4]);
+                }
+
+                double precioGranel = precio / tamanoTotal;
+
+
+                List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, "DIA");
                 listaProductos.add(prod);
             }
         }catch(Exception e){

@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.Servicios.ServicioComparador;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
@@ -22,9 +23,13 @@ public class ComparadorProyectoController {
         Mercadona mercadona = new Mercadona();
         Carrefour carrefour = new Carrefour();
         Dia dia = new Dia();
-        mercadona.hacerPeticionSupermercado(producto);
-        carrefour.hacerPeticionSupermercado(producto);
-        dia.hacerPeticionSupermercado(producto);
+        mercadona.obtenerListaSupermercado(producto);
+        carrefour.obtenerListaSupermercado(producto);
+        dia.obtenerListaSupermercado(producto);
+
+        ServicioComparador servicioComparador = new ServicioComparador();
+        servicioComparador.obtenerListaProductosComparados(producto);
+
         return "prueba";
     }
 }

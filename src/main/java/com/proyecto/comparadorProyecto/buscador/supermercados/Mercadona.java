@@ -17,7 +17,8 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     public Mercadona() {}
 
     @Override
-    public void hacerPeticionSupermercado(String producto){
+    public List<List> obtenerListaSupermercado(String producto){
+        List<List> listaProductos = new ArrayList<>();
         //Codificamos el producto para poder incluirlo en la url
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
@@ -41,17 +42,18 @@ public class Mercadona extends Peticion implements ObtenerProductos {
         try {
             // Llamamos a la función que realiza la solicitud HTTP POST y almacenamos la respuesta
             String respuesta = peticionHttpPost("POST", url, headers, jsonBody);
-            List<List> listaProductos = convertirJsonALista(respuesta);
+            listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------MERCADONA---------------------");
 
-            System.out.println(respuesta);
             listaProductos.forEach(productoBuscado -> {
                 System.out.println(productoBuscado);
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return listaProductos;
     }
 
     @Override
@@ -74,10 +76,10 @@ public class Mercadona extends Peticion implements ObtenerProductos {
                     double precio = productJson.path("price_instructions").path("unit_price").asDouble(0.0);
                     double precioGranel = productJson.path("price_instructions").path("bulk_price").asDouble(0.0);
                     double tamanoUnidad = productJson.path("price_instructions").path("unit_size").asDouble(0.0);
-                    String formatoTamano = productJson.path("price_instructions").path("size_format").asText(null);
+                    String unidadMedida = productJson.path("price_instructions").path("size_format").asText(null);
                     //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                     //a todos los elementos encontrados
-                    List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, formatoTamano);
+                    List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, "MERCADONA");
                     productList.add(prod);
                 }
             }

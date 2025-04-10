@@ -15,8 +15,9 @@ import java.util.Map;
 public class Carrefour extends Peticion implements ObtenerProductos{
 
     @Override
-    public void hacerPeticionSupermercado(String producto) {
+    public List<List> obtenerListaSupermercado(String producto) {
 
+        List<List> listaProductos = new ArrayList<>();
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
         try {
@@ -58,7 +59,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             headers.put("sec-ch-ua-platform", "\"Windows\"");
 
             String respuesta = peticionHttpPost("GET", url, headers, null);
-            List<List> listaProductos = convertirJsonALista(respuesta);
+            listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------CARREFOUR---------------------");
             System.out.println("Productos Carrefour: ");
@@ -69,6 +70,8 @@ public class Carrefour extends Peticion implements ObtenerProductos{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return listaProductos;
     }
 
     @Override
@@ -86,12 +89,12 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             for (JsonNode producto : docs) {
                 String nombre = producto.path("display_name").asText();
                 double precio = producto.path("active_price").asDouble(0.0);
-                double formatoTamano = producto.path("unit_conversion_factor").asDouble(0.0);
-                String tamanoUnidad = producto.path("measure_unit").asText();
-                double precioGranel = precio / formatoTamano;
+                double tamanoUnidad = producto.path("unit_conversion_factor").asDouble(0.0);
+                String unidadMedida = producto.path("measure_unit").asText();
+                double precioGranel = precio / tamanoUnidad;
                 //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                 //a todos los elementos encontrados
-                List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, formatoTamano);
+                List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, "CARREFOUR");
                 listaProductos.add(prod);
             }
         } catch (Exception e) {
