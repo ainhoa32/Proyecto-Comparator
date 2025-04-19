@@ -42,7 +42,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
                     "&grid_def_search_luckycart_banner=22" +
                     "&raw=true" +
                     "&catalog=food" +
-                    "&query=" + productoCodificado;
+                    "&query=almendra" + productoCodificado;
 
             //Headers
             Map<String, String> headers = new HashMap<>();
@@ -50,15 +50,11 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             headers.put("accept-language", "es-ES,es;q=0.9");
             headers.put("referer", "https://www.carrefour.es/");
             headers.put("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36");
-            headers.put("sec-fetch-dest", "empty");
-            headers.put("sec-fetch-mode", "cors");
-            headers.put("sec-fetch-site", "same-origin");
-            headers.put("sec-ch-ua", "\"Chromium\";v=\"134\", \"Not:A-Brand\";v=\"24\", \"Google Chrome\";v=\"134\"");
-            headers.put("sec-ch-ua-mobile", "?0");
             headers.put("priority", "u=1, i");
             headers.put("sec-ch-ua-platform", "\"Windows\"");
 
-            String respuesta = peticionHttpPost("GET", url, headers, null);
+            String respuesta = realizarPeticionHttp("GET", url, headers, null);
+            System.out.println(respuesta);
             listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------CARREFOUR---------------------");
@@ -75,7 +71,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
     }
 
     @Override
-    public List<List> convertirJsonALista(String responseStr) {
+    public List<List> convertirJsonALista(String respuesta) {
         List<List> listaProductos = new ArrayList<>();
 
         try {
@@ -83,7 +79,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             ObjectMapper objectMapper = new ObjectMapper();
             //readTree() convierte una json en un árbol de nodos
             //esto permite trabajar con el json de manera jerárquica.
-            JsonNode rootNode = objectMapper.readTree(responseStr);
+            JsonNode rootNode = objectMapper.readTree(respuesta);
 
             JsonNode docs = rootNode.path("content").path("docs");
             for (JsonNode producto : docs) {

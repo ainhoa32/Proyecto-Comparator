@@ -1,9 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
-import com.proyecto.comparadorProyecto.Servicios.ServicioComparador;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
+import com.proyecto.comparadorProyecto.servicios.ServicioComparador;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

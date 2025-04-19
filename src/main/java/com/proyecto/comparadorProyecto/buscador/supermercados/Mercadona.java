@@ -1,8 +1,10 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
+import com.proyecto.comparadorProyecto.buscador.models.mercadona.Hit;
+import com.proyecto.comparadorProyecto.buscador.models.mercadona.PriceInstructions;
+import com.proyecto.comparadorProyecto.buscador.models.mercadona.RespuestaMercadona;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URLEncoder;
@@ -41,7 +43,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
         try {
             // Llamamos a la función que realiza la solicitud HTTP POST y almacenamos la respuesta
-            String respuesta = peticionHttpPost("POST", url, headers, jsonBody);
+            String respuesta = realizarPeticionHttp("POST", url, headers, jsonBody);
             listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------MERCADONA---------------------");
@@ -57,32 +59,25 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     }
 
     @Override
-    public List<List> convertirJsonALista(String responseStr) {
+    public List<List> convertirJsonALista(String respuesta) {
 
+        System.out.println(respuesta);
         List<List> productList = new ArrayList<>();
 
         try {
-            // Usamos ObjectMapper para convertir el Json a un JsonNode
             ObjectMapper objectMapper = new ObjectMapper();
-            //readTree() convierte una json en un árbol de nodos
-            //esto permite trabajar con el json de manera jerárquica.
-            JsonNode rootNode = objectMapper.readTree(responseStr);
 
-            if (rootNode.has("hits")) {
-                JsonNode hitsArray = rootNode.get("hits");
-                for (JsonNode productJson : hitsArray) {
-                    //path no lanza excepciones si la clave no existe, en lugar de get
-                    String nombre = productJson.path("display_name").asText();
-                    double precio = productJson.path("price_instructions").path("unit_price").asDouble(0.0);
-                    double precioGranel = productJson.path("price_instructions").path("bulk_price").asDouble(0.0);
-                    double tamanoUnidad = productJson.path("price_instructions").path("unit_size").asDouble(0.0);
-                    String unidadMedida = productJson.path("price_instructions").path("size_format").asText(null);
+            RespuestaMercadona respuestMappeada = objectMapper.readValue(respuesta, RespuestaMercadona.class);
+
+                for (Hit producto : respuestMappeada.hits) {
+                    PriceInstructions preciosProducto = producto.price_instructions;
                     //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                     //a todos los elementos encontrados
-                    List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, "MERCADONA");
+                    List<Object> prod = List.of(producto.nombre, preciosProducto.precioUnidad, preciosProducto.precioGranel,
+                            preciosProducto.tamanoUnidad, preciosProducto.unidadMedida, "MERCADONA");
                     productList.add(prod);
                 }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

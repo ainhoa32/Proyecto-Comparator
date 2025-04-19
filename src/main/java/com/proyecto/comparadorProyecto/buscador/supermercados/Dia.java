@@ -5,11 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -50,7 +45,7 @@ public class Dia extends Peticion implements ObtenerProductos {
             headers.put("x-mobile", "");
             headers.put("x-requested-with", "XMLHttpRequest");
 
-            String respuesta = peticionHttpPost("GET", url, headers, null);
+            String respuesta = realizarPeticionHttp("GET", url, headers, null);
             listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------Dia---------------------");
@@ -70,12 +65,12 @@ public class Dia extends Peticion implements ObtenerProductos {
     }
 
     @Override
-    public List<List> convertirJsonALista(String responseStr) {
+    public List<List> convertirJsonALista(String respuesta) {
         List<List> listaProductos = new ArrayList<>();
 
         try{
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(responseStr);
+            JsonNode jsonNode = objectMapper.readTree(respuesta);
 
             JsonNode productoBuscado = jsonNode.path("search_products_analytics");
             for(JsonNode productoJson : productoBuscado) {

@@ -6,5 +6,5 @@ public interface ObtenerProductos {
 
     public List<List> obtenerListaSupermercado(String producto);
 
-    public List<List> convertirJsonALista(String responseStr);
+    public List<List> convertirJsonALista(String respuesta);
 }

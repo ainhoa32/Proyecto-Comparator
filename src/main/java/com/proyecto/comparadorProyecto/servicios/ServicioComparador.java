@@ -1,4 +1,4 @@
-package com.proyecto.comparadorProyecto.Servicios;
+package com.proyecto.comparadorProyecto.servicios;
 
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
