@@ -4,5 +4,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RespuestaDia {
     @JsonProperty("search_products_analytics")
-    public Producto codigoProducto;
+    Producto codigoProducto;
 }

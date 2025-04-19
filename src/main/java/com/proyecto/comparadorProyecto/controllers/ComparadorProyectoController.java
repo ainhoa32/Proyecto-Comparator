@@ -11,6 +11,11 @@ import java.util.List;
 
 @Controller
 public class ComparadorProyectoController {
+    private final ServicioComparador servicioComparador;
+
+    public ComparadorProyectoController(final ServicioComparador servicioComparador) {
+        this.servicioComparador = servicioComparador;
+    }
 
     @GetMapping("/prueba")
     public String prueba(){
@@ -20,7 +25,6 @@ public class ComparadorProyectoController {
     @PostMapping("/prueba")
     public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
 
-        ServicioComparador servicioComparador = new ServicioComparador();
         List<List> productosComparados = servicioComparador.obtenerListaProductosComparados(producto);
         model.addAttribute("productosComparados", productosComparados);
         return "prueba";

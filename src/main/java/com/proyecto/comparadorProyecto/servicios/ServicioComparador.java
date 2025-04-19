@@ -3,18 +3,26 @@ package com.proyecto.comparadorProyecto.servicios;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Necesario para que Springboot pueda inyectarlo. Es equivalente a crear un @Bean de tipo ServicioComparador en una clase
+// de tipo @Configuration
+@Component
+// Crea un constructor con los atributos de la clase finales no inicializados como argumentos, en este caso, dia, carrefour, y mercadona
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ServicioComparador {
+    private final Mercadona mercadona;
+    private final Carrefour carrefour;
+    private final Dia dia;
 
     public List<List> obtenerListaProductosComparados(String producto) {
-        Mercadona mercadona = new Mercadona();
-        Carrefour carrefour = new Carrefour();
-        Dia dia = new Dia();
         List<List> listaComparada = new ArrayList<>();
         List<List> listaProductosTotales = new ArrayList<>();
         listaProductosTotales.add(mercadona.obtenerListaSupermercado(producto));

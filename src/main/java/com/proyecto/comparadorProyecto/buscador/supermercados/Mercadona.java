@@ -6,6 +6,8 @@ import com.proyecto.comparadorProyecto.buscador.models.mercadona.RespuestaMercad
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -14,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
+@NoArgsConstructor
 public class Mercadona extends Peticion implements ObtenerProductos {
-
-    public Mercadona() {}
 
     @Override
     public List<List> obtenerListaSupermercado(String producto){
