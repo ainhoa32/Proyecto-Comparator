@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+// TODO: Arreglar Carrefour para que funcione en cualquier ordenador
 @Component
 public class Carrefour extends Peticion implements ObtenerProductos{
 
@@ -33,18 +35,10 @@ public class Carrefour extends Peticion implements ObtenerProductos{
                     "&citrusCatalog=home" +
                     "&baseUrlCitrus=https%3A%2F%2Fwww.carrefour.es" +
                     "&enabled=false" +
-                    "&shopperId=2urIV5VcxWjbeeSHoMozYI3pQG4" +
                     "&hasConsent=true" +
-                    "&grid_def_search_sponsor_product=3%2C5%2C11%2C13%2C19" +
-                    "&grid_def_search_butterfly_banner=7-8%2C15-16" +
-                    "&grid_def_search_sponsor_product_tablet=2%2C4%2C11%2C13%2C19" +
-                    "&grid_def_search_butterfly_banner_tablet=6%2C12" +
-                    "&grid_def_search_sponsor_product_mobile=2%2C4%2C11%2C13%2C19" +
-                    "&grid_def_search_butterfly_banner_mobile=6%2C12" +
-                    "&grid_def_search_luckycart_banner=22" +
                     "&raw=true" +
                     "&catalog=food" +
-                    "&query=almendra" + productoCodificado;
+                    "&query=" + productoCodificado;
 
             //Headers
             Map<String, String> headers = new HashMap<>();
@@ -72,6 +66,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
         return listaProductos;
     }
 
+    // TODO: Hay que eliminar el uso del read tree y sustituirlo con modelos para mappear el JSON
     @Override
     public List<List> convertirJsonALista(String respuesta) {
         List<List> listaProductos = new ArrayList<>();

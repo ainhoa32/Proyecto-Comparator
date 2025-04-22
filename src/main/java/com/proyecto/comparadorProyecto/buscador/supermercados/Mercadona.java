@@ -1,6 +1,7 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.Hit;
+import com.proyecto.comparadorProyecto.buscador.models.mercadona.NombreCategoria;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.PriceInstructions;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.RespuestaMercadona;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
@@ -63,7 +64,6 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     @Override
     public List<List> convertirJsonALista(String respuesta) {
 
-        System.out.println(respuesta);
         List<List> productList = new ArrayList<>();
 
         try {
@@ -71,12 +71,18 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
             RespuestaMercadona respuestMappeada = objectMapper.readValue(respuesta, RespuestaMercadona.class);
 
-                for (Hit producto : respuestMappeada.hits) {
-                    PriceInstructions preciosProducto = producto.price_instructions;
+                for (Hit producto : respuestMappeada.getHits()) {
+                    PriceInstructions preciosProducto = producto.getPriceInstructions();
+
+                    // TODO: Hacer que se puedan obtener las categorias de los productos, por ahora aparecen como null
+//                    NombreCategoria nombreCategoria = producto.getCategoria().get(0).getNombreCategoria();
+
+                    System.out.println(producto.getCategoria());
+
                     //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                     //a todos los elementos encontrados
-                    List<Object> prod = List.of(producto.nombre, preciosProducto.precioUnidad, preciosProducto.precioGranel,
-                            preciosProducto.tamanoUnidad, preciosProducto.unidadMedida, "MERCADONA");
+                    List<Object> prod = List.of(producto.getNombre(), preciosProducto.getPrecioUnidad(), preciosProducto.getPrecioGranel(),
+                            preciosProducto.getTamanoUnidad(), preciosProducto.getUnidadMedida(), "MERCADONA");
                     productList.add(prod);
                 }
 

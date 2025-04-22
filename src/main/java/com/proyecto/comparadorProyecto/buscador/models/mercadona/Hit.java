@@ -2,12 +2,18 @@ package com.proyecto.comparadorProyecto.buscador.models.mercadona;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+import java.util.List;
+
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Hit {
     //Mapea el objeto del json llamado display_name
     @JsonProperty("display_name")
-    public String nombre;
+    private String nombre;
     @JsonProperty("price_instructions")
-    public PriceInstructions price_instructions;
+    private PriceInstructions priceInstructions;
+    @JsonProperty("categories")
+    private List<Categoria> categoria;
 }

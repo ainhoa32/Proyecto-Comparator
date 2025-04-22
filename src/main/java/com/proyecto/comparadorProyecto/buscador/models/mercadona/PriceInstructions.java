@@ -2,15 +2,17 @@ package com.proyecto.comparadorProyecto.buscador.models.mercadona;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PriceInstructions {
     @JsonProperty("unit_price")
-    public String precioUnidad;
+    private String precioUnidad;
     @JsonProperty("bulk_price")
-    public double precioGranel;
+    private double precioGranel;
     @JsonProperty("unit_size")
-    public double tamanoUnidad;
+    private double tamanoUnidad;
     @JsonProperty("size_format")
-    public String unidadMedida;
+    private String unidadMedida;
 }

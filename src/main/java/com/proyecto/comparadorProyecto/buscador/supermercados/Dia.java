@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.buscador.models.dia.Producto;
+import com.proyecto.comparadorProyecto.buscador.models.dia.RespuestaDia;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
@@ -74,15 +76,20 @@ public class Dia extends Peticion implements ObtenerProductos {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(respuesta);
 
+            RespuestaDia respuestaMappeada = objectMapper.readValue(respuesta, RespuestaDia.class);
             JsonNode productoBuscado = jsonNode.path("search_products_analytics");
-            for(JsonNode productoJson : productoBuscado) {
-                if(productoJson.path("index").asInt() < 15) {
-                    int index = productoJson.path("index").asInt();
-                    String nombre = productoJson.path("item_name").asText();
-                    double precio = productoJson.path("price").asDouble(0.0);
+
+            for (Map.Entry<String, Producto> entry : respuestaMappeada.getProductos().entrySet()) {
+                Producto productoMappeado = entry.getValue(); // El objeto Producto asociado a esa clave
+
+                if(productoMappeado.getIndex() < 15) {
+                    int index = productoMappeado.getIndex();
+                    String nombre = productoMappeado.getNombre();
+                    double precio = productoMappeado.getPrecio();
+                    String categoria = productoMappeado.getCategoria();
                     String unidadMedida;
                     double tamanoUnidad;
-                    String[] producto = nombre.split(" ");
+                    String [] producto = nombre.split(" ");
 
                     if (producto[producto.length - 1].equals("aprox")) {
                         unidadMedida = producto[producto.length - 2];
@@ -119,9 +126,10 @@ public class Dia extends Peticion implements ObtenerProductos {
                     double precioGranel = precio / tamanoTotal;
 
 
-                    List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, index, "DIA");
+                    List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, index, categoria, "DIA");
                     listaProductos.add(prod);
                 }
+
             }
         }catch(Exception e){
             e.printStackTrace();
