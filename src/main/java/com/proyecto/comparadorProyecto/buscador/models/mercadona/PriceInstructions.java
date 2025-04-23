@@ -8,7 +8,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PriceInstructions {
     @JsonProperty("unit_price")
-    private String precioUnidad;
+    private double precioUnidad;
     @JsonProperty("bulk_price")
     private double precioGranel;
     @JsonProperty("unit_size")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
@@ -19,9 +20,9 @@ import java.util.Map;
 public class Carrefour extends Peticion implements ObtenerProductos{
 
     @Override
-    public List<List> obtenerListaSupermercado(String producto) {
+    public List<ProductoDto> obtenerListaSupermercado(String producto) {
 
-        List<List> listaProductos = new ArrayList<>();
+        List<ProductoDto> listaProductos = new ArrayList<>();
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
         try {
@@ -50,7 +51,6 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             headers.put("sec-ch-ua-platform", "\"Windows\"");
 
             String respuesta = realizarPeticionHttp("GET", url, headers, null);
-            System.out.println(respuesta);
             listaProductos = convertirJsonALista(respuesta);
 
             System.out.println("--------------------CARREFOUR---------------------");
@@ -68,8 +68,8 @@ public class Carrefour extends Peticion implements ObtenerProductos{
 
     // TODO: Hay que eliminar el uso del read tree y sustituirlo con modelos para mappear el JSON
     @Override
-    public List<List> convertirJsonALista(String respuesta) {
-        List<List> listaProductos = new ArrayList<>();
+    public List<ProductoDto> convertirJsonALista(String respuesta) {
+        List<ProductoDto> listaProductos = new ArrayList<>();
 
         try {
             //Convertimos el Json en un JsonNode
@@ -87,8 +87,9 @@ public class Carrefour extends Peticion implements ObtenerProductos{
                 double precioGranel = precio / tamanoUnidad;
                 //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                 //a todos los elementos encontrados
-                List<Object> prod = List.of(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, "CARREFOUR");
-                listaProductos.add(prod);
+                ProductoDto productoDto = new ProductoDto(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, 0, "categoría", "CARREFOUR");
+
+                listaProductos.add(productoDto);
             }
         } catch (Exception e) {
             e.printStackTrace();

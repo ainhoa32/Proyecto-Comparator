@@ -36,9 +36,6 @@ public class Peticion {
             }
         }
 
-        System.out.println(connection);
-
-
         // Leer respuesta
         int responseCode = connection.getResponseCode();
         BufferedReader in = new BufferedReader(new InputStreamReader(

@@ -16,7 +16,8 @@
 
     <div th:if="${productosComparados}">
         <ul>
-            <li th:each="producto : ${productosComparados}" th:text="${producto}" ></li>
+            <li th:each="producto : ${productosComparados}" th:text="${producto.getNombre() + ' - Precio a granel: ' +
+            producto.getPrecioGranel() + ' €/' + producto.getUnidadMedida() + ' - Supermercado: ' + producto.getSupermercado()}" ></li>
         </ul>
     </div>
 </body>

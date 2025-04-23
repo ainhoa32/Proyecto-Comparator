@@ -3,6 +3,7 @@ package com.proyecto.comparadorProyecto.servicios;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,27 +22,61 @@ public class ServicioComparador {
     private final Mercadona mercadona;
     private final Carrefour carrefour;
     private final Dia dia;
+    private final int PRECIO = 2;
 
-    public List<List> obtenerListaProductosComparados(String producto) {
-        List<List> listaComparada = new ArrayList<>();
-        List<List> listaProductosTotales = new ArrayList<>();
-        listaProductosTotales.add(mercadona.obtenerListaSupermercado(producto));
-        listaProductosTotales.add(carrefour.obtenerListaSupermercado(producto));
-        listaProductosTotales.add(dia.obtenerListaSupermercado(producto));
+    public List<ProductoDto> obtenerListaProductosComparados(String producto) {
+        return ordenarListaPorCategoriaYPrecio(producto);
+    }
 
-        List<List> listaTotales = (List<List>) listaProductosTotales.stream()
-                        .flatMap(List::stream)
-                                .collect(Collectors.toList());
+    public List<ProductoDto> ordenarListaPorCategoriaYPrecio(String producto) {
+        List<List<ProductoDto>> listaProductosSinComparar = new ArrayList<>();
 
-        //Comparamos el primer campo, es decir el de precio por kg/l de cada producto
-        listaTotales.sort(Comparator.comparing(prod -> (Double) prod.get(2)));
+        List<ProductoDto> listaMercadona = mercadona.obtenerListaSupermercado(producto);
+        List<ProductoDto> listaCarrefour = carrefour.obtenerListaSupermercado(producto);
+        List<ProductoDto> listaDia = dia.obtenerListaSupermercado(producto);
+
+        // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
+        //indicado supermercado, con esto obtenemos la categoría del producto
+        // que más relevancia tiene al hacer la búsqueda
+        String categoriaPrioritariaMercadona = listaMercadona.get(0).getCategoria();
+
+        listaDia.sort(Comparator.comparing(prod -> (int) prod.getIndex()));
+        String categoriaPrioritariaDia = listaDia.get(0).getCategoria();
+
+        listaProductosSinComparar.add(listaMercadona);
+        listaProductosSinComparar.add(listaCarrefour);
+        listaProductosSinComparar.add(listaDia);
+
+        List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        //Comparamos el primer campo, es decir el de precio por kg/l de cada producto, además añadimos comparación por
+        //categoría.
+        listaTotalProductos.sort(Comparator.
+                comparing((ProductoDto prod) -> {
+                    String categoria = prod.getCategoria();
+                    String supermercado = prod.getSupermercado();
+
+                    // Si es igual a true se queda más abajo en la lista
+                    if (supermercado.equalsIgnoreCase("DIA")) {
+                        return !categoriaPrioritariaDia.equalsIgnoreCase(categoria);
+                    } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
+                        return !categoriaPrioritariaMercadona.equalsIgnoreCase(categoria);
+                    } else {
+                        return true; // En nuestro caso no hemos implementado la ordenación
+                                    // con el Carrefour porque no es funcional en algunos casos
+                                    // (otros ordenadores)
+                    }
+                })
+                .thenComparing(product -> product.getPrecioGranel()));
 
         System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
-        listaTotales.forEach(productoBuscado -> {
+        listaTotalProductos.forEach(productoBuscado -> {
             System.out.println(productoBuscado);
         });
 
-        return listaTotales;
+        return listaTotalProductos;
     }
 
 }

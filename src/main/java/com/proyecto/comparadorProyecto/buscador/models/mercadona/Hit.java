@@ -9,11 +9,13 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Hit {
+    @JsonProperty("categories")
+    private List<Categoria> categoria;
     //Mapea el objeto del json llamado display_name
+    @JsonProperty("thumbnail")
+    private String thumbnail;
     @JsonProperty("display_name")
     private String nombre;
     @JsonProperty("price_instructions")
     private PriceInstructions priceInstructions;
-    @JsonProperty("categories")
-    private List<Categoria> categoria;
 }

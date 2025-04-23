@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.servicios.ServicioComparador;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ public class ComparadorProyectoController {
     @PostMapping("/prueba")
     public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
 
-        List<List> productosComparados = servicioComparador.obtenerListaProductosComparados(producto);
+        List<ProductoDto> productosComparados = servicioComparador.obtenerListaProductosComparados(producto);
         model.addAttribute("productosComparados", productosComparados);
         return "prueba";
     }

@@ -1,12 +1,12 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.Hit;
-import com.proyecto.comparadorProyecto.buscador.models.mercadona.NombreCategoria;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.PriceInstructions;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.RespuestaMercadona;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +22,8 @@ import java.util.Map;
 public class Mercadona extends Peticion implements ObtenerProductos {
 
     @Override
-    public List<List> obtenerListaSupermercado(String producto){
-        List<List> listaProductos = new ArrayList<>();
+    public List<ProductoDto> obtenerListaSupermercado(String producto){
+        List<ProductoDto> listaProductos = new ArrayList<>();
         //Codificamos el producto para poder incluirlo en la url
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
@@ -32,7 +32,8 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
         // Definimos el cuerpo de la petición en formato json y recibimos la menor información posible
         String jsonBody = "{ \"params\": \"query=" + productoCodificado +
-                "&attributesToRetrieve=display_name,price_instructions.unit_price,price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" + //atributo que quiero de cada objeto
+                "&attributesToRetrieve=categories,display_name,price_instructions.unit_price," +
+                "price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" + //atributo que quiero de cada objeto
                 "&responseFields=hits\", " + //solo incliye el campo hits (donde se encuentran los resultados)
                 "\"getRankingInfo\": false, " + //elimina información adicional
                 "\"analytics\": false, " +
@@ -62,9 +63,9 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     }
 
     @Override
-    public List<List> convertirJsonALista(String respuesta) {
+    public List<ProductoDto> convertirJsonALista(String respuesta) {
 
-        List<List> productList = new ArrayList<>();
+        List<ProductoDto> listaProductos = new ArrayList<>();
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -73,24 +74,24 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
                 for (Hit producto : respuestMappeada.getHits()) {
                     PriceInstructions preciosProducto = producto.getPriceInstructions();
+                    String nombreCategoria;
 
-                    // TODO: Hacer que se puedan obtener las categorias de los productos, por ahora aparecen como null
-//                    NombreCategoria nombreCategoria = producto.getCategoria().get(0).getNombreCategoria();
-
-                    System.out.println(producto.getCategoria());
+                    nombreCategoria = producto.getCategoria().getFirst().getNombreCategoria();
 
                     //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                     //a todos los elementos encontrados
-                    List<Object> prod = List.of(producto.getNombre(), preciosProducto.getPrecioUnidad(), preciosProducto.getPrecioGranel(),
-                            preciosProducto.getTamanoUnidad(), preciosProducto.getUnidadMedida(), "MERCADONA");
-                    productList.add(prod);
+
+                    ProductoDto productoDto = new ProductoDto(producto.getNombre(), preciosProducto.getPrecioUnidad(), preciosProducto.getPrecioGranel(),
+                            preciosProducto.getTamanoUnidad(), preciosProducto.getUnidadMedida(), 1, nombreCategoria, "MERCADONA");
+
+                    listaProductos.add(productoDto);
                 }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return productList;
+        return listaProductos;
     }
 
 }

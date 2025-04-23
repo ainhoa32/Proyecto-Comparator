@@ -10,5 +10,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Categoria {
     @JsonProperty("name")
-    private NombreCategoria nombreCategoria;
+    private String nombreCategoria;
+    @JsonProperty("categories")
+    private List<Categoria> categoria;
 }
