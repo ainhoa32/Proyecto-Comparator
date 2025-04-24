@@ -50,11 +50,11 @@ public class Mercadona extends Peticion implements ObtenerProductos {
             String respuesta = realizarPeticionHttp("POST", url, headers, jsonBody);
             listaProductos = convertirJsonALista(respuesta);
 
-            System.out.println("--------------------MERCADONA---------------------");
-
-            listaProductos.forEach(productoBuscado -> {
-                System.out.println(productoBuscado);
-            });
+//            System.out.println("--------------------MERCADONA---------------------");
+//
+//            listaProductos.forEach(productoBuscado -> {
+//                System.out.println(productoBuscado);
+//            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,6 +65,8 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
 
+        System.out.println(respuesta);
+
         List<ProductoDto> listaProductos = new ArrayList<>();
 
         try {
@@ -72,20 +74,34 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
             RespuestaMercadona respuestMappeada = objectMapper.readValue(respuesta, RespuestaMercadona.class);
 
-                for (Hit producto : respuestMappeada.getHits()) {
-                    PriceInstructions preciosProducto = producto.getPriceInstructions();
-                    String nombreCategoria;
+            int index = 1;
 
-                    nombreCategoria = producto.getCategoria().getFirst().getNombreCategoria();
+            if(respuestMappeada.getHits().size() > 0) {
+                for (Hit producto : respuestMappeada.getHits()) {
+                    System.out.println(producto);
+                    PriceInstructions preciosProducto = producto.getPriceInstructions();
+
+                    String categoriaPrioridad1 = producto.getCategoria().getFirst().getCategoria().getFirst().getNombreCategoria();
+                    String categoriaPrioridad2 = producto.getCategoria().getFirst().getNombreCategoria();
 
                     //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                     //a todos los elementos encontrados
 
-                    ProductoDto productoDto = new ProductoDto(producto.getNombre(), preciosProducto.getPrecioUnidad(), preciosProducto.getPrecioGranel(),
-                            preciosProducto.getTamanoUnidad(), preciosProducto.getUnidadMedida(), 1, nombreCategoria, "MERCADONA");
+                    ProductoDto productoDto = ProductoDto.builder()
+                            .nombre(producto.getNombre())
+                            .precio(preciosProducto.getPrecioUnidad())
+                            .precioGranel(preciosProducto.getPrecioGranel())
+                            .unidadMedida(preciosProducto.getUnidadMedida())
+                            .tamanoUnidad(preciosProducto.getTamanoUnidad())
+                            .index(index++)
+                            .categoria1(categoriaPrioridad1)
+                            .categoria2(categoriaPrioridad2)
+                            .supermercado("MERCADONA")
+                            .build();
 
                     listaProductos.add(productoDto);
                 }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

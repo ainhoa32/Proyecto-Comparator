@@ -53,11 +53,11 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             String respuesta = realizarPeticionHttp("GET", url, headers, null);
             listaProductos = convertirJsonALista(respuesta);
 
-            System.out.println("--------------------CARREFOUR---------------------");
-            System.out.println("Productos Carrefour: ");
-            listaProductos.forEach(productoBuscado -> {
-                System.out.println(productoBuscado);
-            });
+//            System.out.println("--------------------CARREFOUR---------------------");
+//            System.out.println("Productos Carrefour: ");
+//            listaProductos.forEach(productoBuscado -> {
+//                System.out.println(productoBuscado);
+//            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,7 +87,7 @@ public class Carrefour extends Peticion implements ObtenerProductos{
                 double precioGranel = precio / tamanoUnidad;
                 //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
                 //a todos los elementos encontrados
-                ProductoDto productoDto = new ProductoDto(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, 0, "categoría", "CARREFOUR");
+                ProductoDto productoDto = new ProductoDto(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, 0, "categoría", "categoria2","CARREFOUR");
 
                 listaProductos.add(productoDto);
             }

@@ -53,11 +53,11 @@ public class Dia extends Peticion implements ObtenerProductos {
             String respuesta = realizarPeticionHttp("GET", url, headers, null);
             listaProductos = convertirJsonALista(respuesta);
 
-            System.out.println("--------------------Dia---------------------");
-            System.out.println("Productos Dia: ");
-            listaProductos.forEach(productoBuscado -> {
-                System.out.println(productoBuscado);
-            });
+//            System.out.println("--------------------Dia---------------------");
+//            System.out.println("Productos Dia: ");
+//            listaProductos.forEach(productoBuscado -> {
+//                System.out.println(productoBuscado);
+//            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,63 +72,75 @@ public class Dia extends Peticion implements ObtenerProductos {
 
         try{
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(respuesta);
 
             RespuestaDia respuestaMappeada = objectMapper.readValue(respuesta, RespuestaDia.class);
-            JsonNode productoBuscado = jsonNode.path("search_products_analytics");
 
-            for (Map.Entry<String, Producto> entry : respuestaMappeada.getProductos().entrySet()) {
-                Producto productoMappeado = entry.getValue(); // El objeto Producto asociado a esa clave
+            if(respuestaMappeada.getProductos() != null) {
+                for (Map.Entry<String, Producto> entry : respuestaMappeada.getProductos().entrySet()) {
+                    Producto productoMappeado = entry.getValue(); // El objeto Producto asociado a esa clave
 
-                if(productoMappeado.getIndex() < 15) {
-                    int index = productoMappeado.getIndex();
-                    String nombre = productoMappeado.getNombre();
-                    double precio = productoMappeado.getPrecio();
-                    String categoria = productoMappeado.getCategoria();
-                    String unidadMedida;
-                    double tamanoUnidad;
-                    String [] producto = nombre.split(" ");
+                    if(productoMappeado.getIndex() < 15) {
+                        int index = productoMappeado.getIndex();
+                        String nombre = productoMappeado.getNombre();
+                        double precio = productoMappeado.getPrecio();
+                        String categoriaPrioridad1 = productoMappeado.getCategoria1();
+                        String categoriaPrioridad2 = productoMappeado.getCategoria2();
+                        String unidadMedida;
+                        double tamanoUnidad;
+                        String [] producto = nombre.split(" ");
 
-                    if (producto[producto.length - 1].equals("aprox")) {
-                        unidadMedida = producto[producto.length - 2];
-                        tamanoUnidad = Double.parseDouble(producto[producto.length - 3]);
-                    } else {
-                        unidadMedida = producto[producto.length - 1];
-                        tamanoUnidad = Double.parseDouble(producto[producto.length - 2]);
+                        if (producto[producto.length - 1].equals("aprox")) {
+                            unidadMedida = producto[producto.length - 2];
+                            tamanoUnidad = Double.parseDouble(producto[producto.length - 3]);
+                        } else {
+                            unidadMedida = producto[producto.length - 1];
+                            tamanoUnidad = Double.parseDouble(producto[producto.length - 2]);
+                        }
+
+                        //Hay un problema con como devuelve la api del Dia las bebidas, en vez de poner
+                        //2.5 litros, aparecen como 25 litros, como no consta que haya líquidos de más
+                        //de 10 litros, si aparece algún líquido mayor es porque es un líquido cuyo formato
+                        //no es correcto como he puesto antes, si aparecen 25 litros, obviamente no serán 25 litros
+                        //serán 2.5 así que lo divido entre 10 para que aparezca correctamente
+                        if (unidadMedida.equals("l") && tamanoUnidad > 10) {
+                            tamanoUnidad = tamanoUnidad / 10;
+                        }
+
+                        if (unidadMedida.equals("ml")) {
+                            tamanoUnidad = tamanoUnidad / 1000;
+                            unidadMedida = "l";
+                        }
+
+                        if (unidadMedida.equals("g")) {
+                            tamanoUnidad = tamanoUnidad / 1000;
+                            unidadMedida = "kg";
+                        }
+
+                        double tamanoTotal = tamanoUnidad;
+                        if (producto[producto.length - 3].equals("x")) {
+                            tamanoTotal = tamanoUnidad * Double.parseDouble(producto[producto.length - 4]);
+                        }
+
+                        double precioGranel = precio / tamanoTotal;
+
+                        ProductoDto productoDto = ProductoDto.builder()
+                                .nombre(nombre)
+                                .precio(precio)
+                                .precioGranel(precioGranel)
+                                .index(index)
+                                .tamanoUnidad(tamanoUnidad)
+                                .unidadMedida(unidadMedida)
+                                .supermercado("DIA")
+                                .categoria1(categoriaPrioridad1)
+                                .categoria2(categoriaPrioridad2)
+                                .build();
+
+                        listaProductos.add(productoDto);
                     }
 
-                    //Hay un problema con como devuelve la api del Dia las bebidas, en vez de poner
-                    //2.5 litros, aparecen como 25 litros, como no consta que haya líquidos de más
-                    //de 10 litros, si aparece algún líquido mayor es porque es un líquido cuyo formato
-                    //no es correcto como he puesto antes, si aparecen 25 litros, obviamente no serán 25 litros
-                    //serán 2.5 así que lo divido entre 10 para que aparezca correctamente
-                    if (unidadMedida.equals("l") && tamanoUnidad > 10) {
-                        tamanoUnidad = tamanoUnidad / 10;
-                    }
-
-                    if (unidadMedida.equals("ml")) {
-                        tamanoUnidad = tamanoUnidad / 1000;
-                        unidadMedida = "l";
-                    }
-
-                    if (unidadMedida.equals("g")) {
-                        tamanoUnidad = tamanoUnidad / 1000;
-                        unidadMedida = "kg";
-                    }
-
-                    double tamanoTotal = tamanoUnidad;
-                    if (producto[producto.length - 3].equals("x")) {
-                        tamanoTotal = tamanoUnidad * Double.parseDouble(producto[producto.length - 4]);
-                    }
-
-                    double precioGranel = precio / tamanoTotal;
-
-                    ProductoDto productoDto = new ProductoDto(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, index, categoria, "DIA");
-
-                    listaProductos.add(productoDto);
                 }
-
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }

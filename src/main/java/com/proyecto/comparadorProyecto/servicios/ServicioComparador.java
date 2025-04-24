@@ -22,7 +22,6 @@ public class ServicioComparador {
     private final Mercadona mercadona;
     private final Carrefour carrefour;
     private final Dia dia;
-    private final int PRECIO = 2;
 
     public List<ProductoDto> obtenerListaProductosComparados(String producto) {
         return ordenarListaPorCategoriaYPrecio(producto);
@@ -30,6 +29,8 @@ public class ServicioComparador {
 
     public List<ProductoDto> ordenarListaPorCategoriaYPrecio(String producto) {
         List<List<ProductoDto>> listaProductosSinComparar = new ArrayList<>();
+        List<ProductoDto> listaTotalProductos = new ArrayList<>();
+
 
         List<ProductoDto> listaMercadona = mercadona.obtenerListaSupermercado(producto);
         List<ProductoDto> listaCarrefour = carrefour.obtenerListaSupermercado(producto);
@@ -38,44 +39,80 @@ public class ServicioComparador {
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
         //indicado supermercado, con esto obtenemos la categoría del producto
         // que más relevancia tiene al hacer la búsqueda
-        String categoriaPrioritariaMercadona = listaMercadona.get(0).getCategoria();
 
-        listaDia.sort(Comparator.comparing(prod -> (int) prod.getIndex()));
-        String categoriaPrioritariaDia = listaDia.get(0).getCategoria();
+        if(listaDia.size() > 0 && listaMercadona.size() > 0 && listaCarrefour.size() > 0){
+            listaDia.sort(Comparator.comparing(prod -> (int) prod.getIndex()));
+            String categoriaPrioritariaDia1 = listaDia.get(0).getCategoria1();
+            String categoriaPrioritariaDia2 = listaDia.get(0).getCategoria2();
+            listaProductosSinComparar.add(listaDia);
 
-        listaProductosSinComparar.add(listaMercadona);
-        listaProductosSinComparar.add(listaCarrefour);
-        listaProductosSinComparar.add(listaDia);
+            String categoriaPrioritariaMercadona1 = listaMercadona.get(0).getCategoria1();
+            String categoriaPrioritariaMercadona2 = listaMercadona.get(0).getCategoria2();
+            listaProductosSinComparar.add(listaMercadona);
 
-        List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+            listaTotalProductos = convertirListaConjunta(listaProductosSinComparar);
 
-        //Comparamos el primer campo, es decir el de precio por kg/l de cada producto, además añadimos comparación por
-        //categoría.
+            if(listaTotalProductos.size() > 0){
+                comparaciónMercadonaYDia(listaTotalProductos,
+                        categoriaPrioritariaMercadona2,
+                        categoriaPrioritariaMercadona1,
+                        categoriaPrioritariaDia1,
+                        categoriaPrioritariaDia2);
+            }
+        }
+
+        return listaTotalProductos;
+    }
+
+    public List<ProductoDto> comparaciónMercadonaYDia(List<ProductoDto> listaTotalProductos,
+                                                      String categoriaPrioritariaMercadona2,
+                                                      String categoriaPrioritariaMercadona1,
+                                                      String categoriaPrioritariaDia1,
+                                                      String categoriaPrioritariaDia2){
         listaTotalProductos.sort(Comparator.
                 comparing((ProductoDto prod) -> {
-                    String categoria = prod.getCategoria();
+                    String categoria = prod.getCategoria1();
                     String supermercado = prod.getSupermercado();
 
                     // Si es igual a true se queda más abajo en la lista
                     if (supermercado.equalsIgnoreCase("DIA")) {
-                        return !categoriaPrioritariaDia.equalsIgnoreCase(categoria);
+                        return !categoriaPrioritariaDia1.equalsIgnoreCase(categoria);
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
-                        return !categoriaPrioritariaMercadona.equalsIgnoreCase(categoria);
+                        return !categoriaPrioritariaMercadona1.equalsIgnoreCase(categoria);
                     } else {
                         return true; // En nuestro caso no hemos implementado la ordenación
-                                    // con el Carrefour porque no es funcional en algunos casos
-                                    // (otros ordenadores)
+                        // con el Carrefour porque no es funcional en algunos casos
+                        // (otros ordenadores)
+                    }
+                })
+                .thenComparing((ProductoDto prod) -> {
+                    String categoria2 = prod.getCategoria2();
+                    String supermercado = prod.getSupermercado();
+
+                    // Si es igual a true se queda más abajo en la lista
+                    if (supermercado.equalsIgnoreCase("DIA")) {
+                        return !categoriaPrioritariaDia2.equalsIgnoreCase(categoria2);
+                    } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
+                        return !categoriaPrioritariaMercadona2.equalsIgnoreCase(categoria2);
+                    } else {
+                        return true; // En nuestro caso no hemos implementado la ordenación
+                        // con el Carrefour porque no es funcional en algunos casos
+                        // (otros ordenadores)
                     }
                 })
                 .thenComparing(product -> product.getPrecioGranel()));
 
-        System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
-        listaTotalProductos.forEach(productoBuscado -> {
-            System.out.println(productoBuscado);
-        });
+                System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
+            System.out.println(listaTotalProductos);
 
+            return listaTotalProductos;
+
+    }
+
+    public List<ProductoDto> convertirListaConjunta(List<List<ProductoDto>> listaProductosSinComparar){
+        List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
         return listaTotalProductos;
     }
 
