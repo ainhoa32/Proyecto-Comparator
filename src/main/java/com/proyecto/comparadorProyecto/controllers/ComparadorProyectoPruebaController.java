@@ -18,16 +18,16 @@ public class ComparadorProyectoPruebaController {
         this.comparadorService = comparadorService;
     }
 
-    @GetMapping("/prueba")
-    public String prueba(){
-        return "prueba";
-    }
-
-    @PostMapping("/prueba")
-    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
-
-        List<ProductoDto> productosComparados = comparadorService.obtenerListaProductosComparados(producto);
-        model.addAttribute("productosComparados", productosComparados);
-        return "prueba";
-    }
+//    @GetMapping("/prueba")
+//    public String prueba(){
+//        return "prueba";
+//    }
+//
+//    @PostMapping("/prueba")
+//    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
+//
+//        List<ProductoDto> productosComparados = comparadorService.obtenerListaProductosComparados(producto);
+//        model.addAttribute("productosComparados", productosComparados);
+//        return "prueba";
+//    }
 }

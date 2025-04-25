@@ -23,11 +23,11 @@ public class ComparadorService {
     private final Carrefour carrefour;
     private final Dia dia;
 
-    public List<ProductoDto> obtenerListaProductosComparados(String producto) {
-        return ordenarListaPorCategoriaYPrecio(producto);
+    public List<ProductoDto> obtenerListaProductosComparados(String producto, String tipo) {
+        return ordenarListaPorCategoriaYPrecio(producto, tipo);
     }
 
-    public List<ProductoDto> ordenarListaPorCategoriaYPrecio(String producto) {
+    public List<ProductoDto> ordenarListaPorCategoriaYPrecio(String producto, String tipo) {
         List<List<ProductoDto>> listaProductosSinComparar = new ArrayList<>();
         List<ProductoDto> listaTotalProductos = new ArrayList<>();
 
@@ -56,10 +56,10 @@ public class ComparadorService {
                         categoriaPrioritariaMercadona2,
                         categoriaPrioritariaMercadona1,
                         categoriaPrioritariaDia1,
-                        categoriaPrioritariaDia2);
+                        categoriaPrioritariaDia2,
+                        tipo);
             }
         }
-
         return listaTotalProductos;
     }
 
@@ -67,10 +67,12 @@ public class ComparadorService {
                                                       String categoriaPrioritariaMercadona2,
                                                       String categoriaPrioritariaMercadona1,
                                                       String categoriaPrioritariaDia1,
-                                                      String categoriaPrioritariaDia2){
-        listaTotalProductos.sort(Comparator.
+                                                      String categoriaPrioritariaDia2,
+                                             String tipo){
 
+        listaTotalProductos.sort(Comparator.
                 comparing((ProductoDto prod) -> {
+                    System.out.println(prod.getNombre() + prod.getSupermercado());
                     String categoria = prod.getCategoria1();
                     String supermercado = prod.getSupermercado();
 
@@ -99,7 +101,7 @@ public class ComparadorService {
                     }
                 })
 
-                .thenComparing(product -> product.getPrecioGranel()));
+                .thenComparing(product -> tipo.equals("precioGranel") ? product.getPrecioGranel() : product.getPrecio() ));
 
                 System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
             System.out.println(listaTotalProductos);
@@ -112,7 +114,7 @@ public class ComparadorService {
         List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        return listaTotalProductos.subList(0, 20);
+        return listaTotalProductos.subList(0, (listaTotalProductos.size() >= 20) ? 20 : listaProductosSinComparar.size());
     }
 
 }

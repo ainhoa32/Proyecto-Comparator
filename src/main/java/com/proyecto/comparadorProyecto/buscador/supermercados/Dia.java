@@ -99,7 +99,7 @@ public class Dia extends Peticion implements ObtenerProductos {
                         //de 10 litros, si aparece algún líquido mayor es porque es un líquido cuyo formato
                         //no es correcto como he puesto antes, si aparecen 25 litros, obviamente no serán 25 litros
                         //serán 2.5 así que lo divido entre 10 para que aparezca correctamente
-                        if (unidadMedida.equals("l") && tamanoUnidad > 10) {
+                        if ((unidadMedida.equals("l") || unidadMedida.equals("kg")) && tamanoUnidad > 10) {
                             tamanoUnidad = tamanoUnidad / 10;
                         }
 

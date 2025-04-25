@@ -65,8 +65,6 @@ public class Mercadona extends Peticion implements ObtenerProductos {
     @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
 
-        System.out.println(respuesta);
-
         List<ProductoDto> listaProductos = new ArrayList<>();
 
         try {
@@ -106,7 +104,6 @@ public class Mercadona extends Peticion implements ObtenerProductos {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return listaProductos.subList(0, 10);
     }
 
