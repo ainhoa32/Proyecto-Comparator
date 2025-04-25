@@ -13,7 +13,8 @@ import java.util.List;
 public class ProductosService {
     private final ComparadorService comparadorService;
 
-    public ResponseEntity<?> getComparacionCompleta(@PathVariable(name = "producto") String producto){
+    public ResponseEntity<?> getComparacionCompleta(
+            @PathVariable(name = "producto") String producto){
         List<ProductoDto> listaProductos = comparadorService.obtenerListaProductosComparados(producto);
         return ResponseEntity.ok().body(listaProductos);
     }

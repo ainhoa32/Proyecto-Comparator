@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class Dia extends Peticion implements ObtenerProductos {
@@ -137,13 +134,15 @@ public class Dia extends Peticion implements ObtenerProductos {
 
                         listaProductos.add(productoDto);
                     }
-
                 }
+                // Ordenamos los productos por index para que estén ordenados por relevancia
+                // Y que después al hacer el sublist no desaparezcan los de index más importante
+                listaProductos.sort(Comparator.comparing(prod -> (int) prod.getIndex()));
             }
 
         }catch(Exception e){
             e.printStackTrace();
         }
-        return listaProductos;
+        return listaProductos.subList(0, 10);
     }
 }

@@ -41,7 +41,6 @@ public class ComparadorService {
         // que más relevancia tiene al hacer la búsqueda
 
         if(listaDia.size() > 0 && listaMercadona.size() > 0 && listaCarrefour.size() > 0){
-            listaDia.sort(Comparator.comparing(prod -> (int) prod.getIndex()));
             String categoriaPrioritariaDia1 = listaDia.get(0).getCategoria1();
             String categoriaPrioritariaDia2 = listaDia.get(0).getCategoria2();
             listaProductosSinComparar.add(listaDia);
@@ -113,7 +112,7 @@ public class ComparadorService {
         List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        return listaTotalProductos;
+        return listaTotalProductos.subList(0, 20);
     }
 
 }

@@ -95,6 +95,6 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             e.printStackTrace();
         }
 
-        return listaProductos;
+        return listaProductos.subList(0, 10);
     }
 }
