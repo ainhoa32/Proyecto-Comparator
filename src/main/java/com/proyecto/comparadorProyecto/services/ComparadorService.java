@@ -1,4 +1,4 @@
-package com.proyecto.comparadorProyecto.servicios;
+package com.proyecto.comparadorProyecto.services;
 
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
@@ -6,7 +6,7 @@ import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 // Necesario para que Springboot pueda inyectarlo. Es equivalente a crear un @Bean de tipo ServicioComparador en una clase
 // de tipo @Configuration
-@Component
+@Service
 // Crea un constructor con los atributos de la clase finales no inicializados como argumentos, en este caso, dia, carrefour, y mercadona
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ServicioComparador {
+public class ComparadorService {
     private final Mercadona mercadona;
     private final Carrefour carrefour;
     private final Dia dia;
@@ -53,7 +53,7 @@ public class ServicioComparador {
             listaTotalProductos = convertirListaConjunta(listaProductosSinComparar);
 
             if(listaTotalProductos.size() > 0){
-                comparaciónMercadonaYDia(listaTotalProductos,
+                ordenacionLista(listaTotalProductos,
                         categoriaPrioritariaMercadona2,
                         categoriaPrioritariaMercadona1,
                         categoriaPrioritariaDia1,
@@ -64,12 +64,13 @@ public class ServicioComparador {
         return listaTotalProductos;
     }
 
-    public List<ProductoDto> comparaciónMercadonaYDia(List<ProductoDto> listaTotalProductos,
+    public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
                                                       String categoriaPrioritariaMercadona2,
                                                       String categoriaPrioritariaMercadona1,
                                                       String categoriaPrioritariaDia1,
                                                       String categoriaPrioritariaDia2){
         listaTotalProductos.sort(Comparator.
+
                 comparing((ProductoDto prod) -> {
                     String categoria = prod.getCategoria1();
                     String supermercado = prod.getSupermercado();
@@ -85,21 +86,20 @@ public class ServicioComparador {
                         // (otros ordenadores)
                     }
                 })
+
                 .thenComparing((ProductoDto prod) -> {
                     String categoria2 = prod.getCategoria2();
                     String supermercado = prod.getSupermercado();
 
-                    // Si es igual a true se queda más abajo en la lista
                     if (supermercado.equalsIgnoreCase("DIA")) {
                         return !categoriaPrioritariaDia2.equalsIgnoreCase(categoria2);
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
                         return !categoriaPrioritariaMercadona2.equalsIgnoreCase(categoria2);
                     } else {
-                        return true; // En nuestro caso no hemos implementado la ordenación
-                        // con el Carrefour porque no es funcional en algunos casos
-                        // (otros ordenadores)
+                        return true;
                     }
                 })
+
                 .thenComparing(product -> product.getPrecioGranel()));
 
                 System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
