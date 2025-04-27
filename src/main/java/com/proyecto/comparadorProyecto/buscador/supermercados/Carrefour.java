@@ -22,6 +22,34 @@ public class Carrefour extends Peticion implements ObtenerProductos{
     @Override
     public List<ProductoDto> obtenerListaSupermercado(String producto) {
 
+        try{
+            String url = "https://www.carrefour.es/?query=almendras";
+
+            Map<String, String> headers = new HashMap<>();
+            headers.put("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+            headers.put("accept-language", "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7,it;q=0.6");
+            headers.put("cookie", "visid_incap_258278=mKkG3uwfShOnJErxGDn9O1aYx2YAAAAAQUIPAAAAAAAI7gN+NlUI4KWnOOXCUxfD; OptanonAlertBoxClosed=2025-03-22T12:26:11.532Z; eupubconsent-v2=CQOq1pgQOq1pgAcABBESBiFwAAAAAAAAAChQAAAAAAAA.YAAAAAAAAAAA; OneTrustGroupsConsent-ES=,C0097,C0003,C0001,; salepoint=005290||28232|A_DOMICILIO|1; session_id=2wJig3FlXcnTr5QCxScjffCgs6o; __cf_bm=XHW.UES1ti3CnGtOunF1TJoS9t9gQ42WX4BBmEaim9U-1745766184-1.0.1.1-2Md2mdQOfvn9ikAFi2igVTaKsR3iSDQmAVb_yejexby3boow8Dc68AGm7Eea.15NH71enKyxjgjpHMSh8i9v3ErOz5uwRixpMUyVdaDh6q0; cf_clearance=fMtEalB3NkQIYuCu1d0ZPfm3pYIEYWZ5RZCRCnWQQs0-1745766185-1.2.1.1-QwtLSMDoOmaUIeY7UynRZaLFAHIyIWeefli.97S.kP4hX45mLjPCL282v1l5Y3OrJHF4BfztZmtnndkXlKVZ8Sf0HOGTTd7hsKLkhhFH5i4uMIigLqVX312BNy.xtxHCQGRiAIt.d4Qn9_Ik7IkMw5t27zjc2bsPuw5IqIBvmK90AAA7DYn5QFXNwLRjhtljyfzMjWpZ8zzOS3kO.1tl9rzekn5aAwb6oViZoeqeUFNF1Vl3OBW3SBMITydiyDR2N5PJ.MUDBYwDZD04mOHekxATwdcqYYj5tN2LAhtiW0iWVtSgvpgqviKf7zod2wtFQ6E0qIT.wa6slh2uES77BOfT_NzWE2g553iaBwnjvDM; OptanonConsent=isGpcEnabled=0&datestamp=Sun+Apr+27+2025+17:09:36+GMT+0200+(hora+de+verano+de+Europa+central)&version=202410.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=e0f42598-eba7-4c7f-afa9-a0fae90b8138&interactionCount=1&isAnonUser=1&landingPath=NotLandingPage&groups=C0022:0,C0166:0,C0096:0,C0021:0,C0007:0,C0052:0,C0097:1,C0003:1,C0001:1,C0063:0,C0174:0,C0081:0,C0054:0,C0051:0,C0023:0,C0025:0,C0038:0,C0041:0,C0040:0,C0057:0,C0082:0,C0092:0,C0135:0,C0141:0,C0180:0,C0084:0,C0167:0,C0032:0,C0039:0,C0004:0,V2STACK42:0&intType=2&geolocation=ES;MD&AwaitingReconsent=false");
+            headers.put("priority", "u=0, i");
+            headers.put("sec-ch-ua", "\"Google Chrome\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "\"Windows\"");
+            headers.put("sec-fetch-dest", "document");
+            headers.put("sec-fetch-mode", "navigate");
+            headers.put("sec-fetch-site", "none");
+            headers.put("sec-fetch-user", "?1");
+            headers.put("upgrade-insecure-requests", "1");
+            headers.put("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36");
+
+            String respuesta = realizarPeticionHttp("GET", url, headers, null);
+
+            System.out.println(respuesta);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+
         List<ProductoDto> listaProductos = new ArrayList<>();
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
