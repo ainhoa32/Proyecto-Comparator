@@ -33,14 +33,14 @@ public class ComparadorService {
 
 
         List<ProductoDto> listaMercadona = mercadona.obtenerListaSupermercado(producto);
-        List<ProductoDto> listaCarrefour = carrefour.obtenerListaSupermercado(producto);
+        //List<ProductoDto> listaCarrefour = carrefour.obtenerListaSupermercado(producto);
         List<ProductoDto> listaDia = dia.obtenerListaSupermercado(producto);
 
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
         //indicado supermercado, con esto obtenemos la categoría del producto
         // que más relevancia tiene al hacer la búsqueda
 
-        if(listaDia.size() > 0 && listaMercadona.size() > 0 && listaCarrefour.size() > 0) {
+        if(listaDia.size() > 0 && listaMercadona.size() > 0) {
             String categoriaPrioritariaDia1 = listaDia.get(0).getCategoria1();
             String categoriaPrioritariaDia2 = listaDia.get(0).getCategoria2();
             listaProductosSinComparar.add(listaDia);
