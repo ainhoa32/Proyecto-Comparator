@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class Dia extends Peticion implements ObtenerProductos {
 
     @Override
-    public List<ProductoDto> obtenerListaSupermercado(String producto) {
+    public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
 
         List<ProductoDto> listaProductos = new ArrayList<>();
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
-        try {
             String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=" + productoCodificado +"&sort=rating,desc&page=1&page_size=30&filters=" +
                     "&attributesToRetrieve=search_products_analytics";
 
@@ -47,20 +47,19 @@ public class Dia extends Peticion implements ObtenerProductos {
             headers.put("x-mobile", "");
             headers.put("x-requested-with", "XMLHttpRequest");
 
-            String respuesta = realizarPeticionHttp("GET", url, headers, null);
-            listaProductos = convertirJsonALista(respuesta);
-
-//            System.out.println("--------------------Dia---------------------");
-//            System.out.println("Productos Dia: ");
-//            listaProductos.forEach(productoBuscado -> {
-//                System.out.println(productoBuscado);
-//            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return listaProductos;
+            // Usamos el CompletableFuture de manera asíncrona
+            try {
+                return realizarPeticionHttp("GET", url, headers, null)
+                        // Cuando termine de realizarse la petición convierte el json a lista
+                        .thenApply(respuesta -> convertirJsonALista(respuesta))
+                        // En el caso de que falle devuelve una lista vacía
+                        .exceptionally(e -> {
+                            e.printStackTrace();
+                            return new ArrayList<>(); // Si hay error, devuelve lista vacía
+                        });
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
     }
 
     @Override
@@ -143,6 +142,6 @@ public class Dia extends Peticion implements ObtenerProductos {
         }catch(Exception e){
             e.printStackTrace();
         }
-        return listaProductos.subList(0, 10);
+        return listaProductos.size() > 0 ? listaProductos.subList(0, 10) : listaProductos;
     }
 }

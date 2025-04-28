@@ -4,49 +4,57 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class Peticion {
 
-    public static String realizarPeticionHttp(String metodo, String urlVisitar, Map<String, String> headers, String body   ) throws Exception {
+    public static CompletableFuture<String> realizarPeticionHttp(String metodo, String urlVisitar, Map<String, String> headers, String body   ) throws Exception {
 
-        URL url = new URL(urlVisitar);
-        //Se abre conexión http con la url creada
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(metodo.toUpperCase());
+        HttpClient client = HttpClient.newHttpClient();
 
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(urlVisitar));
 
-        // Headers
+        // Añadir headers
         if (headers != null) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
-            }
+            headers.forEach(builder::header);
         }
 
-
-        // POST body
-        if ("POST".equalsIgnoreCase(metodo) && body != null) {
-            //permite el envío de datos en el cuerpo de la petición
-            connection.setDoOutput(true);
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = body.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
+        // Configurar método y body
+        switch (metodo.toUpperCase()) {
+            case "POST":
+                if (body != null) {
+                    builder.POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8));
+                } else {
+                    builder.POST(HttpRequest.BodyPublishers.noBody());
+                }
+                break;
+            case "PUT":
+                if (body != null) {
+                    builder.PUT(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8));
+                } else {
+                    builder.PUT(HttpRequest.BodyPublishers.noBody());
+                }
+                break;
+            case "DELETE":
+                builder.DELETE();
+                break;
+            default: // GET y otros métodos sin body
+                builder.GET();
+                break;
         }
 
-        // Leer respuesta
-        int responseCode = connection.getResponseCode();
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                responseCode >= 400 ? connection.getErrorStream() : connection.getInputStream(), StandardCharsets.UTF_8));
-        StringBuilder response = new StringBuilder();
-        String linea;
-        while ((linea = in.readLine()) != null) {
-            response.append(linea.trim());
-        }
-        in.close();
+        HttpRequest request = builder.build();
 
-        return response.toString();
+        // Enviar petición asíncrona y devolver CompletableFuture
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
     }
 }

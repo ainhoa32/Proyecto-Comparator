@@ -16,26 +16,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @NoArgsConstructor
 public class Mercadona extends Peticion implements ObtenerProductos {
 
     @Override
-    public List<ProductoDto> obtenerListaSupermercado(String producto){
-        List<ProductoDto> listaProductos = new ArrayList<>();
-        //Codificamos el producto para poder incluirlo en la url
+    public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
+        // Codificamos el producto para poder incluirlo en la URL
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
-        //Definimos la URL del servicio al que queremos hacer la petición
+        // Definimos la URL del servicio al que queremos hacer la petición
         String url = "https://7uzjkl1dj0-dsn.algolia.net/1/indexes/products_prod_mad1_es/query?x-algolia-agent=Algolia%20for%20JavaScript%20(3.35.1)%3B%20Browser&x-algolia-application-id=7UZJKL1DJ0&x-algolia-api-key=9d8f2e39e90df472b4f2e559a116fe17";
 
         // Definimos el cuerpo de la petición en formato json y recibimos la menor información posible
         String jsonBody = "{ \"params\": \"query=" + productoCodificado +
                 "&attributesToRetrieve=categories,display_name,price_instructions.unit_price," +
-                "price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" + //atributo que quiero de cada objeto
-                "&responseFields=hits\", " + //solo incliye el campo hits (donde se encuentran los resultados)
-                "\"getRankingInfo\": false, " + //elimina información adicional
+                "price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" +
+                "&responseFields=hits\", " +
+                "\"getRankingInfo\": false, " +
                 "\"analytics\": false, " +
                 "\"enableRules\": false, " +
                 "\"clickAnalytics\": false, " +
@@ -45,22 +45,21 @@ public class Mercadona extends Peticion implements ObtenerProductos {
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/x-www-form-urlencoded");
 
+        // Usamos el CompletableFuture de manera asíncrona
         try {
-            // Llamamos a la función que realiza la solicitud HTTP POST y almacenamos la respuesta
-            String respuesta = realizarPeticionHttp("POST", url, headers, jsonBody);
-            listaProductos = convertirJsonALista(respuesta);
-
-//            System.out.println("--------------------MERCADONA---------------------");
-//
-//            listaProductos.forEach(productoBuscado -> {
-//                System.out.println(productoBuscado);
-//            });
+            return realizarPeticionHttp("POST", url, headers, jsonBody)
+                    // Cuando termine de realizarse la petición convierte el json a lista
+                    .thenApply(respuesta -> convertirJsonALista(respuesta))
+                    // En el caso de que falle devuelve una lista vacía
+                    .exceptionally(e -> {
+                        e.printStackTrace();
+                        return new ArrayList<>(); // Si hay error, devuelve lista vacía
+                    });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return listaProductos;
     }
+
 
     @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
@@ -104,7 +103,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listaProductos.subList(0, 10);
+        return listaProductos.size() > 0 ? listaProductos.subList(0, 10) : listaProductos;
     }
 
 }

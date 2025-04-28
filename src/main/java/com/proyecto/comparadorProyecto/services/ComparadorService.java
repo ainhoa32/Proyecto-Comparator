@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 // Necesario para que Springboot pueda inyectarlo. Es equivalente a crear un @Bean de tipo ServicioComparador en una clase
@@ -28,39 +29,67 @@ public class ComparadorService {
     }
 
     public List<ProductoDto> ordenarListaPorCategoriaYPrecio(String producto, String tipo) {
-        List<List<ProductoDto>> listaProductosSinComparar = new ArrayList<>();
-        List<ProductoDto> listaTotalProductos = new ArrayList<>();
 
+        // Lanzar todas las peticiones en paralelo
+        CompletableFuture<List<ProductoDto>> futuroMercadona = mercadona.obtenerListaSupermercado(producto)
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                });
 
-        List<ProductoDto> listaMercadona = mercadona.obtenerListaSupermercado(producto);
-        //List<ProductoDto> listaCarrefour = carrefour.obtenerListaSupermercado(producto);
-        List<ProductoDto> listaDia = dia.obtenerListaSupermercado(producto);
+        CompletableFuture<List<ProductoDto>> futuroCarrefour = carrefour.obtenerListaSupermercado(producto)
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                });
+
+        CompletableFuture<List<ProductoDto>> futuroDia = dia.obtenerListaSupermercado(producto)
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return new ArrayList<>();
+                });
+
+        // Esperar a que todas las peticiones terminen
+        CompletableFuture<Void> todas = CompletableFuture.allOf(
+                futuroMercadona, futuroCarrefour, futuroDia
+        );
+
+        // Bloqueamos hasta que todas terminen
+        todas.join();
+
+        List<ProductoDto> listaMercadona = futuroMercadona.join();
+        List<ProductoDto> listaCarrefour = futuroCarrefour.join();
+        List<ProductoDto> listaDia = futuroDia.join();
+
+        List<List<ProductoDto>> listaProductosSinComparar = List.of(
+                listaMercadona,
+                listaCarrefour,
+                listaDia
+        );
+
+        List<ProductoDto> listaTotalProductos = convertirListaConjunta(listaProductosSinComparar);
 
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
-        //indicado supermercado, con esto obtenemos la categoría del producto
+        // indicado supermercado, con esto obtenemos la categoría del producto
         // que más relevancia tiene al hacer la búsqueda
+        if (!listaTotalProductos.isEmpty()) {
+            // Obtengo categorías prioritarias asegurándome de que las listas no estén vacías
+            String catMercadona1 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria1();
+            String catMercadona2 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria2();
+            String catDia1 = listaDia.isEmpty() ? "" : listaDia.get(0).getCategoria1();
+            String catDia2 = listaDia.isEmpty() ? "" : listaDia.get(0).getCategoria2();
 
-        if(listaDia.size() > 0 && listaMercadona.size() > 0) {
-            String categoriaPrioritariaDia1 = listaDia.get(0).getCategoria1();
-            String categoriaPrioritariaDia2 = listaDia.get(0).getCategoria2();
-            listaProductosSinComparar.add(listaDia);
-
-            String categoriaPrioritariaMercadona1 = listaMercadona.get(0).getCategoria1();
-            String categoriaPrioritariaMercadona2 = listaMercadona.get(0).getCategoria2();
-            listaProductosSinComparar.add(listaMercadona);
-
-            listaTotalProductos = convertirListaConjunta(listaProductosSinComparar);
-
-            if(listaTotalProductos.size() > 0){
-                ordenacionLista(listaTotalProductos,
-                        categoriaPrioritariaMercadona2,
-                        categoriaPrioritariaMercadona1,
-                        categoriaPrioritariaDia1,
-                        categoriaPrioritariaDia2,
-                        tipo);
-            }
+            return ordenacionLista(
+                    listaTotalProductos,
+                    catMercadona2,
+                    catMercadona1,
+                    catDia1,
+                    catDia2,
+                    tipo
+            );
         }
-        return listaTotalProductos;
+
+        return new ArrayList<>();
     }
 
     public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
@@ -114,7 +143,7 @@ public class ComparadorService {
         List<ProductoDto> listaTotalProductos = (List<ProductoDto>) listaProductosSinComparar.stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        return listaTotalProductos.subList(0, (listaTotalProductos.size() >= 20) ? 20 : listaProductosSinComparar.size());
+        return listaTotalProductos.size() == 0 ? listaTotalProductos : listaTotalProductos.subList(0, listaTotalProductos.size() >= 20 ? 20 : listaProductosSinComparar.size());
     }
 
 }
