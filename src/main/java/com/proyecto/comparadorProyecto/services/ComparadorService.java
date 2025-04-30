@@ -57,24 +57,18 @@ public class ComparadorService {
         listaTotalProductos.addAll(asyncDia.join());
         listaTotalProductos.addAll(asyncAhorraMas.join());
 
-        System.out.println(listaAhorraMas);
+        System.out.println(listaDia);
 
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
         // indicado supermercado, con esto obtenemos la categoría del producto
         // que más relevancia tiene al hacer la búsqueda
         if (!listaTotalProductos.isEmpty()) {
-            // Obtengo categorías prioritarias asegurándome de que las listas no estén vacías
-            String catMercadona1 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria1();
-            String catMercadona2 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria2();
-            String catDia1 = listaDia.isEmpty() ? "" : listaDia.get(0).getCategoria1();
-            String catDia2 = listaDia.isEmpty() ? "" : listaDia.get(0).getCategoria2();
-
             return ordenacionLista(
                     listaTotalProductos,
-                    catMercadona2,
-                    catMercadona1,
-                    catDia1,
-                    catDia2,
+                    listaMercadona,
+                    listaCarrefour,
+                    listaDia,
+                    listaAhorraMas,
                     tipo
             );
         }
@@ -82,19 +76,34 @@ public class ComparadorService {
         return new ArrayList<>();
     }
 
+    public String getCategoria (List<ProductoDto> lista, int numCategoria){
+        if(numCategoria == 1){
+            return lista.isEmpty() ? "" : lista.get(0).getCategoria1();
+        }
+        return lista.isEmpty() ? "" : lista.get(0).getCategoria2();
+    }
 
+    public boolean comparaCategorias (){
+
+    }
 
     public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
-                                                      String categoriaPrioritariaMercadona2,
-                                                      String categoriaPrioritariaMercadona1,
-                                                      String categoriaPrioritariaDia1,
-                                                      String categoriaPrioritariaDia2,
+                                             List<ProductoDto> listaMercadona,
+                                             List<ProductoDto> listaCarrefour,
+                                             List<ProductoDto> listaDia,
+                                             List<ProductoDto> listaAhorramas,
                                              String tipo){
 
+        // Obtengo categorías prioritarias asegurándome de que las listas no estén vacías
+        String categoriaPrioritariaMercadona1 = getCategoria(listaMercadona, 1);
+        String categoriaPrioritariaMercadona2 = getCategoria(listaMercadona, 2);
+        String categoriaPrioritariaDia1 = getCategoria(listaDia, 1);
+        String categoriaPrioritariaDia2 = getCategoria(listaDia, 2);
+        String categoriaPrioritariaAhorraMas1 = getCategoria(listaAhorramas, 1);
+        String categoriaPrioritariaAhorraMas2 = getCategoria(listaAhorramas, 2);
         // TODO : añadir las categorías prioritarias de Carrefour y Ahorra más y ordenar según ellas
         listaTotalProductos.sort(Comparator.
                 comparing((ProductoDto prod) -> {
-                    System.out.println(prod.getNombre() + prod.getSupermercado());
                     String categoria = prod.getCategoria1();
                     String supermercado = prod.getSupermercado();
 
@@ -103,7 +112,9 @@ public class ComparadorService {
                         return !categoriaPrioritariaDia1.equalsIgnoreCase(categoria);
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
                         return !categoriaPrioritariaMercadona1.equalsIgnoreCase(categoria);
-                    } else {
+                    } else if (supermercado.equalsIgnoreCase("AHORRAMAS")){
+                        return !categoriaPrioritariaAhorraMas1.equalsIgnoreCase(categoria);
+                    }else{
                         return true;
                     }
                 })
@@ -116,8 +127,8 @@ public class ComparadorService {
                         return !categoriaPrioritariaDia2.equalsIgnoreCase(categoria2);
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
                         return !categoriaPrioritariaMercadona2.equalsIgnoreCase(categoria2);
-                    } else {
-                        return true;
+                    } else if (supermercado.equalsIgnoreCase("MERCADONA")){
+                        return !categoriaPrioritariaAhorraMas2.equalsIgnoreCase(categoria2);
                     }
                 })
 
@@ -128,6 +139,5 @@ public class ComparadorService {
 
         return listaTotalProductos.size() == 0 ? listaTotalProductos : listaTotalProductos.subList(0, listaTotalProductos.size() >= 20 ? 20 : listaTotalProductos.size());
     }
-
 
 }
