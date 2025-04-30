@@ -3,20 +3,16 @@ package com.proyecto.comparadorProyecto.buscador.supermercados;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductosScraping;
 import com.proyecto.comparadorProyecto.buscador.PeticionJsoup;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +20,7 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
-        String productoCodificado = URLEncoder.encode("leche", StandardCharsets.UTF_8);
+        String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
         String url = "https://www.ahorramas.com/buscador?q=" + productoCodificado;
         return realizarPeticion(url)
                 .thenApply(document -> convertirDocumentoALista(document))
@@ -36,7 +32,6 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
 
     @Override
     public List<ProductoDto> convertirDocumentoALista(Document doc) {
-        List<ProductoDto> productos = new ArrayList<>();
         return doc.select("div.product")
                 .stream()
                 .map(producto -> mapearProducto(producto))

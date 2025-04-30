@@ -1,6 +1,5 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
@@ -68,7 +67,6 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             }
     }
 
-    // TODO: Hay que eliminar el uso del read tree y sustituirlo con modelos para mappear el JSON
     @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
         List<ProductoDto> listaProductos = new ArrayList<>();

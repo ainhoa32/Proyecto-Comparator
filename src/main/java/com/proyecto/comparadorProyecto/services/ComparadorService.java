@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+
+// TODO : refactorizar toda la clase
 
 // Necesario para que Springboot pueda inyectarlo. Es equivalente a crear un @Bean de tipo ServicioComparador en una clase
 // de tipo @Configuration
@@ -33,42 +34,34 @@ public class ComparadorService {
     public List<ProductoDto> ordenarListaPorPrecio(String producto, String tipo) {
 
         // Lanzar todas las peticiones en paralelo
-        CompletableFuture<List<ProductoDto>> futuroMercadona = mercadona.obtenerListaSupermercado(producto);
+        CompletableFuture<List<ProductoDto>> asyncMercadona = mercadona.obtenerListaSupermercado(producto);
 
-        CompletableFuture<List<ProductoDto>> futuroCarrefour = carrefour.obtenerListaSupermercado(producto);
+        CompletableFuture<List<ProductoDto>> asyncCarrefour = carrefour.obtenerListaSupermercado(producto);
 
-        CompletableFuture<List<ProductoDto>> futuroDia = dia.obtenerListaSupermercado(producto);
+        CompletableFuture<List<ProductoDto>> asyncDia = dia.obtenerListaSupermercado(producto);
 
-        CompletableFuture<List<ProductoDto>> futuroAhorraMas = ahorramas.obtenerListaSupermercado(producto);
+        CompletableFuture<List<ProductoDto>> asyncAhorraMas = ahorramas.obtenerListaSupermercado(producto);
 
         // Bloqueamos para esperar a que todas las peticiones terminen
-        CompletableFuture.allOf(futuroMercadona, futuroCarrefour, futuroDia, futuroAhorraMas).join();
+        CompletableFuture.allOf(asyncMercadona, asyncCarrefour, asyncDia, asyncAhorraMas).join();
 
-        List<ProductoDto> listaMercadona = futuroMercadona.join();
-        List<ProductoDto> listaCarrefour = futuroCarrefour.join();
-        List<ProductoDto> listaDia = futuroDia.join();
-        List<ProductoDto> listaAhorraMas = futuroAhorraMas.join();
+        List<ProductoDto> listaMercadona = asyncMercadona.join();
+        List<ProductoDto> listaCarrefour = asyncCarrefour.join();
+        List<ProductoDto> listaDia = asyncDia.join();
+        List<ProductoDto> listaAhorraMas = asyncAhorraMas.join();
 
         // Unimos todos los resultados
         List<ProductoDto> listaTotalProductos = new ArrayList<>();
-        listaTotalProductos.addAll(futuroMercadona.join());
-        listaTotalProductos.addAll(futuroCarrefour.join());
-        listaTotalProductos.addAll(futuroDia.join());
-        listaTotalProductos.addAll(futuroAhorraMas.join());
-
-//        List<ProductoDto> listaOrdenada = ordenacionLista(
-//                listaTotalProductos,
-//                lis
-//                tipo
-//        );
-
-        List<ProductoDto> listaProductosReducida = listaTotalProductos.size() == 0 ? listaTotalProductos : listaTotalProductos.subList(0, listaTotalProductos.size() >= 20 ? 20 : listaTotalProductos.size());
+        listaTotalProductos.addAll(asyncMercadona.join());
+        listaTotalProductos.addAll(asyncCarrefour.join());
+        listaTotalProductos.addAll(asyncDia.join());
+        listaTotalProductos.addAll(asyncAhorraMas.join());
 
 
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
         // indicado supermercado, con esto obtenemos la categoría del producto
         // que más relevancia tiene al hacer la búsqueda
-        if (!listaProductosReducida.isEmpty()) {
+        if (!listaTotalProductos.isEmpty()) {
             // Obtengo categorías prioritarias asegurándome de que las listas no estén vacías
             String catMercadona1 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria1();
             String catMercadona2 = listaMercadona.isEmpty() ? "" : listaMercadona.get(0).getCategoria2();
@@ -88,21 +81,16 @@ public class ComparadorService {
         return new ArrayList<>();
     }
 
-//    public String obtenerCategorias(List<ProductoDto>){
-//
-//    }
 
 
     public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
-//                                                      List<ProductoDto> listaMercadona,
-//                                                      List<ProductoDto> listaCarrefour,
-//                                                      List<ProductoDto> listaDia,
-//                                                      List<ProductoDto> listaAhorraMas,
                                                       String categoriaPrioritariaMercadona2,
                                                       String categoriaPrioritariaMercadona1,
                                                       String categoriaPrioritariaDia1,
                                                       String categoriaPrioritariaDia2,
                                              String tipo){
+
+        // TODO : añadir las categorías prioritarias de Carrefour y Ahorra más y ordenar según ellas
         listaTotalProductos.sort(Comparator.
                 comparing((ProductoDto prod) -> {
                     System.out.println(prod.getNombre() + prod.getSupermercado());
@@ -115,9 +103,7 @@ public class ComparadorService {
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
                         return !categoriaPrioritariaMercadona1.equalsIgnoreCase(categoria);
                     } else {
-                        return true; // En nuestro caso no hemos implementado la ordenación
-                        // con el Carrefour porque no es funcional en algunos casos
-                        // (otros ordenadores)
+                        return true;
                     }
                 })
 
@@ -136,11 +122,10 @@ public class ComparadorService {
 
                 .thenComparing(product -> tipo.equals("precioGranel") ? product.getPrecioGranel() : product.getPrecio() ));
 
-                System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
-            System.out.println(listaTotalProductos);
+        System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
+        System.out.println(listaTotalProductos);
 
-            return listaTotalProductos;
-
+        return listaTotalProductos.size() == 0 ? listaTotalProductos : listaTotalProductos.subList(0, listaTotalProductos.size() >= 20 ? 20 : listaTotalProductos.size());
     }
 
 

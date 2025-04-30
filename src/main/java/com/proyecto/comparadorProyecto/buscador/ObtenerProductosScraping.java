@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface ObtenerProductosScraping {
 
-    CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto);
+    public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto);
 
     public List<ProductoDto> convertirDocumentoALista(Document doc);
 
