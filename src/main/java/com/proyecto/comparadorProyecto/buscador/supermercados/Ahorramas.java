@@ -50,8 +50,8 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
         Double precio = Double.parseDouble(producto.select("div.add-to-cart").attr("data-price"));
         String precioGranelString = producto.select("span.unit-price-per-unit").text();
         Double precioGranel = Double.parseDouble(precioGranelString.substring(1, precioGranelString.indexOf('€')).replace(",", "."));
-        String unidadMedida = producto.select("div.cart-and-ipay").attr("data-frontunit");
-        String urlImagen = producto.select("img.title-image").attr("src");
+        String unidadMedida = producto.select("div.add-to-cart.has-input").attr("data-frontunit");
+        String urlImagen = producto.select("img.tile-image").attr("src");
         String categoria2 = producto.select("div.product-tile").attr("data-category1");
         String categoria1 = producto.select("div.product-tile").attr("data-category2");
 

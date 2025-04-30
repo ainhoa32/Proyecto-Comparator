@@ -32,7 +32,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
         // Definimos el cuerpo de la petición en formato json y recibimos la menor información posible
         String jsonBody = "{ \"params\": \"query=" + productoCodificado +
-                "&attributesToRetrieve=categories,display_name,price_instructions.unit_price," +
+                "&attributesToRetrieve=categories,display_name,thumbnail,price_instructions.unit_price," +
                 "price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" +
                 "&responseFields=hits\", " +
                 "\"getRankingInfo\": false, " +
