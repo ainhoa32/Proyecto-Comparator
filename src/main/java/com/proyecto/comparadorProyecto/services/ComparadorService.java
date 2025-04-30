@@ -57,6 +57,7 @@ public class ComparadorService {
         listaTotalProductos.addAll(asyncDia.join());
         listaTotalProductos.addAll(asyncAhorraMas.join());
 
+        System.out.println(listaAhorraMas);
 
         // Obtengo la categoría del primer elemento que aparece al consultar un producto en el
         // indicado supermercado, con esto obtenemos la categoría del producto

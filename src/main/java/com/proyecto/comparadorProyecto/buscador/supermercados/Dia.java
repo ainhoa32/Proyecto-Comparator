@@ -128,7 +128,7 @@ public class Dia extends Peticion implements ObtenerProductos {
                                 .supermercado("DIA")
                                 .categoria1(categoriaPrioridad1)
                                 .categoria2(categoriaPrioridad2)
-                                .urlImagen("https://www.dia.es/product_images" + claveProducto + "/" + claveProducto + "_ISO_0_ES.jpg")
+                                .urlImagen("https://www.dia.es/product_images/" + claveProducto + "/" + claveProducto + "_ISO_0_ES.jpg")
                                 .build();
 
                         listaProductos.add(productoDto);
