@@ -55,7 +55,7 @@ public class Dia extends Peticion implements ObtenerProductos {
                         // En el caso de que falle devuelve una lista vacía
                         .exceptionally(e -> {
                             e.printStackTrace();
-                            return new ArrayList<>(); // Si hay error, devuelve lista vacía
+                            return new ArrayList<>();
                         });
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -74,7 +74,7 @@ public class Dia extends Peticion implements ObtenerProductos {
             if(respuestaMappeada.getProductos() != null) {
                 for (Map.Entry<String, Producto> entry : respuestaMappeada.getProductos().entrySet()) {
                     Producto productoMappeado = entry.getValue(); // El objeto Producto asociado a esa clave
-
+                    String claveProducto = entry.getKey();
                     if(productoMappeado.getIndex() < 15) {
                         int index = productoMappeado.getIndex();
                         String nombre = productoMappeado.getNombre();
@@ -129,6 +129,7 @@ public class Dia extends Peticion implements ObtenerProductos {
                                 .supermercado("DIA")
                                 .categoria1(categoriaPrioridad1)
                                 .categoria2(categoriaPrioridad2)
+                                .urlImagen("https://www.dia.es/product_images" + claveProducto + "/" + claveProducto + "_ISO_0_ES.jpg")
                                 .build();
 
                         listaProductos.add(productoDto);
@@ -142,6 +143,6 @@ public class Dia extends Peticion implements ObtenerProductos {
         }catch(Exception e){
             e.printStackTrace();
         }
-        return listaProductos.size() > 0 ? listaProductos.subList(0, 10) : listaProductos;
+        return listaProductos.size() >= 0 ? listaProductos.subList(0, 10) : listaProductos;
     }
 }

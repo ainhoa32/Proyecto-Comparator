@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.buscador.supermercados.Ahorramas;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.services.ComparadorService;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class ComparadorProyectoPruebaController {
@@ -18,16 +20,19 @@ public class ComparadorProyectoPruebaController {
         this.comparadorService = comparadorService;
     }
 
-//    @GetMapping("/prueba")
-//    public String prueba(){
-//        return "prueba";
-//    }
-//
-//    @PostMapping("/prueba")
-//    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
-//
-//        List<ProductoDto> productosComparados = comparadorService.obtenerListaProductosComparados(producto);
-//        model.addAttribute("productosComparados", productosComparados);
-//        return "prueba";
-//    }
+    @GetMapping("/prueba")
+    public String prueba(){
+        return "prueba";
+    }
+
+    @PostMapping("/prueba")
+    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
+        Ahorramas ahorramas = new Ahorramas();
+        CompletableFuture<List<ProductoDto>> productos = ahorramas.obtenerListaSupermercado("leche");
+        CompletableFuture<Void> completa = CompletableFuture.allOf(productos);
+        completa.join();
+        List<ProductoDto> productosComparados = productos.join();
+        model.addAttribute("productosComparados", productosComparados);
+        return "prueba";
+    }
 }

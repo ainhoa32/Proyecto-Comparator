@@ -75,7 +75,6 @@ public class Mercadona extends Peticion implements ObtenerProductos {
 
             if(respuestMappeada.getHits().size() > 0) {
                 for (Hit producto : respuestMappeada.getHits()) {
-                    System.out.println(producto);
                     PriceInstructions preciosProducto = producto.getPriceInstructions();
 
                     String categoriaPrioridad1 = producto.getCategoria().getFirst().getCategoria().getFirst().getNombreCategoria();
@@ -93,6 +92,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
                             .index(index++)
                             .categoria1(categoriaPrioridad1)
                             .categoria2(categoriaPrioridad2)
+                            .urlImagen(producto.getUrlImagen())
                             .supermercado("MERCADONA")
                             .build();
 
@@ -103,7 +103,7 @@ public class Mercadona extends Peticion implements ObtenerProductos {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return listaProductos.size() > 0 ? listaProductos.subList(0, 10) : listaProductos;
+        return listaProductos.size() >= 10 ? listaProductos.subList(0, 10) : listaProductos;
     }
 
 }

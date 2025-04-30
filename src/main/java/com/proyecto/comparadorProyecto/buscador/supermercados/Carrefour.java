@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.buscador.models.carrefour.Producto;
+import com.proyecto.comparadorProyecto.buscador.models.carrefour.RespuestaCarrefour;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import org.springframework.stereotype.Component;
 
@@ -72,29 +74,35 @@ public class Carrefour extends Peticion implements ObtenerProductos{
         List<ProductoDto> listaProductos = new ArrayList<>();
 
         try {
-            //Convertimos el Json en un JsonNode
             ObjectMapper objectMapper = new ObjectMapper();
-            //readTree() convierte una json en un árbol de nodos
-            //esto permite trabajar con el json de manera jerárquica.
-            JsonNode rootNode = objectMapper.readTree(respuesta);
+            RespuestaCarrefour respuestaMappeada = objectMapper.readValue(respuesta, RespuestaCarrefour.class);
 
-            JsonNode docs = rootNode.path("content").path("docs");
-            for (JsonNode producto : docs) {
-                String nombre = producto.path("display_name").asText();
-                double precio = producto.path("active_price").asDouble(0.0);
-                double tamanoUnidad = producto.path("unit_conversion_factor").asDouble(0.0);
-                String unidadMedida = producto.path("measure_unit").asText();
-                double precioGranel = precio / tamanoUnidad;
-                //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
-                //a todos los elementos encontrados
-                ProductoDto productoDto = new ProductoDto(nombre, precio, precioGranel, tamanoUnidad, unidadMedida, 0, "categoría", "categoria2","CARREFOUR");
+            if(respuestaMappeada.getContent().getProductos().size() > 0){
+                int index = -1;
+                for(Producto producto : respuestaMappeada.getContent().getProductos()){
+                    double precio = producto.getPrecio();
+                    double tamanoUnidad = producto.getTamanoUnidad();
+                    double precioGranel =  precio / tamanoUnidad;
 
-                listaProductos.add(productoDto);
+                    ProductoDto productoDto = ProductoDto.builder()
+                            .nombre(producto.getNombre())
+                            .precio(precio)
+                            .precioGranel(precioGranel)
+                            .unidadMedida(producto.getUnidadMedida())
+                            .tamanoUnidad(producto.getTamanoUnidad())
+                            .index(index++)
+                            .categoria1(null)
+                            .categoria2(null)
+                            .urlImagen(producto.getImagen().getUrlImagen())
+                            .supermercado("MERCADONA")
+                            .build();
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return listaProductos.size() > 0 ? listaProductos.subList(0, 10) : listaProductos;
+        return listaProductos.size() >= 10 ? listaProductos.subList(0, 10) : listaProductos;
     }
 }

@@ -15,19 +15,19 @@ import java.util.concurrent.CompletableFuture;
 
 public class Peticion {
 
-    public static CompletableFuture<String> realizarPeticionHttp(String metodo, String urlVisitar, Map<String, String> headers, String body   ) throws Exception {
+    public static CompletableFuture<String> realizarPeticionHttp(String metodo,
+                                                                 String urlVisitar,
+                                                                 Map<String, String> headers,
+                                                                 String body) throws Exception {
 
         HttpClient client = HttpClient.newHttpClient();
-
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(urlVisitar));
 
-        // Añadir headers
         if (headers != null) {
             headers.forEach(builder::header);
         }
 
-        // Configurar método y body
         switch (metodo.toUpperCase()) {
             case "POST":
                 if (body != null) {

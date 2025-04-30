@@ -13,7 +13,7 @@ public class Hit {
     private List<Categoria> categoria;
     //Mapea el objeto del json llamado display_name
     @JsonProperty("thumbnail")
-    private String thumbnail;
+    private String urlImagen;
     @JsonProperty("display_name")
     private String nombre;
     @JsonProperty("price_instructions")
