@@ -83,10 +83,6 @@ public class ComparadorService {
         return lista.isEmpty() ? "" : lista.get(0).getCategoria2();
     }
 
-    public boolean comparaCategorias (){
-
-    }
-
     public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
                                              List<ProductoDto> listaMercadona,
                                              List<ProductoDto> listaCarrefour,
@@ -127,8 +123,10 @@ public class ComparadorService {
                         return !categoriaPrioritariaDia2.equalsIgnoreCase(categoria2);
                     } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
                         return !categoriaPrioritariaMercadona2.equalsIgnoreCase(categoria2);
-                    } else if (supermercado.equalsIgnoreCase("MERCADONA")){
+                    } else if (supermercado.equalsIgnoreCase("AHORRAMAS")){
                         return !categoriaPrioritariaAhorraMas2.equalsIgnoreCase(categoria2);
+                    }else{
+                        return true;
                     }
                 })
 
