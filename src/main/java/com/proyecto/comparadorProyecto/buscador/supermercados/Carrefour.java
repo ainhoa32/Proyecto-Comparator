@@ -1,8 +1,8 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.buscador.Supermercado;
 import com.proyecto.comparadorProyecto.buscador.models.carrefour.Producto;
 import com.proyecto.comparadorProyecto.buscador.models.carrefour.RespuestaCarrefour;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 // TODO: Arreglar Carrefour para que funcione en cualquier ordenador
 @Component
-public class Carrefour extends Peticion implements ObtenerProductos{
+public class Carrefour extends Peticion implements Supermercado {
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
@@ -67,7 +67,6 @@ public class Carrefour extends Peticion implements ObtenerProductos{
             }
     }
 
-    @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
         List<ProductoDto> listaProductos = new ArrayList<>();
 
@@ -89,8 +88,6 @@ public class Carrefour extends Peticion implements ObtenerProductos{
                             .unidadMedida(producto.getUnidadMedida())
                             .tamanoUnidad(producto.getTamanoUnidad())
                             .index(index++)
-                            .categoria1(null)
-                            .categoria2(null)
                             .urlImagen(producto.getImagen().getUrlImagen())
                             .supermercado("MERCADONA")
                             .build();

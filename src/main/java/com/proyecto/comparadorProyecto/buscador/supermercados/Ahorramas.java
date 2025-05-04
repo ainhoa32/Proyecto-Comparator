@@ -1,10 +1,13 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
-import com.proyecto.comparadorProyecto.buscador.ObtenerProductosScraping;
+import com.proyecto.comparadorProyecto.buscador.CalculadorPrioridad;
+import com.proyecto.comparadorProyecto.buscador.Supermercado;
 import com.proyecto.comparadorProyecto.buscador.PeticionJsoup;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
@@ -16,7 +19,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Component
-public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping {
+@RequiredArgsConstructor
+// TODO: Convertir PeticionJsoup a ClienteJsoup y ponerlo como atributo de clase
+public class Ahorramas extends PeticionJsoup implements Supermercado {
+    private final CalculadorPrioridad calculadorPrioridad;
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
@@ -32,14 +38,21 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
 
     @Override
     public List<ProductoDto> convertirDocumentoALista(Document doc) {
-        return doc.select("div.product")
-                .stream()
-                .map(producto -> mapearProducto(producto))
+        Elements divProducto = doc.select("div.product");
+        Element primerElemento = divProducto.first();
+
+        if (primerElemento == null) {
+            return List.of();
+        }
+
+        List<String> categoriasPrioritarias = obtenerCategorias(primerElemento);
+
+        return divProducto.stream()
+                .map(producto -> mapearProducto(producto, categoriasPrioritarias))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public ProductoDto mapearProducto(Element producto) {
+    public ProductoDto mapearProducto(Element producto, List<String> categoriasPrioritarias) {
         String nombreProducto = producto.select("h2.product-name-gtm").text();
         int index = Integer.parseInt(producto.select("div.product-tile").attr("data-index"));
         Double precio = Double.parseDouble(producto.select("div.add-to-cart").attr("data-price"));
@@ -47,8 +60,7 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
         Double precioGranel = Double.parseDouble(precioGranelString.substring(1, precioGranelString.indexOf('€')).replace(",", "."));
         String unidadMedida = producto.select("div.add-to-cart.has-input").attr("data-frontunit");
         String urlImagen = producto.select("img.tile-image").attr("src");
-        String categoria2 = producto.select("div.product-tile").attr("data-category1");
-        String categoria1 = producto.select("div.product-tile").attr("data-category2");
+        int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
 
         double tamanoUnidad = 1*precio/precioGranel;
 
@@ -57,8 +69,7 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
                 .supermercado("AHORRA MÁS")
                 .unidadMedida(unidadMedida)
                 .urlImagen(urlImagen)
-                .categoria1(categoria1)
-                .categoria2(categoria2)
+                .prioridad(prioridad)
                 .index(index)
                 .precioGranel(precioGranel)
                 .precio(precio)
@@ -66,4 +77,10 @@ public class Ahorramas extends PeticionJsoup implements ObtenerProductosScraping
                 .build();
     }
 
+    private List<String> obtenerCategorias(Element elemento) {
+        return List.of(
+                elemento.select("div.product-tile").attr("data-category1"),
+                elemento.select("div.product-tile").attr("data-category2")
+        );
+    }
 }

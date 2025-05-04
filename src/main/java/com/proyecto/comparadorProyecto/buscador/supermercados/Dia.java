@@ -1,8 +1,8 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proyecto.comparadorProyecto.buscador.ObtenerProductos;
 import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.buscador.Supermercado;
 import com.proyecto.comparadorProyecto.buscador.models.dia.Producto;
 import com.proyecto.comparadorProyecto.buscador.models.dia.RespuestaDia;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class Dia extends Peticion implements ObtenerProductos {
+public class Dia extends Peticion implements Supermercado {
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
@@ -61,7 +61,6 @@ public class Dia extends Peticion implements ObtenerProductos {
             }
     }
 
-    @Override
     public List<ProductoDto> convertirJsonALista(String respuesta) {
         List<ProductoDto> listaProductos = new ArrayList<>();
 
@@ -126,8 +125,6 @@ public class Dia extends Peticion implements ObtenerProductos {
                                 .tamanoUnidad(tamanoUnidad)
                                 .unidadMedida(unidadMedida)
                                 .supermercado("DIA")
-                                .categoria1(categoriaPrioridad1)
-                                .categoria2(categoriaPrioridad2)
                                 .urlImagen("https://www.dia.es/product_images/" + claveProducto + "/" + claveProducto + "_ISO_0_ES.jpg")
                                 .build();
 

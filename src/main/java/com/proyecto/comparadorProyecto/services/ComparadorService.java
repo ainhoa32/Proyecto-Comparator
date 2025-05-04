@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.services;
 
+import com.proyecto.comparadorProyecto.buscador.Supermercado;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Ahorramas;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
 import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 // TODO : refactorizar toda la clase
 
@@ -22,10 +24,7 @@ import java.util.concurrent.CompletableFuture;
 // Crea un constructor con los atributos de la clase finales no inicializados como argumentos, en este caso, dia, carrefour, y mercadona
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ComparadorService {
-    private final Mercadona mercadona;
-    private final Carrefour carrefour;
-    private final Dia dia;
-    private final Ahorramas ahorramas;
+    private final List<Supermercado> supermercados;
 
     public List<ProductoDto> obtenerListaProductosComparados(String producto, String tipo) {
         return ordenarListaPorPrecio(producto, tipo);
@@ -34,16 +33,10 @@ public class ComparadorService {
     public List<ProductoDto> ordenarListaPorPrecio(String producto, String tipo) {
 
         // Lanzar todas las peticiones en paralelo
-        CompletableFuture<List<ProductoDto>> asyncMercadona = mercadona.obtenerListaSupermercado(producto);
-
-        CompletableFuture<List<ProductoDto>> asyncCarrefour = carrefour.obtenerListaSupermercado(producto);
-
-        CompletableFuture<List<ProductoDto>> asyncDia = dia.obtenerListaSupermercado(producto);
-
-        CompletableFuture<List<ProductoDto>> asyncAhorraMas = ahorramas.obtenerListaSupermercado(producto);
+        List<CompletableFuture<List<ProductoDto>>> asyncSupermercados = supermercados.stream().map(supermercado -> supermercado.obtenerListaSupermercado(producto)).toList();
 
         // Bloqueamos para esperar a que todas las peticiones terminen
-        CompletableFuture.allOf(asyncMercadona, asyncCarrefour, asyncDia, asyncAhorraMas).join();
+        CompletableFuture.allOf(supermercados.toArray(new CompletableFuture[supermercados.size()])).join();
 
         List<ProductoDto> listaMercadona = asyncMercadona.join();
         List<ProductoDto> listaCarrefour = asyncCarrefour.join();
@@ -76,13 +69,6 @@ public class ComparadorService {
         return new ArrayList<>();
     }
 
-    public String getCategoria (List<ProductoDto> lista, int numCategoria){
-        if(numCategoria == 1){
-            return lista.isEmpty() ? "" : lista.get(0).getCategoria1();
-        }
-        return lista.isEmpty() ? "" : lista.get(0).getCategoria2();
-    }
-
     public List<ProductoDto> ordenacionLista(List<ProductoDto> listaTotalProductos,
                                              List<ProductoDto> listaMercadona,
                                              List<ProductoDto> listaCarrefour,
@@ -98,44 +84,11 @@ public class ComparadorService {
         String categoriaPrioritariaAhorraMas1 = getCategoria(listaAhorramas, 1);
         String categoriaPrioritariaAhorraMas2 = getCategoria(listaAhorramas, 2);
         // TODO : añadir las categorías prioritarias de Carrefour y Ahorra más y ordenar según ellas
-        listaTotalProductos.sort(Comparator.
-                comparing((ProductoDto prod) -> {
-                    String categoria = prod.getCategoria1();
-                    String supermercado = prod.getSupermercado();
-
-                    // Si es igual a true se queda más abajo en la lista
-                    if (supermercado.equalsIgnoreCase("DIA")) {
-                        return !categoriaPrioritariaDia1.equalsIgnoreCase(categoria);
-                    } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
-                        return !categoriaPrioritariaMercadona1.equalsIgnoreCase(categoria);
-                    } else if (supermercado.equalsIgnoreCase("AHORRAMAS")){
-                        return !categoriaPrioritariaAhorraMas1.equalsIgnoreCase(categoria);
-                    }else{
-                        return true;
-                    }
-                })
-
-                .thenComparing((ProductoDto prod) -> {
-                    String categoria2 = prod.getCategoria2();
-                    String supermercado = prod.getSupermercado();
-
-                    if (supermercado.equalsIgnoreCase("DIA")) {
-                        return !categoriaPrioritariaDia2.equalsIgnoreCase(categoria2);
-                    } else if (supermercado.equalsIgnoreCase("MERCADONA")) {
-                        return !categoriaPrioritariaMercadona2.equalsIgnoreCase(categoria2);
-                    } else if (supermercado.equalsIgnoreCase("AHORRAMAS")){
-                        return !categoriaPrioritariaAhorraMas2.equalsIgnoreCase(categoria2);
-                    }else{
-                        return true;
-                    }
-                })
-
-                .thenComparing(product -> tipo.equals("precioGranel") ? product.getPrecioGranel() : product.getPrecio() ));
 
         System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
         System.out.println(listaTotalProductos);
 
-        return listaTotalProductos.size() == 0 ? listaTotalProductos : listaTotalProductos.subList(0, listaTotalProductos.size() >= 20 ? 20 : listaTotalProductos.size());
+        return listaTotalProductos.stream().sorted().limit(20).collect(Collectors.toList());
     }
 
 }
