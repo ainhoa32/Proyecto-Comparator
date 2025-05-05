@@ -1,17 +1,10 @@
 package com.proyecto.comparadorProyecto.services;
 
 import com.proyecto.comparadorProyecto.buscador.Supermercado;
-import com.proyecto.comparadorProyecto.buscador.models.mercadona.Producto;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Ahorramas;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Carrefour;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Dia;
-import com.proyecto.comparadorProyecto.buscador.supermercados.Mercadona;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +34,7 @@ public class ComparadorService {
                             e.printStackTrace();
                             return Collections.emptyList();
                         }))
-                        .toList();
+                .toList();
 
         // Bloqueamos para esperar a que todas las peticiones terminen
         CompletableFuture.allOf(asyncSupermercados.toArray(new CompletableFuture[supermercados.size()])).join();
@@ -49,23 +42,16 @@ public class ComparadorService {
         // Obtenemos todos los resultados y lo incluimos en una única lista
         List<ProductoDto> listaCombinadaSupermercados = asyncSupermercados.stream()
                 .flatMap(lista -> lista.join().stream())
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
 
         return ordenacionLista(listaCombinadaSupermercados);
     }
 
-    public List<ProductoDto> ordenacionLista(List<ProductoDto> listaProductos){
-
-        System.out.println("---------------PRODUCTOS NO ACTUALIZADOS--------------------");
-        System.out.println(listaProductos);
-
+    public List<ProductoDto> ordenacionLista(List<ProductoDto> listaProductos) {
         listaProductos.sort(Comparator
                 .comparing((ProductoDto prod) -> prod.getPrioridad())
                 .thenComparing((ProductoDto producto) -> producto.getPrecioGranel()));
-
-        System.out.println("---------------PRODUCTOS MEZCLADOS Y ACTUALIZADOS--------------------");
-        System.out.println(listaProductos);
 
         return listaProductos.stream().limit(20).collect(Collectors.toList());
     }

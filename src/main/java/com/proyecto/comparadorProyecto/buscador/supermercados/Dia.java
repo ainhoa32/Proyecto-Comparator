@@ -8,9 +8,7 @@ import com.proyecto.comparadorProyecto.buscador.models.dia.Producto;
 import com.proyecto.comparadorProyecto.buscador.models.dia.RespuestaDia;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

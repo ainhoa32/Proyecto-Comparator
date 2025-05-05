@@ -1,16 +1,8 @@
 package com.proyecto.comparadorProyecto.controllers;
 
-import com.proyecto.comparadorProyecto.buscador.supermercados.Ahorramas;
-import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.services.ComparadorService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class ComparadorProyectoPruebaController {
