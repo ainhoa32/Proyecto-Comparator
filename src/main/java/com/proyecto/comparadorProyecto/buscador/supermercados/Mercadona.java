@@ -1,26 +1,29 @@
 package com.proyecto.comparadorProyecto.buscador.supermercados;
 
+import com.proyecto.comparadorProyecto.buscador.CalculadorPrioridad;
 import com.proyecto.comparadorProyecto.buscador.Supermercado;
-import com.proyecto.comparadorProyecto.buscador.models.mercadona.Hit;
+import com.proyecto.comparadorProyecto.buscador.models.mercadona.Producto;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.PriceInstructions;
 import com.proyecto.comparadorProyecto.buscador.models.mercadona.RespuestaMercadona;
-import com.proyecto.comparadorProyecto.buscador.Peticion;
+import com.proyecto.comparadorProyecto.buscador.ClienteHttp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Component
-@NoArgsConstructor
-public class Mercadona extends Peticion implements Supermercado {
+@RequiredArgsConstructor
+public class Mercadona implements Supermercado {
+
+    private final ClienteHttp clienteHttp;
+    private final CalculadorPrioridad calculadorPrioridad;
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
@@ -47,7 +50,7 @@ public class Mercadona extends Peticion implements Supermercado {
 
         // Usamos el CompletableFuture de manera asíncrona
         try {
-            return realizarPeticionHttp("POST", url, headers, jsonBody)
+            return clienteHttp.realizarPeticionHttp("POST", url, headers, jsonBody)
                     // Cuando termine de realizarse la petición convierte el json a lista
                     .thenApply(respuesta -> convertirJsonALista(respuesta))
                     // En el caso de que falle devuelve una lista vacía
@@ -70,37 +73,58 @@ public class Mercadona extends Peticion implements Supermercado {
 
             RespuestaMercadona respuestMappeada = objectMapper.readValue(respuesta, RespuestaMercadona.class);
 
-            int index = 1;
+            Producto primerProducto = Optional.ofNullable(respuestMappeada.getProducto())
+                    .orElse(List.of())
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
 
-            if(respuestMappeada.getHits().size() > 0) {
-                for (Hit producto : respuestMappeada.getHits()) {
-                    PriceInstructions preciosProducto = producto.getPriceInstructions();
-
-                    String categoriaPrioridad1 = producto.getCategoria().getFirst().getCategoria().getFirst().getNombreCategoria();
-                    String categoriaPrioridad2 = producto.getCategoria().getFirst().getNombreCategoria();
-
-                    //Creamos una lista generica para incluir todos los campos del producto, este se inlcuirá en la lista que incluye
-                    //a todos los elementos encontrados
-
-                    ProductoDto productoDto = ProductoDto.builder()
-                            .nombre(producto.getNombre())
-                            .precio(preciosProducto.getPrecioUnidad())
-                            .precioGranel(preciosProducto.getPrecioGranel())
-                            .unidadMedida(preciosProducto.getUnidadMedida())
-                            .tamanoUnidad(preciosProducto.getTamanoUnidad())
-                            .index(index++)
-                            .urlImagen(producto.getUrlImagen())
-                            .supermercado("MERCADONA")
-                            .build();
-
-                    listaProductos.add(productoDto);
-                }
+            if (primerProducto == null) {
+                return List.of();
             }
+
+            List<String> categoriasPrioritarias = obtenerCategorias(primerProducto);
+
+            AtomicInteger index = new AtomicInteger(1);
+
+            return Optional.ofNullable(respuestMappeada.getProducto())
+                    .orElse(List.of())
+                    .stream()
+                    // Solo vamos a manejar los primeros 10 productos que nos devuelve el json
+                    // de los productos del mercadona ya que son los más relevantre
+                    .limit(10)
+                    .map(prod -> mapearProducto(prod, index.getAndIncrement(), categoriasPrioritarias))
+                    .collect(Collectors.toList());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return listaProductos.size() >= 10 ? listaProductos.subList(0, 10) : listaProductos;
+    }
+
+    public ProductoDto mapearProducto(Producto producto, int index, List<String> categoriasPrioritarias) {
+        PriceInstructions preciosProducto = producto.getPriceInstructions();
+        int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
+
+
+        return ProductoDto.builder()
+                .nombre(producto.getNombre())
+                .precio(preciosProducto.getPrecioUnidad())
+                .precioGranel(preciosProducto.getPrecioGranel())
+                .unidadMedida(preciosProducto.getUnidadMedida())
+                .tamanoUnidad(preciosProducto.getTamanoUnidad())
+                .index(index)
+                .prioridad(prioridad)
+                .urlImagen(producto.getUrlImagen())
+                .supermercado("MERCADONA")
+                .build();
+    }
+
+    private List<String> obtenerCategorias(Producto producto) {
+        return List.of(
+                producto.getCategoria().getFirst().getCategoria().getFirst().getNombreCategoria(),
+                producto.getCategoria().getFirst().getNombreCategoria()
+        );
     }
 
 }

@@ -8,10 +8,9 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Hit {
+public class Producto {
     @JsonProperty("categories")
     private List<Categoria> categoria;
-    //Mapea el objeto del json llamado display_name
     @JsonProperty("thumbnail")
     private String urlImagen;
     @JsonProperty("display_name")

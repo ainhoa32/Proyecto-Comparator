@@ -2,11 +2,13 @@ package com.proyecto.comparadorProyecto.buscador;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-public class PeticionJsoup {
+@Component
+public class ClienteJsoup {
 
     public static CompletableFuture<Document> realizarPeticion(String url) {
         return CompletableFuture.supplyAsync(() -> {

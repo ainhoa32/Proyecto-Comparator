@@ -25,14 +25,14 @@ public class ComparadorProyectoPruebaController {
         return "prueba";
     }
 
-    @PostMapping("/prueba")
-    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
-        Ahorramas ahorramas = new Ahorramas();
-        CompletableFuture<List<ProductoDto>> productos = ahorramas.obtenerListaSupermercado("leche");
-        CompletableFuture<Void> completa = CompletableFuture.allOf(productos);
-        completa.join();
-        List<ProductoDto> productosComparados = productos.join();
-        model.addAttribute("productosComparados", productosComparados);
-        return "prueba";
-    }
+//    @PostMapping("/prueba")
+//    public String pruebaForm(@ModelAttribute("producto") String producto, Model model){
+//        Ahorramas ahorramas = new Ahorramas();
+//        CompletableFuture<List<ProductoDto>> productos = ahorramas.obtenerListaSupermercado("leche");
+//        CompletableFuture<Void> completa = CompletableFuture.allOf(productos);
+//        completa.join();
+//        List<ProductoDto> productosComparados = productos.join();
+//        model.addAttribute("productosComparados", productosComparados);
+//        return "prueba";
+//    }
 }

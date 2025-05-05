@@ -2,7 +2,7 @@ package com.proyecto.comparadorProyecto.buscador.supermercados;
 
 import com.proyecto.comparadorProyecto.buscador.CalculadorPrioridad;
 import com.proyecto.comparadorProyecto.buscador.Supermercado;
-import com.proyecto.comparadorProyecto.buscador.PeticionJsoup;
+import com.proyecto.comparadorProyecto.buscador.ClienteJsoup;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
@@ -21,14 +21,15 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 // TODO: Convertir PeticionJsoup a ClienteJsoup y ponerlo como atributo de clase
-public class Ahorramas extends PeticionJsoup implements Supermercado {
+public class Ahorramas implements Supermercado {
     private final CalculadorPrioridad calculadorPrioridad;
+    private final ClienteJsoup clienteJsoup;
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
         String url = "https://www.ahorramas.com/buscador?q=" + productoCodificado;
-        return realizarPeticion(url)
+        return clienteJsoup.realizarPeticion(url)
                 .thenApply(document -> convertirDocumentoALista(document))
                 .exceptionally(e -> {
                     e.printStackTrace();
@@ -36,7 +37,6 @@ public class Ahorramas extends PeticionJsoup implements Supermercado {
                 });
     }
 
-    @Override
     public List<ProductoDto> convertirDocumentoALista(Document doc) {
         Elements divProducto = doc.select("div.product");
         Element primerElemento = divProducto.first();
@@ -62,7 +62,7 @@ public class Ahorramas extends PeticionJsoup implements Supermercado {
         String urlImagen = producto.select("img.tile-image").attr("src");
         int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
 
-        double tamanoUnidad = 1*precio/precioGranel;
+        double tamanoUnidad = precio/precioGranel;
 
         return ProductoDto.builder()
                 .nombre(nombreProducto)
@@ -79,8 +79,8 @@ public class Ahorramas extends PeticionJsoup implements Supermercado {
 
     private List<String> obtenerCategorias(Element elemento) {
         return List.of(
-                elemento.select("div.product-tile").attr("data-category1"),
-                elemento.select("div.product-tile").attr("data-category2")
+                elemento.select("div.product-tile").attr("data-category2"),
+                elemento.select("div.product-tile").attr("data-category1")
         );
     }
 }

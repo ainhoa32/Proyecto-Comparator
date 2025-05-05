@@ -1,5 +1,7 @@
 package com.proyecto.comparadorProyecto.buscador;
 
+import org.springframework.stereotype.Component;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,7 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class Peticion {
+@Component
+public class ClienteHttp {
 
     public static CompletableFuture<String> realizarPeticionHttp(String metodo,
                                                                  String urlVisitar,

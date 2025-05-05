@@ -12,6 +12,9 @@ import java.util.List;
 
 @Configuration
 public class ConfiguracionSupermercados {
+
+    // Creo un bean que contiene una lista de supermercados
+    // Esto me permite inyectarlos todos fácilmente
     @Bean
     List<Supermercado> obtenerSupermercados(Mercadona mercadona, Carrefour carrefour, Ahorramas ahorramas, Dia dia) {
         return List.of(
