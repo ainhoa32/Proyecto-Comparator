@@ -66,7 +66,7 @@ public class Ahorramas implements Supermercado {
 
         return ProductoDto.builder()
                 .nombre(nombreProducto)
-                .supermercado("AHORRA MÁS")
+                .supermercado("AHORRAMAS")
                 .unidadMedida(unidadMedida)
                 .urlImagen(urlImagen)
                 .prioridad(prioridad)
