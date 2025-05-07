@@ -104,8 +104,8 @@ public class Mercadona implements Supermercado {
 
     public ProductoDto mapearProducto(Producto producto, int index, List<String> categoriasPrioritarias) {
         PriceInstructions preciosProducto = producto.getPriceInstructions();
-        int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
-
+        //int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
+        int prioridad = calculadorPrioridad.calcularSegunIndex(index);
 
         return ProductoDto.builder()
                 .nombre(producto.getNombre())

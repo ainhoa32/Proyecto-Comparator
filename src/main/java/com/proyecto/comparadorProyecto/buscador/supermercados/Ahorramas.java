@@ -49,6 +49,7 @@ public class Ahorramas implements Supermercado {
 
         return divProducto.stream()
                 .map(producto -> mapearProducto(producto, categoriasPrioritarias))
+                .limit(10)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +59,8 @@ public class Ahorramas implements Supermercado {
         Double precio = Double.parseDouble(producto.select("div.add-to-cart").attr("data-price"));
         String precioGranelString = producto.select("span.unit-price-per-unit").text();
         Double precioGranel = Double.parseDouble(precioGranelString.substring(1, precioGranelString.indexOf('€')).replace(",", "."));
-        String unidadMedida = producto.select("div.add-to-cart.has-input").attr("data-frontunit");
+        String unidadMedida = precioGranelString.substring(precioGranelString.indexOf("/") + 1, precioGranelString.indexOf(')'));
+        String unidadMedidaAbrev = unidadMedida.equals("LITRO") ? "l" : "kg";
         String urlImagen = producto.select("img.tile-image").attr("src");
         int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
 
@@ -66,8 +68,8 @@ public class Ahorramas implements Supermercado {
 
         return ProductoDto.builder()
                 .nombre(nombreProducto)
-                .supermercado("AHORRA MÁS")
-                .unidadMedida(unidadMedida)
+                .supermercado("AHORRAMAS")
+                .unidadMedida(unidadMedidaAbrev)
                 .urlImagen(urlImagen)
                 .prioridad(prioridad)
                 .index(index)
