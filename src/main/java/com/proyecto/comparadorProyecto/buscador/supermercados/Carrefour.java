@@ -62,7 +62,7 @@ public class Carrefour implements Supermercado {
                     .thenApply(respuesta -> {
                         if (respuesta.trim().startsWith("{") || respuesta.trim().startsWith("[")) {
                             return convertirJsonALista(respuesta);
-                        } else {
+                        }else{
                             return new ArrayList<ProductoDto>();
                         }
                     })
