@@ -59,7 +59,13 @@ public class Carrefour implements Supermercado {
         try {
             return clienteHttp.realizarPeticionHttp("GET", url, headers, null)
                     // Cuando termine de realizarse la petición convierte el json a lista
-                    .thenApply(respuesta -> convertirJsonALista(respuesta))
+                    .thenApply(respuesta -> {
+                        if (respuesta.trim().startsWith("{") || respuesta.trim().startsWith("[")) {
+                            return convertirJsonALista(respuesta);
+                        }else{
+                            return new ArrayList<ProductoDto>();
+                        }
+                    })
                     // En el caso de que falle devuelve una lista vacía
                     .exceptionally(e -> {
                         e.printStackTrace();
