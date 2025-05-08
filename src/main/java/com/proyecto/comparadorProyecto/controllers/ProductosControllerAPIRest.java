@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("productos")
 @AllArgsConstructor
@@ -15,12 +17,12 @@ public class ProductosControllerAPIRest {
     @GetMapping("precioGranel/{producto}")
     public ResponseEntity<?> productosComparadosPorPrecioGranel(
             @PathVariable(name = "producto") String producto) {
-        return productosService.getComparacionCompleta(producto, "precioGranel");
+        return productosService.getComparacionCompleta(producto);
     }
 
-    @GetMapping("precio/{producto}")
+    @GetMapping("precioGranel/{producto}/{supermercados}")
     public ResponseEntity<?> productosComparadosPorPrecio(
-            @PathVariable(name = "producto") String producto) {
-        return productosService.getComparacionCompleta(producto, "precio");
+            @PathVariable(name = "producto") String producto, @PathVariable(name = "supermercados") String supermercados) {
+        return productosService.getComparacionConcreta(producto, supermercados);
     }
 }
