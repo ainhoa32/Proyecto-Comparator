@@ -10,6 +10,8 @@ import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -95,14 +97,19 @@ public class Carrefour implements Supermercado {
     }
 
     public ProductoDto mapearProducto(Producto producto, int index) {
-            double precio = producto.getPrecio();
-            double tamanoUnidad = producto.getTamanoUnidad();
-            double precioGranel = precio / tamanoUnidad;
+        double precio = producto.getPrecio();
+        double tamanoUnidad = producto.getTamanoUnidad();
+
+        // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
+        BigDecimal precioGranel = new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP);
+
+        System.out.println(tamanoUnidad);
+        System.out.println(precioGranel);
 
         return ProductoDto.builder()
                     .nombre(producto.getNombre())
                     .precio(precio)
-                    .precioGranel(precioGranel)
+                    .precioGranel(precioGranel.doubleValue())
                     .unidadMedida(producto.getUnidadMedida())
                     .tamanoUnidad(producto.getTamanoUnidad())
                     .prioridad(calculadorPrioridad.calcularSegunIndex(index))
