@@ -5,6 +5,8 @@ import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -59,15 +61,13 @@ public class ComparadorService {
     }
 
     public List<Supermercado> obtenerSupermercados(String supermercadosString){
-        String super1 = supermercadosString.substring(0, supermercadosString.indexOf("-"));
-        String super2 = supermercadosString.substring(supermercadosString.indexOf("-") + 1, supermercadosString.length());
+        List<String> supermercadosSeleccionados = Arrays.stream(supermercadosString.split("-")).toList();
         List<Supermercado> filtrados = supermercados.stream()
                 .filter(s -> {
                     String nombre = s.getClass().getSimpleName();
-                    return nombre.equals(super1) || nombre.equals(super2);
+                    return supermercadosSeleccionados.contains(nombre);
                 })
                 .collect(Collectors.toList());
-        System.out.println(filtrados);
         return filtrados;
     }
 
