@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.proyecto.comparadorProyecto.repository.ListaPredeterminadaRepository;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -62,7 +63,7 @@ public class Producto {
     @ManyToMany(mappedBy = "productos")
     @Getter
     @Setter
-    private Set<ListaPredeterminada> listas;
+    private Set<Listaspredeterminada> listas;
 
 
     // Constructor por defecto

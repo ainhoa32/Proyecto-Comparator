@@ -13,12 +13,10 @@ public class Peticion {
     public static String realizarPeticionHttp(String metodo, String urlVisitar, Map<String, String> headers, String body   ) throws Exception {
 
         URL url = new URL(urlVisitar);
-        //Se abre conexión http con la url creada
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(metodo.toUpperCase());
 
 
-        // Headers
         if (headers != null) {
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
@@ -26,9 +24,7 @@ public class Peticion {
         }
 
 
-        // POST body
         if ("POST".equalsIgnoreCase(metodo) && body != null) {
-            //permite el envío de datos en el cuerpo de la petición
             connection.setDoOutput(true);
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = body.getBytes(StandardCharsets.UTF_8);
@@ -36,7 +32,6 @@ public class Peticion {
             }
         }
 
-        // Leer respuesta
         int responseCode = connection.getResponseCode();
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 responseCode >= 400 ? connection.getErrorStream() : connection.getInputStream(), StandardCharsets.UTF_8));
