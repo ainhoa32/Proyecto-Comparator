@@ -10,6 +10,7 @@ import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
@@ -30,10 +31,13 @@ public class Carrefour implements Supermercado {
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
 
+        System.out.println(producto);
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
+
 
         String url = "https://www.carrefour.es/search-api/query/v1/search" +
                 "?internal=true" +
+                "&query=" + productoCodificado +
                 "&instance=x-carrefour" +
                 "&env=https%3A%2F%2Fwww.carrefour.es" +
                 "&scope=desktop" +
@@ -42,10 +46,7 @@ public class Carrefour implements Supermercado {
                 "&citrusCatalog=home" +
                 "&baseUrlCitrus=https%3A%2F%2Fwww.carrefour.es" +
                 "&enabled=false" +
-                "&hasConsent=true" +
-                "&raw=true" +
-                "&catalog=food" +
-                "&query=" + productoCodificado;
+                "&hasConsent=true";
 
         //Headers
         Map<String, String> headers = new HashMap<>();
@@ -63,7 +64,7 @@ public class Carrefour implements Supermercado {
                     // Cuando termine de realizarse la petición convierte el json a lista
                     .thenApply(respuesta -> {
                         if (respuesta.trim().startsWith("{") || respuesta.trim().startsWith("[")) {
-                            return convertirJsonALista(respuesta);
+                            return convertirJsonALista(respuesta, producto);
                         }else{
                             return new ArrayList<ProductoDto>();
                         }
@@ -77,7 +78,7 @@ public class Carrefour implements Supermercado {
         }
     }
 
-    public List<ProductoDto> convertirJsonALista(String respuesta) {
+    public List<ProductoDto> convertirJsonALista(String respuesta, String producto) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             RespuestaCarrefour respuestaMappeada = objectMapper.readValue(respuesta, RespuestaCarrefour.class);
@@ -103,9 +104,6 @@ public class Carrefour implements Supermercado {
         // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
         BigDecimal precioGranel = new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP);
 
-        System.out.println(tamanoUnidad);
-        System.out.println(precioGranel);
-
         return ProductoDto.builder()
                     .nombre(producto.getNombre())
                     .precio(precio)
@@ -114,7 +112,7 @@ public class Carrefour implements Supermercado {
                     .tamanoUnidad(producto.getTamanoUnidad())
                     .prioridad(calculadorPrioridad.calcularSegunIndex(index))
                     .index(index)
-                    .urlImagen(producto.getImagen().getUrlImagen())
+                    .urlImagen(producto.getImagen())
                     .supermercado("CARREFOUR")
                     .build();
 

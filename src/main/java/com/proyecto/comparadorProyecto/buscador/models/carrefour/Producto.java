@@ -16,5 +16,5 @@ public class Producto {
     @JsonProperty("measure_unit")
     private String unidadMedida;
     @JsonProperty("image_path")
-    private Imagen imagen;
+    private String imagen;
 }
