@@ -40,5 +40,7 @@ public class UsuarioServicio {
     }
 
 
-
+    public Usuario obtenerUsuarioPorNombre(String nombre) {
+        return usuarioRepository.findByNombre(nombre);
+    }
 }
