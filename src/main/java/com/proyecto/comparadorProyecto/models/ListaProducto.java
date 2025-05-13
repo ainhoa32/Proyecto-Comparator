@@ -15,8 +15,6 @@ public class ListaProducto {
     @MapsId("productoId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "producto_id", nullable = false)
-    @Getter
-    @Setter
     private Producto producto;
 
 }

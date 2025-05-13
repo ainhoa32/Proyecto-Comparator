@@ -7,22 +7,18 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Usuarios")
+@Getter
+@Setter
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private int id;
 
-    @Getter
-    @Setter
-    private String nombre;
+    private String correo;
 
-    @Getter
-    @Setter
     private String contrasena;
 
-    // Constructor
     public Usuario() {
 
     }
