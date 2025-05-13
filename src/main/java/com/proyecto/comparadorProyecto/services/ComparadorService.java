@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 // Necesario para que Springboot pueda inyectarlo. Es equivalente a crear un @Bean de tipo ServicioComparador en una clase
@@ -34,6 +35,7 @@ public class ComparadorService {
         List<CompletableFuture<List<ProductoDto>>> asyncSupermercados = listaSupermercados
                 .stream()
                 .map(supermercado -> supermercado.obtenerListaSupermercado(producto)
+                        .orTimeout(5, TimeUnit.SECONDS)
                         .exceptionally(e -> {
                             System.err.println("Error en " + supermercado.getClass().getSimpleName());
                             e.printStackTrace();

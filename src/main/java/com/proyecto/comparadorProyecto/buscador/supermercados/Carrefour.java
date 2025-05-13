@@ -31,9 +31,7 @@ public class Carrefour implements Supermercado {
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
 
-        System.out.println(producto);
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
-
 
         String url = "https://www.carrefour.es/search-api/query/v1/search" +
                 "?internal=true" +
@@ -64,7 +62,7 @@ public class Carrefour implements Supermercado {
                     // Cuando termine de realizarse la petición convierte el json a lista
                     .thenApply(respuesta -> {
                         if (respuesta.trim().startsWith("{") || respuesta.trim().startsWith("[")) {
-                            return convertirJsonALista(respuesta, producto);
+                            return convertirJsonALista(respuesta);
                         }else{
                             return new ArrayList<ProductoDto>();
                         }
@@ -78,7 +76,7 @@ public class Carrefour implements Supermercado {
         }
     }
 
-    public List<ProductoDto> convertirJsonALista(String respuesta, String producto) {
+    public List<ProductoDto> convertirJsonALista(String respuesta) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             RespuestaCarrefour respuestaMappeada = objectMapper.readValue(respuesta, RespuestaCarrefour.class);
@@ -100,6 +98,7 @@ public class Carrefour implements Supermercado {
     public ProductoDto mapearProducto(Producto producto, int index) {
         double precio = producto.getPrecio();
         double tamanoUnidad = producto.getTamanoUnidad();
+
 
         // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
         BigDecimal precioGranel = new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP);
