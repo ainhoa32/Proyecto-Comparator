@@ -21,23 +21,19 @@ public class UsuarioController {
     @Autowired
     private UsuarioServicio usuarioServicio;
 
-    // Logger para la clase
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        // Loguear intento de login
         logger.info("Intentando login con Nombre: {}", loginRequest.getNombre());
 
         Usuario usuarioGuardado = usuarioServicio.obtenerUsuarioPorNombre(loginRequest.getNombre());
 
-        // Verificar si el usuario existe
         if (usuarioGuardado == null) {
             logger.warn("Usuario no encontrado: {}", loginRequest.getNombre());
             return new ResponseEntity<>("Nombre de usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
 
-        // Verificar si la contraseña es correcta
         if (usuarioServicio.verificarContrasena(loginRequest.getContrasena(), usuarioGuardado.getContrasena())) {
             logger.info("Login exitoso para el usuario: {}", loginRequest.getNombre());
             return new ResponseEntity<>("Login exitoso", HttpStatus.OK);
