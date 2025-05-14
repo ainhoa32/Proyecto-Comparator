@@ -23,8 +23,7 @@ public class DatabaseInitializer {
             statement.execute("CREATE DATABASE IF NOT EXISTS comparador_de_precios");
             statement.execute("USE comparador_de_precios");
 
-            // Cargar el archivo SQL desde recursos
-            String scriptFilePath = "src/main/resources/comparador.sql";
+            String scriptFilePath = "src/main/resources/data.sql";
             BufferedReader reader = new BufferedReader(new FileReader(scriptFilePath));
             StringBuilder sqlScript = new StringBuilder();
             String line;
@@ -33,17 +32,14 @@ public class DatabaseInitializer {
             }
             reader.close();
 
-            // Dividir por ';' y ejecutar cada sentencia por separado
             String[] queries = sqlScript.toString().split(";");
             for (String query : queries) {
                 query = query.trim();
                 if (!query.isEmpty()) {
-                    System.out.println("Ejecutando SQL: " + query);
                     statement.execute(query);
                 }
             }
 
-            System.out.println("Base de datos inicializada correctamente.");
         } catch (Exception e) {
             e.printStackTrace();
         }

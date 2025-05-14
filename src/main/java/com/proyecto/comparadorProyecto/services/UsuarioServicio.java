@@ -3,7 +3,7 @@ package com.proyecto.comparadorProyecto.services;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +14,11 @@ public class UsuarioServicio {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<Usuario> obtenerTodosUsuarios() {
-        return (List<Usuario>) usuarioRepository.findAll();
+        return usuarioRepository.findAll();
     }
 
     public Usuario obtenerUsuarioPorId(int id) {
@@ -32,13 +35,11 @@ public class UsuarioServicio {
     }
 
     public boolean verificarContrasena(String contrasenaRecibida, String contrasenaGuardada) {
-        return BCrypt.checkpw(contrasenaRecibida, contrasenaGuardada);
-    }
+        return passwordEncoder.matches(contrasenaRecibida, contrasenaGuardada);     }
 
     private String cifrarContrasena(String contrasena) {
-        return BCrypt.hashpw(contrasena, BCrypt.gensalt());
+        return passwordEncoder.encode(contrasena);
     }
-
 
     public Usuario obtenerUsuarioPorNombre(String nombre) {
         return usuarioRepository.findByNombre(nombre);
