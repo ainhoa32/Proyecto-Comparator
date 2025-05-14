@@ -99,9 +99,14 @@ public class Carrefour implements Supermercado {
         double precio = producto.getPrecio();
         double tamanoUnidad = producto.getTamanoUnidad();
 
+        Double precioGranel;
 
-        // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
-        BigDecimal precioGranel = new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP);
+        if(tamanoUnidad == 0){
+            precioGranel = precio;
+        }else{
+            // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
+            precioGranel = (new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP)).doubleValue();
+        }
 
         return ProductoDto.builder()
                     .nombre(producto.getNombre())

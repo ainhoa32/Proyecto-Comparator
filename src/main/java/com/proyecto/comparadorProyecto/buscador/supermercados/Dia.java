@@ -116,8 +116,8 @@ public class Dia implements Supermercado {
     public ProductoDto mapearProducto(Map.Entry<String, Producto> productoEntry, List<String> categoriasPrioritarias) {
         String claveProducto = productoEntry.getKey();
         Producto valorProducto = productoEntry.getValue();
-        int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(valorProducto), categoriasPrioritarias);
         int index = valorProducto.getIndex();
+        int prioridad = calculadorPrioridad.calcularSegunIndex(index);
         String nombre = valorProducto.getNombre();
         double precio = valorProducto.getPrecio();
 
