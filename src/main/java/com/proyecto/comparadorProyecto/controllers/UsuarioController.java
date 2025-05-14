@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("usuarios")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
 public class UsuarioController {
@@ -26,7 +26,6 @@ public class UsuarioController {
         System.out.println("Contraseña: " + loginRequest.getContrasena());
         Usuario usuarioGuardado = usuarioServicio.obtenerUsuarioPorNombre(loginRequest.getNombre());
 
-        // Verifica que exista y que la contraseña coincida
         if (usuarioGuardado != null &&
                 usuarioServicio.verificarContrasena(loginRequest.getContrasena(), usuarioGuardado.getContrasena())) {
             return "Login exitoso";
