@@ -3,12 +3,12 @@ package com.proyecto.comparadorProyecto.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
-
 @Entity
-@Table(name = "Usuarios")
+@Table(name = "usuarios") // en minúscula por convención SQL
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
 
     @Id
@@ -17,14 +17,5 @@ public class Usuario {
 
     private String nombre;
 
-    private String correo;
-
     private String contrasena;
-
-    public Usuario() {
-
-    }
-
-
 }
-
