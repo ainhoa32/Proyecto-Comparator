@@ -1,3 +1,5 @@
+create database if not exists comparador_de_precios;
+use comparador_de_precios;
 CREATE TABLE IF NOT EXISTS Usuarios (
                                         id INT AUTO_INCREMENT PRIMARY KEY,
                                         nombre VARCHAR(100) UNIQUE NOT NULL,
