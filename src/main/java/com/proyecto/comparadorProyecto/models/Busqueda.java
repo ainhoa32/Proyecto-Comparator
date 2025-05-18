@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,8 @@ public class Busqueda {
     private LocalDateTime fechaBusqueda;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id", referencedColumnName = "id")
+    @JoinColumn(name = "producto_id")
+    @JsonBackReference
     private Producto producto;
 
     public Busqueda() {}

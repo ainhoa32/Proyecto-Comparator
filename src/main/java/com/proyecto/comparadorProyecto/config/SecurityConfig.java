@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/login").permitAll()
                         .requestMatchers("/productos/precioGranel/**").permitAll()
+                        .requestMatchers("/favoritos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

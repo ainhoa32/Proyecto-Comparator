@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -23,7 +24,7 @@ public class Producto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "precioGranel", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioGranel;
 
     @Column(precision = 10, scale = 2)
@@ -45,9 +46,9 @@ public class Producto {
     @Column(name = "fecha_creacion", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
-    @ManyToOne
-    @JoinColumn(name = "busqueda_id", referencedColumnName = "id")
-    private Busqueda busqueda;
+    @OneToMany(mappedBy = "producto")
+    @JsonManagedReference
+    private List<Busqueda> busquedas;
 
     @ManyToMany(mappedBy = "productos")
     private List<Listaspredeterminada> listas;
