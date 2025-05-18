@@ -4,3 +4,4 @@ INSERT IGNORE INTO Usuarios (nombre, contrasena) VALUES
 ('juanito', '$2a$10$sQ9lYOdbl2XIZV6SiocaV.bB9E.R0SpMl6qQtv61VNty/n.mJD5e2'),
 ('kevin', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe');
 
+
