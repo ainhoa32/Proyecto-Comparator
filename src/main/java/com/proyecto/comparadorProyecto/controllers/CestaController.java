@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequestMapping("/cesta")
 public class CestaController {
 
-    @Autowired
+    /*@Autowired
     private CestaService cestaService;
 
     @PostMapping
@@ -30,7 +30,6 @@ public class CestaController {
         return cestaService.obtenerTodasLasCestas();
     }
 
-    // ✅ Comprobar si existe una cesta por ID
     @GetMapping("/comprobar/{id}")
     public ResponseEntity<String> comprobarCesta(@PathVariable Integer id) {
         boolean existe = cestaService.existeCestaPorId(id);
@@ -41,7 +40,6 @@ public class CestaController {
         }
     }
 
-    // ✅ Eliminar una cesta completa por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCesta(@PathVariable Integer id) {
         boolean eliminado = cestaService.eliminarCestaPorId(id);
@@ -52,7 +50,6 @@ public class CestaController {
         }
     }
 
-    // ✅ Eliminar un producto específico de la cesta de un usuario
     @DeleteMapping("/eliminar-producto")
     public ResponseEntity<String> eliminarProductoDeCesta(
             @RequestParam Integer idUsuario,
@@ -64,5 +61,5 @@ public class CestaController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }

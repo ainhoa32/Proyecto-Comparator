@@ -5,6 +5,7 @@ import com.proyecto.comparadorProyecto.models.Favoritos;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.repository.FavoritosRepository;
 import com.proyecto.comparadorProyecto.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class FavoritosService {
         favorito.setNombre(favoritoDTO.getNombreBusqueda());
         return favoritosRepository.save(favorito);
     }
-
+    @Transactional
     public void borrarFavorito(FavoritoDTO favoritoDTO) {
         Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
         favoritosRepository.deleteByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda());

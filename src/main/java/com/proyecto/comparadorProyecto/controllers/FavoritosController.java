@@ -37,11 +37,11 @@ class FavoritosController {
 
     @DeleteMapping
     public ResponseEntity<?> borrarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
-        if(favoritosService.existeFavorito(favoritoDTO.getUsuario(), favoritoDTO.getNombreBusqueda())) {
+        if(!favoritosService.existeFavorito(favoritoDTO.getUsuario(), favoritoDTO.getNombreBusqueda())) {
              favoritosService.borrarFavorito(favoritoDTO);
             return ResponseEntity.ok("Eliminado correctamente");
         }else{
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body("El producto que intenta eliminar no existe en favoritos");
         }
     }
 
