@@ -41,7 +41,7 @@ public class FavoritosService {
         Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
         Favoritos favorito = new Favoritos();
         favorito.setUsuario(usuario);
-        favorito.setNombre(favoritoDTO.getUsuario());
+        favorito.setNombre(favoritoDTO.getNombreBusqueda());
         return favoritosRepository.save(favorito);
     }
 
