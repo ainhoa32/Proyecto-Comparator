@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface FavoritosRepository  extends CrudRepository<Favoritos, Integer> {
     List<Favoritos> findByUsuario(Usuario usuario);
+    void deleteByUsuarioAndNombre(Usuario usuario, String nombre);
+
 }

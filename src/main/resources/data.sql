@@ -59,7 +59,4 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
-select * from usuarios;
-
-DELETE FROM usuarios WHERE id = 27;
 

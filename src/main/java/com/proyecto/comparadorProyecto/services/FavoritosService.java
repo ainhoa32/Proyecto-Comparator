@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FavoritosService {
@@ -31,14 +30,16 @@ public class FavoritosService {
     }
 
     public Favoritos guardarFavorito(FavoritoDTO favoritoDTO) {
-        Usuario usuario = usuarioRepository.findById(favoritoDTO.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
+        Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
         Favoritos favorito = new Favoritos();
         favorito.setUsuario(usuario);
-        favorito.setNombre(favoritoDTO.getNombre());
-
+        favorito.setNombre(favoritoDTO.getUsuario());
         return favoritosRepository.save(favorito);
+    }
+
+    public void borrarFavorito(FavoritoDTO favoritoDTO) {
+        Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
+        favoritosRepository.deleteByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda());
     }
 }
 

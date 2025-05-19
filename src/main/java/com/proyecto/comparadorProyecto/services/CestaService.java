@@ -16,7 +16,7 @@ import java.util.Objects;
 @Service
 public class CestaService {
 
-    @Autowired
+   /* @Autowired
     private CestaRepository cestaRepository;
 
     @Autowired
@@ -95,7 +95,7 @@ public class CestaService {
             cesta.setIdProds(idProducto.toString());
         }
         return guardarCesta(cesta);
-    }
+    }*/
 
 
 }

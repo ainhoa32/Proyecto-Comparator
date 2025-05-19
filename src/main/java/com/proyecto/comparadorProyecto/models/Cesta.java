@@ -3,6 +3,8 @@ package com.proyecto.comparadorProyecto.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "cesta")
 @Getter
@@ -13,8 +15,12 @@ public class Cesta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "id_prods", length = 1000)
-    private String idProds;
+    @ManyToMany
+    @JoinTable(
+            name = "cesta_productos",
+            joinColumns = @JoinColumn(name = "cesta_id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id")

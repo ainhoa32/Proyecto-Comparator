@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.buscador.models.carrefour.Producto;
 import com.proyecto.comparadorProyecto.dto.FavoritoDTO;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.Favoritos;
@@ -23,13 +24,17 @@ class FavoritosController {
         List<Favoritos> favoritos = favoritosService.obtenerFavoritosPorUsuario(nombreUsuario);
         return ResponseEntity.ok(favoritos);
     }
-    @PostMapping("/{nombreUsuario}")
-    public ResponseEntity<Favoritos> guardarFavorito(@RequestBody ProductoDto productoDto, @PathVariable String nombreUsuario) {
-        FavoritoDTO favoritoDTO = new FavoritoDTO();
-        favoritoDTO.setNombre(productoDto.getNombre());
-        favoritoDTO.setUsuarioId(favoritosService.obtenerIdUsuario(nombreUsuario));
 
-        Favoritos favoritoGuardado = favoritosService.guardarFavorito(favoritoDTO);
-        return ResponseEntity.ok(favoritoGuardado);
+    @PostMapping
+    public ResponseEntity<Favoritos> guardarFavorito(@RequestBody FavoritoDTO favoritos) {
+        Favoritos guardado = favoritosService.guardarFavorito(favoritos);
+        return ResponseEntity.ok(guardado);
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> borrarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
+        favoritosService.borrarFavorito(favoritoDTO);
+        return ResponseEntity.ok().build();
+    }
+
 }

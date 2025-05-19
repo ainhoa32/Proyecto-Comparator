@@ -3,6 +3,8 @@ package com.proyecto.comparadorProyecto.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "usuarios")
 @Getter
@@ -18,4 +20,7 @@ public class Usuario {
     private String nombre;
 
     private String contrasena;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favoritos> favoritos;
 }
