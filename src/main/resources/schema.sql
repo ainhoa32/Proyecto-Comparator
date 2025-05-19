@@ -1,17 +1,17 @@
 create database if not exists comparador_de_precios;
 use comparador_de_precios;
-CREATE TABLE IF NOT EXISTS Usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL
     );
 
-CREATE TABLE IF NOT EXISTS ListasPredeterminadas (
+CREATE TABLE IF NOT EXISTS listasPredeterminadas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL
     );
 
-CREATE TABLE IF NOT EXISTS Productos (
+CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Productos (
     busqueda_id INT
     );
 
-CREATE TABLE IF NOT EXISTS Busquedas (
+CREATE TABLE IF NOT EXISTS busquedas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre_busqueda VARCHAR(255) NOT NULL,
     fecha_busqueda DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Busquedas (
     );
 
 
-CREATE TABLE IF NOT EXISTS Lista_Productos (
+CREATE TABLE IF NOT EXISTS lista_Productos (
     lista_id INT NOT NULL,
     producto_id INT NOT NULL,
     PRIMARY KEY (lista_id, producto_id),
@@ -43,14 +43,14 @@ CREATE TABLE IF NOT EXISTS Lista_Productos (
     FOREIGN KEY (producto_id) REFERENCES Productos(id)
     );
 
-CREATE TABLE IF NOT EXISTS Cesta (
+CREATE TABLE IF NOT EXISTS cesta (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_prods VARCHAR(255),
     id_usuario INT,
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id)
     );
 
-CREATE TABLE IF NOT EXISTS Favoritos (
+CREATE TABLE IF NOT EXISTS favoritos (
      id INT AUTO_INCREMENT PRIMARY KEY,
      usuario_id INT NOT NULL,
      nombre varchar(255) not null,
