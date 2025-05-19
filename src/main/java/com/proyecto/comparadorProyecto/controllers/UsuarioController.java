@@ -42,4 +42,14 @@ public class UsuarioController {
             return new ResponseEntity<>("Contraseña incorrecta", HttpStatus.UNAUTHORIZED);
         }
     }
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
+        System.out.println(usuario.getNombre());
+        if (usuarioServicio.usuarioExiste(usuario.getNombre())) {
+            return new ResponseEntity<>("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
+        }
+
+        Usuario nuevoUsuario = usuarioServicio.guardarUsuario(usuario);
+        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+    }
 }

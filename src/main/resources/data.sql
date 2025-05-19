@@ -2,12 +2,8 @@ INSERT IGNORE INTO Usuarios (nombre, contrasena) VALUES
 ('agustin', '$2a$10$DCxy6CvvetDKc.vCA5wxQOJWhPquC0IC6ZBv2bMIwqzu.Wmx7QFn2'),
 ('ana', '$2a$10$gNrybyKCMt.2Nsmlxh9/zO65ArED7DqD0LTsZs8qJUF6cUXHYtJrO'),
 ('juanito', '$2a$10$sQ9lYOdbl2XIZV6SiocaV.bB9E.R0SpMl6qQtv61VNty/n.mJD5e2'),
-('kevin', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe');
-
-
-
-
-select * from favoritos;
+('kevin', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe'),
+('ainhoa', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe');
 
 INSERT IGNORE INTO Productos (
     nombre, precio, precioGranel, tamanoUnidad, unidadMedida,
@@ -20,13 +16,14 @@ VALUES
     ('Frijoles Negros', 22.30, 20.00, 0.90, 'kg', 4, 'https://ejemplo.com/imagen4.jpg', 1, 'Supermercado A', 104),
     ('Pan Integral', 25.00, 0.00, 0.50, 'kg', 5, 'https://ejemplo.com/imagen5.jpg', 3, 'Supermercado D', 105);
 
-INSERT IGNORE INTO Favoritos (usuario_id, producto_id)
+INSERT IGNORE INTO Favoritos (usuario_id, nombre)
 VALUES
-    (1, 2),
-    (2, 5),
-    (3, 1),
-    (4, 3),
-    (1, 4);
+    (1, 'Aceite de Oliva'),
+    (2, 'Pan Integral'),
+    (3, 'Arroz Integral'),
+    (4, 'Frijoles Negros'),
+    (1, 'Leche Deslactosada');
+
 
 INSERT IGNORE INTO Busquedas (nombre_busqueda, producto_id)
 VALUES
@@ -36,5 +33,5 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
-SELECT * FROM Productos;
+select * from usuarios;
 

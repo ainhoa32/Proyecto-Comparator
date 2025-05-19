@@ -51,10 +51,8 @@ CREATE TABLE IF NOT EXISTS Cesta (
     );
 
 CREATE TABLE IF NOT EXISTS Favoritos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    producto_id INT NOT NULL,
-    fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
-    FOREIGN KEY (producto_id) REFERENCES Productos(id)
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     usuario_id INT NOT NULL,
+     nombre varchar(255) not null,
+     FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
     );
