@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS busquedas (
     nombre_busqueda VARCHAR(255) NOT NULL,
     fecha_busqueda DATETIME DEFAULT CURRENT_TIMESTAMP,
     producto_id INT,
-    FOREIGN KEY (producto_id) REFERENCES Productos(id)
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
     );
 
 
@@ -39,20 +39,20 @@ CREATE TABLE IF NOT EXISTS lista_Productos (
     lista_id INT NOT NULL,
     producto_id INT NOT NULL,
     PRIMARY KEY (lista_id, producto_id),
-    FOREIGN KEY (lista_id) REFERENCES ListasPredeterminadas(id),
-    FOREIGN KEY (producto_id) REFERENCES Productos(id)
+    FOREIGN KEY (lista_id) REFERENCES listasPredeterminadas(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
     );
 
 CREATE TABLE IF NOT EXISTS cesta (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_prods VARCHAR(255),
     id_usuario INT,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id)
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
     );
 
 CREATE TABLE IF NOT EXISTS favoritos (
      id INT AUTO_INCREMENT PRIMARY KEY,
      usuario_id INT NOT NULL,
      nombre varchar(255) not null,
-     FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
+     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     );
