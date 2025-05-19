@@ -1,8 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
-import com.proyecto.comparadorProyecto.buscador.models.carrefour.Producto;
 import com.proyecto.comparadorProyecto.dto.FavoritoDTO;
-import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.Favoritos;
 import com.proyecto.comparadorProyecto.services.FavoritosService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +24,25 @@ class FavoritosController {
     }
 
     @PostMapping
-    public ResponseEntity<Favoritos> guardarFavorito(@RequestBody FavoritoDTO favoritos) {
-        Favoritos guardado = favoritosService.guardarFavorito(favoritos);
-        return ResponseEntity.ok(guardado);
+    public ResponseEntity<String> guardarFavorito(@RequestBody FavoritoDTO favoritos) {
+        System.out.println(favoritos.getUsuario());
+        System.out.println(favoritos.getNombreBusqueda());
+        if (favoritosService.existeFavorito(favoritos.getUsuario(), favoritos.getNombreBusqueda())) {
+            favoritosService.guardarFavorito(favoritos);
+            return ResponseEntity.ok("Guardado correctamente");
+        } else {
+            return ResponseEntity.badRequest().body("El favorito ya existe para este usuario.");
+        }
     }
 
     @DeleteMapping
     public ResponseEntity<?> borrarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
-        favoritosService.borrarFavorito(favoritoDTO);
-        return ResponseEntity.ok().build();
+        if(favoritosService.existeFavorito(favoritoDTO.getUsuario(), favoritoDTO.getNombreBusqueda())) {
+             favoritosService.borrarFavorito(favoritoDTO);
+            return ResponseEntity.ok("Eliminado correctamente");
+        }else{
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 }

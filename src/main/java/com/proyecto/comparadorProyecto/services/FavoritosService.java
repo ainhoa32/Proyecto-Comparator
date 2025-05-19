@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FavoritosService {
@@ -22,6 +23,13 @@ public class FavoritosService {
     public List<Favoritos> obtenerFavoritosPorUsuario(String nombreUsuario) {
         Usuario user = usuarioRepository.findByNombre(nombreUsuario);
         return  favoritosRepository.findByUsuario(user);
+    }
+
+    public boolean existeFavorito(String nombreUsuario, String nombreFavorito) {
+        Usuario user = usuarioRepository.findByNombre(nombreUsuario);
+        System.out.println(favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito).isEmpty());
+        System.out.println(favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito));
+        return favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito).isEmpty();
     }
 
     public Integer obtenerIdUsuario(String nombreUsuario) {

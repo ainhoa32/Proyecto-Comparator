@@ -60,3 +60,4 @@ VALUES
     ('Buscar pan integral', 5);
 
 
+select * from favoritos where nombre like 'leche';
