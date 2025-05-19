@@ -1,29 +1,29 @@
 package com.proyecto.comparadorProyecto.dto;
 
-import java.math.BigDecimal;
-
 public class FavoritoDTO {
-    private String nombreProducto;
-    private BigDecimal precio;
+    private Integer usuarioId;
+    private String nombre;
 
-    public FavoritoDTO(String nombreProducto, BigDecimal precio) {
-        this.nombreProducto = nombreProducto;
-        this.precio = precio;
+    public FavoritoDTO() {}
+
+    public FavoritoDTO(Integer usuarioId, String nombre) {
+        this.usuarioId = usuarioId;
+        this.nombre = nombre;
     }
 
-    public String getNombreProducto() {
-        return nombreProducto;
+    public Integer getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreProducto = nombreProducto;
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
-    public BigDecimal getPrecio() {
-        return precio;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setPrecio(BigDecimal precio) {
-        this.precio = precio;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

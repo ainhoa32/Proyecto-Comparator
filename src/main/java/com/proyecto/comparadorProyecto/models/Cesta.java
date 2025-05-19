@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Cesta")
+@Table(name = "cesta")
 @Getter
 @Setter
 public class Cesta {
@@ -13,7 +13,7 @@ public class Cesta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "id_prods", length = 255)
+    @Column(name = "id_prods", length = 1000)
     private String idProds;
 
     @ManyToOne

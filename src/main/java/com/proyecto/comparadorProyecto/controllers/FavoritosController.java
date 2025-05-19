@@ -1,9 +1,11 @@
 package com.proyecto.comparadorProyecto.controllers;
 
 import com.proyecto.comparadorProyecto.dto.FavoritoDTO;
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.Favoritos;
 import com.proyecto.comparadorProyecto.services.FavoritosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,35 +14,22 @@ import java.util.List;
 @RequestMapping("/favoritos")
 @CrossOrigin(origins = "*")
 class FavoritosController {
-    private final FavoritosService favoritosService;
 
     @Autowired
-    public FavoritosController(FavoritosService favoritosService) {
-        this.favoritosService = favoritosService;
-    }
+    private FavoritosService favoritosService;
 
     @GetMapping("/{nombreUsuario}")
-    public List<Favoritos> getFavoritos(@PathVariable String nombreUsuario) {
-        return favoritosService.getAllByUsuario(nombreUsuario);
+    public ResponseEntity<List<Favoritos>> getFavoritosByNombreUsuario(@PathVariable String nombreUsuario) {
+        List<Favoritos> favoritos = favoritosService.obtenerFavoritosPorUsuario(nombreUsuario);
+        return ResponseEntity.ok(favoritos);
     }
-
-    @GetMapping("/{nombreUsuario}/resumen")
-    public List<FavoritoDTO> getResumenFavoritos(@PathVariable String nombreUsuario) {
-        return favoritosService.getFavoritosDTOByUsuario(nombreUsuario);
-    }
-
     @PostMapping("/{nombreUsuario}")
-    public Favoritos guardarFavorito(@RequestBody Favoritos favorito, @PathVariable String nombreUsuario) {
-        return favoritosService.save(favorito, nombreUsuario);
-    }
+    public ResponseEntity<Favoritos> guardarFavorito(@RequestBody ProductoDto productoDto, @PathVariable String nombreUsuario) {
+        FavoritoDTO favoritoDTO = new FavoritoDTO();
+        favoritoDTO.setNombre(productoDto.getNombre());
+        favoritoDTO.setUsuarioId(favoritosService.obtenerIdUsuario(nombreUsuario));
 
-    @DeleteMapping("/{id}")
-    public void eliminarFavorito(@PathVariable Integer id) {
-        favoritosService.delete(id);
-    }
-
-    @GetMapping("/{nombreUsuario}/nombres")
-    public List<String> getNombresFavoritos(@PathVariable String nombreUsuario) {
-        return favoritosService.getNombresProductosFavoritos(nombreUsuario);
+        Favoritos favoritoGuardado = favoritosService.guardarFavorito(favoritoDTO);
+        return ResponseEntity.ok(favoritoGuardado);
     }
 }

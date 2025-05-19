@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "usuarios") // en minúscula por convención SQL
+@Table(name = "usuarios")
 @Getter
 @Setter
 @NoArgsConstructor

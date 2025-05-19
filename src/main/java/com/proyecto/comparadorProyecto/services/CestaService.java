@@ -1,7 +1,9 @@
 package com.proyecto.comparadorProyecto.services;
 
 import com.proyecto.comparadorProyecto.models.Cesta;
+import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.repository.CestaRepository;
+import com.proyecto.comparadorProyecto.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +19,15 @@ public class CestaService {
     @Autowired
     private CestaRepository cestaRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public Cesta guardarCesta(Cesta cesta) {
         return cestaRepository.save(cesta);
     }
 
     public Optional<Cesta> obtenerCestaPorId(Integer id) {
         return cestaRepository.findById(id);
-    }
-
-    public Iterable<Cesta> obtenerTodasLasCestas() {
-        return cestaRepository.findAll();
     }
 
     public boolean existeCestaPorId(Integer id) {
@@ -61,4 +62,40 @@ public class CestaService {
 
         return false;
     }
+
+    public Optional<Cesta> obtenerCestaPorUsuario(Usuario usuario) {
+        return cestaRepository.findByUsuario(usuario);
+    }
+
+    public Cesta agregarProductoAUsuario(String nombreUsuario, Integer idProducto) {
+        Usuario usuario = usuarioRepository.findByNombre(nombreUsuario);
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        Optional<Cesta> cestaOpt = obtenerCestaPorUsuario(usuario);
+        Cesta cesta;
+        if (cestaOpt.isPresent()) {
+            cesta = cestaOpt.get();
+            String productos = cesta.getIdProds();
+            if (productos == null || productos.isBlank()) {
+                cesta.setIdProds(idProducto.toString());
+            } else {
+                String[] productosArray = productos.split(",");
+                boolean existe = Arrays.stream(productosArray)
+                        .map(String::trim)
+                        .anyMatch(p -> p.equals(idProducto.toString()));
+                if (!existe) {
+                    cesta.setIdProds(productos + "," + idProducto);
+                }
+            }
+        } else {
+            cesta = new Cesta();
+            cesta.setUsuario(usuario);
+            cesta.setIdProds(idProducto.toString());
+        }
+        return guardarCesta(cesta);
+    }
+
+
 }

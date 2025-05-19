@@ -19,10 +19,36 @@ VALUES
 INSERT IGNORE INTO favoritos (usuario_id, nombre)
 VALUES
     (1, 'Aceite de Oliva'),
-    (2, 'Pan Integral'),
-    (3, 'Arroz Integral'),
-    (4, 'Frijoles Negros'),
-    (1, 'Leche Deslactosada');
+    (1, 'Leche Deslactosada'),
+    (1, 'Pan Integral'),
+    (1, 'Arroz Integral'),
+    (1, 'Frijoles Negros'),
+
+    (2, 'Miel Natural'),
+    (2, 'Queso Fresco'),
+    (2, 'Harina de Trigo'),
+    (2, 'Tomates Cherry'),
+    (2, 'Espinacas'),
+
+    (3, 'Avena'),
+    (3, 'Yogur Natural'),
+    (3, 'Zanahorias'),
+    (3, 'Papas'),
+    (3, 'Cebolla'),
+
+    (4, 'Manzanas'),
+    (4, 'Naranjas'),
+    (4, 'Lechuga'),
+    (4, 'Pepino'),
+    (4, 'Calabacín'),
+
+    (5, 'Pollo'),
+    (5, 'Pescado'),
+    (5, 'Carne de Res'),
+    (5, 'Huevos'),
+    (5, 'Jamón');
+
+
 
 
 INSERT IGNORE INTO busquedas (nombre_busqueda, producto_id)
@@ -33,4 +59,7 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
+select * from usuarios;
+
+DELETE FROM usuarios WHERE id = 27;
 
