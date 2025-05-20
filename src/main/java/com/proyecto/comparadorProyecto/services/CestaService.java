@@ -40,6 +40,17 @@ public class CestaService {
         }
         Usuario usuario = usuarioOpt.get();
 
+        Cesta cesta = cestaRepository.findByUsuario(usuario).orElseGet(() -> {
+            Cesta nuevaCesta = new Cesta();
+            nuevaCesta.setUsuario(usuario);
+            nuevaCesta.setProductos(new ArrayList<>());
+            return nuevaCesta;
+        });
+
+        if (cesta.getProductos() != null && cesta.getProductos().size() >= 8) {
+            return false;
+        }
+
         Producto producto = new Producto();
         producto.setNombre(prod.getNombre());
         producto.setPrecio(BigDecimal.valueOf(prod.getPrecio()));
@@ -51,13 +62,6 @@ public class CestaService {
         producto.setFechaCreacion(LocalDateTime.now());
 
         producto = productoRepository.save(producto);
-
-        Cesta cesta = cestaRepository.findByUsuario(usuario).orElseGet(() -> {
-            Cesta nuevaCesta = new Cesta();
-            nuevaCesta.setUsuario(usuario);
-            nuevaCesta.setProductos(new ArrayList<>());
-            return nuevaCesta;
-        });
 
         if (cesta.getProductos() == null) {
             cesta.setProductos(new ArrayList<>());
@@ -72,6 +76,7 @@ public class CestaService {
 
         return true;
     }
+
 
     public boolean eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
         String nombreUsuario = request.getNombreUsuario();

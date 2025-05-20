@@ -32,7 +32,7 @@ public class CestaController {
         if (resultado) {
             return ResponseEntity.ok("Producto agregado a la cesta");
         } else {
-            return ResponseEntity.badRequest().body("Error al agregar producto o usuario no existe");
+            return ResponseEntity.badRequest().body("No se pudo agregar el producto. Verifica si el usuario existe o si se alcanzó el límite de 8 productos.");
         }
     }
 
