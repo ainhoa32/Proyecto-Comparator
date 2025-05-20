@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoritosService {
@@ -28,9 +29,7 @@ public class FavoritosService {
 
     public boolean existeFavorito(String nombreUsuario, String nombreFavorito) {
         Usuario user = usuarioRepository.findByNombre(nombreUsuario);
-        System.out.println(favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito).isEmpty());
-        System.out.println(favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito));
-        return favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito).isEmpty();
+        return !favoritosRepository.findByUsuarioAndNombre(user, nombreFavorito).isEmpty();
     }
 
     public Integer obtenerIdUsuario(String nombreUsuario) {
@@ -49,6 +48,12 @@ public class FavoritosService {
     public void borrarFavorito(FavoritoDTO favoritoDTO) {
         Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
         favoritosRepository.deleteByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda());
+    }
+
+    public List<FavoritoDTO> convertirAFavoritoDTO(List<Favoritos> favoritos) {
+        return favoritos.stream()
+                .map(f -> new FavoritoDTO(f.getUsuario().getNombre(), f.getNombre()))
+                .collect(Collectors.toList());
     }
 }
 

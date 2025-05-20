@@ -103,9 +103,6 @@ public class Carrefour implements Supermercado {
         // Hallo el precio a granel y con el big decimal reduzco el tamaño del decimal
         BigDecimal precioGranel = new BigDecimal(precio / tamanoUnidad).setScale(1, RoundingMode.HALF_UP);
 
-        System.out.println(tamanoUnidad);
-        System.out.println(precioGranel);
-
         return ProductoDto.builder()
                     .nombre(producto.getNombre())
                     .precio(precio)

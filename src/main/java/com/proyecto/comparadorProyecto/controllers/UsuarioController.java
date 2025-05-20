@@ -30,11 +30,9 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Usuario usuarioGuardado = usuarioServicio.obtenerUsuarioPorNombre(loginRequest.getNombre());
-
         if (usuarioGuardado == null) {
             return new ResponseEntity<>("Nombre de usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
-
         if (usuarioServicio.verificarContrasena(loginRequest.getContrasena(), usuarioGuardado.getContrasena())) {
             String token = jwtUtil.generarToken(usuarioGuardado.getNombre());
             return ResponseEntity.ok().body(token);
@@ -44,11 +42,9 @@ public class UsuarioController {
     }
     @PostMapping("/registro")
     public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
-        System.out.println(usuario.getNombre());
         if (usuarioServicio.usuarioExiste(usuario.getNombre())) {
             return new ResponseEntity<>("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
         }
-
         Usuario nuevoUsuario = usuarioServicio.guardarUsuario(usuario);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
