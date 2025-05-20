@@ -56,6 +56,3 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
-select * from favoritos WHERE nombre like 'chocolate';
-
-DELETE FROM favoritos WHERE nombre like 'chocolate';

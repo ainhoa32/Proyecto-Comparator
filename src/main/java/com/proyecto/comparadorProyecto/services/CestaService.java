@@ -30,39 +30,49 @@ public class CestaService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public boolean agregarProductoACesta(AgregarProductoCestaRequest request){
+    public boolean agregarProductoACesta(AgregarProductoCestaRequest request) {
         String user = request.getNombreUsuario();
         ProductoDto prod = request.getProducto();
 
-        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByNombre(user));
-        if(usuario.isEmpty()){
+        Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(user));
+        if (usuarioOpt.isEmpty()) {
             return false;
         }
-        Usuario u = usuario.get();
-        Producto p = new Producto();
-        p.setNombre(prod.getNombre());
-        p.setPrecio(BigDecimal.valueOf(prod.getPrecio()));
-        p.setPrecioGranel(BigDecimal.valueOf(prod.getPrecioGranel()));
-        p.setTamanoUnidad(BigDecimal.valueOf(prod.getTamanoUnidad()));
-        p.setUnidadMedida(prod.getUnidadMedida());
-        p.setSupermercado(prod.getSupermercado());
-        p.setPrioridad(0);
-        p.setFechaCreacion(LocalDateTime.now());
+        Usuario usuario = usuarioOpt.get();
 
-        p=productoRepository.save(p);
+        Producto producto = new Producto();
+        producto.setNombre(prod.getNombre());
+        producto.setPrecio(BigDecimal.valueOf(prod.getPrecio()));
+        producto.setPrecioGranel(BigDecimal.valueOf(prod.getPrecioGranel()));
+        producto.setTamanoUnidad(BigDecimal.valueOf(prod.getTamanoUnidad()));
+        producto.setUnidadMedida(prod.getUnidadMedida());
+        producto.setSupermercado(prod.getSupermercado());
+        producto.setPrioridad(prod.getPrioridad());
+        producto.setFechaCreacion(LocalDateTime.now());
 
-        Cesta cesta = cestaRepository.findByUsuario(u).orElseGet(() -> {
-            Cesta nueva = new Cesta();
-            nueva.setUsuario(u);
-            nueva.setProductos(new ArrayList<>());
-            return nueva;
+        producto = productoRepository.save(producto);
+
+        Cesta cesta = cestaRepository.findByUsuario(usuario).orElseGet(() -> {
+            Cesta nuevaCesta = new Cesta();
+            nuevaCesta.setUsuario(usuario);
+            nuevaCesta.setProductos(new ArrayList<>());
+            return nuevaCesta;
         });
-        if(!cesta.getProductos().contains(p)){
-            cesta.getProductos().add(p);
+
+        if (cesta.getProductos() == null) {
+            cesta.setProductos(new ArrayList<>());
         }
+
+        Producto finalProducto = producto;
+        if (cesta.getProductos().stream().noneMatch(p -> p.getId().equals(finalProducto.getId()))) {
+            cesta.getProductos().add(producto);
+        }
+
         cestaRepository.save(cesta);
+
         return true;
     }
+
     public boolean eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
         String nombreUsuario = request.getNombreUsuario();
         ProductoDto productoDto = request.getProducto();

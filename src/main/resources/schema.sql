@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS lista_Productos (
 
 CREATE TABLE IF NOT EXISTS cesta (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    id_prods VARCHAR(1000),
     id_usuario INT,
     FOREIGN KEY (id_usuario) REFERENCES Usuarios(id)
     );
