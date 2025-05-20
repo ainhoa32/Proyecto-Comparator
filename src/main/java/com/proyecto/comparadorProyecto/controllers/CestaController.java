@@ -1,5 +1,7 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
+import com.proyecto.comparadorProyecto.dto.CestaDTO;
 import com.proyecto.comparadorProyecto.models.Cesta;
 import com.proyecto.comparadorProyecto.services.CestaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,54 +14,35 @@ import java.util.Optional;
 @RequestMapping("/cesta")
 public class CestaController {
 
-    /*@Autowired
+    @Autowired
     private CestaService cestaService;
 
-    @PostMapping
-    public Cesta crearCesta(@RequestBody Cesta cesta) {
-        return cestaService.guardarCesta(cesta);
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Cesta> obtenerCesta(@PathVariable Integer id) {
-        return cestaService.obtenerCestaPorId(id);
-    }
-
-    @GetMapping
-    public Iterable<Cesta> obtenerTodasLasCestas() {
-        return cestaService.obtenerTodasLasCestas();
-    }
-
-    @GetMapping("/comprobar/{id}")
-    public ResponseEntity<String> comprobarCesta(@PathVariable Integer id) {
-        boolean existe = cestaService.existeCestaPorId(id);
-        if (existe) {
-            return ResponseEntity.ok("La cesta con ID " + id + " existe.");
-        } else {
+    @GetMapping("/{nombreUsuario}")
+    public ResponseEntity<CestaDTO> obtenerCesta(@PathVariable String nombreUsuario) {
+        CestaDTO cesta = cestaService.obtenerCestaPorUsuario(nombreUsuario);
+        if (cesta == null) {
             return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(cesta);
+    }
+
+    @PostMapping("/agregar")
+    public ResponseEntity<String> agregarProducto(@RequestBody AgregarProductoCestaRequest request) {
+        boolean resultado = cestaService.agregarProductoACesta(request);
+        if (resultado) {
+            return ResponseEntity.ok("Producto agregado a la cesta");
+        } else {
+            return ResponseEntity.badRequest().body("Error al agregar producto o usuario no existe");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarCesta(@PathVariable Integer id) {
-        boolean eliminado = cestaService.eliminarCestaPorId(id);
-        if (eliminado) {
-            return ResponseEntity.ok("Cesta eliminada correctamente.");
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<String> eliminarProducto(@RequestBody AgregarProductoCestaRequest request) {
+        boolean resultado = cestaService.eliminarProductoDeCesta(request);
+        if (resultado) {
+            return ResponseEntity.ok("Producto eliminado de la cesta");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("Producto no encontrado o usuario inválido");
         }
     }
-
-    @DeleteMapping("/eliminar-producto")
-    public ResponseEntity<String> eliminarProductoDeCesta(
-            @RequestParam Integer idUsuario,
-            @RequestParam Integer idProducto) {
-
-        boolean eliminado = cestaService.eliminarProductoDeCesta(idUsuario, idProducto);
-        if (eliminado) {
-            return ResponseEntity.ok("Producto eliminado de la cesta.");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }*/
 }

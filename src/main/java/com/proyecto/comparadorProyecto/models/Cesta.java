@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.proyecto.comparadorProyecto.models.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,11 +10,16 @@ import java.util.List;
 @Table(name = "cesta")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Cesta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
+    private Usuario usuario;
 
     @ManyToMany
     @JoinTable(
@@ -21,9 +27,6 @@ public class Cesta {
             joinColumns = @JoinColumn(name = "cesta_id"),
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
-
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
-    private Usuario usuario;
+    private List<Producto> productos;
 }
 

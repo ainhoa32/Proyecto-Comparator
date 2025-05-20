@@ -1,101 +1,132 @@
 package com.proyecto.comparadorProyecto.services;
 
+import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
+import com.proyecto.comparadorProyecto.dto.CestaDTO;
+import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.Cesta;
+import com.proyecto.comparadorProyecto.models.Producto;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.repository.CestaRepository;
+import com.proyecto.comparadorProyecto.repository.ProductoRepository;
 import com.proyecto.comparadorProyecto.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import java.util.Objects;
 
 @Service
 public class CestaService {
 
-   /* @Autowired
+    @Autowired
     private CestaRepository cestaRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Cesta guardarCesta(Cesta cesta) {
-        return cestaRepository.save(cesta);
-    }
+    @Autowired
+    private ProductoRepository productoRepository;
 
-    public Optional<Cesta> obtenerCestaPorId(Integer id) {
-        return cestaRepository.findById(id);
-    }
+    public boolean agregarProductoACesta(AgregarProductoCestaRequest request){
+        String user = request.getNombreUsuario();
+        ProductoDto prod = request.getProducto();
 
-    public boolean existeCestaPorId(Integer id) {
-        return cestaRepository.existsById(id);
-    }
-
-    public boolean eliminarCestaPorId(Integer id) {
-        if (cestaRepository.existsById(id)) {
-            cestaRepository.deleteById(id);
-            return true;
+        Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByNombre(user));
+        if(usuario.isEmpty()){
+            return false;
         }
-        return false;
-    }
+        Usuario u = usuario.get();
+        Producto p = new Producto();
+        p.setNombre(prod.getNombre());
+        p.setPrecio(BigDecimal.valueOf(prod.getPrecio()));
+        p.setPrecioGranel(BigDecimal.valueOf(prod.getPrecioGranel()));
+        p.setTamanoUnidad(BigDecimal.valueOf(prod.getTamanoUnidad()));
+        p.setUnidadMedida(prod.getUnidadMedida());
+        p.setSupermercado(prod.getSupermercado());
+        p.setPrioridad(0);
+        p.setFechaCreacion(LocalDateTime.now());
 
-    public boolean eliminarProductoDeCesta(Integer idUsuario, Integer idProducto) {
-        Optional<Cesta> cestaOpt = StreamSupport.stream(cestaRepository.findAll().spliterator(), false)
-                .filter(c -> c.getUsuario() != null && Objects.equals(c.getUsuario().getId(), idUsuario))
-                .findFirst();
+        p=productoRepository.save(p);
 
-        if (cestaOpt.isPresent()) {
-            Cesta cesta = cestaOpt.get();
-            String[] productos = cesta.getIdProds().split(",");
-            String nuevosProds = Arrays.stream(productos)
-                    .map(String::trim)
-                    .filter(p -> !p.equals(idProducto.toString()))
-                    .collect(Collectors.joining(","));
-
-            cesta.setIdProds(nuevosProds);
-            cestaRepository.save(cesta);
-            return true;
+        Cesta cesta = cestaRepository.findByUsuario(u).orElseGet(() -> {
+            Cesta nueva = new Cesta();
+            nueva.setUsuario(u);
+            nueva.setProductos(new ArrayList<>());
+            return nueva;
+        });
+        if(!cesta.getProductos().contains(p)){
+            cesta.getProductos().add(p);
         }
-
-        return false;
+        cestaRepository.save(cesta);
+        return true;
     }
+    public boolean eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
+        String nombreUsuario = request.getNombreUsuario();
+        ProductoDto productoDto = request.getProducto();
 
-    public Optional<Cesta> obtenerCestaPorUsuario(Usuario usuario) {
-        return cestaRepository.findByUsuario(usuario);
-    }
-
-    public Cesta agregarProductoAUsuario(String nombreUsuario, Integer idProducto) {
-        Usuario usuario = usuarioRepository.findByNombre(nombreUsuario);
-        if (usuario == null) {
-            throw new RuntimeException("Usuario no encontrado");
+        Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario));
+        if (usuarioOpt.isEmpty()) {
+            return false; // Usuario no existe
         }
+        Usuario usuario = usuarioOpt.get();
 
-        Optional<Cesta> cestaOpt = obtenerCestaPorUsuario(usuario);
-        Cesta cesta;
-        if (cestaOpt.isPresent()) {
-            cesta = cestaOpt.get();
-            String productos = cesta.getIdProds();
-            if (productos == null || productos.isBlank()) {
-                cesta.setIdProds(idProducto.toString());
-            } else {
-                String[] productosArray = productos.split(",");
-                boolean existe = Arrays.stream(productosArray)
-                        .map(String::trim)
-                        .anyMatch(p -> p.equals(idProducto.toString()));
-                if (!existe) {
-                    cesta.setIdProds(productos + "," + idProducto);
-                }
+        Optional<Cesta> cestaOpt = cestaRepository.findByUsuario(usuario);
+        if (cestaOpt.isEmpty()) {
+            return false;
+        }
+        Cesta cesta = cestaOpt.get();
+
+        List<Producto> productosEnCesta = cesta.getProductos();
+        Producto productoAEliminar = null;
+
+        for (Producto p : productosEnCesta) {
+            if (p.getNombre().equals(productoDto.getNombre())) {
+                productoAEliminar = p;
+                break;
             }
-        } else {
-            cesta = new Cesta();
-            cesta.setUsuario(usuario);
-            cesta.setIdProds(idProducto.toString());
         }
-        return guardarCesta(cesta);
-    }*/
 
+        if (productoAEliminar == null) {
+            return false;
+        }
 
-}
+        productosEnCesta.remove(productoAEliminar);
+
+        cestaRepository.save(cesta);
+
+        return true;
+    }
+    public CestaDTO obtenerCestaPorUsuario(String nombreUsuario) {
+        Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario));
+        if (usuarioOpt.isEmpty()) {
+            return null;
+        }
+        Usuario usuario = usuarioOpt.get();
+        Optional<Cesta> cestaOpt = cestaRepository.findByUsuario(usuario);
+        if (cestaOpt.isEmpty()) {
+            return null;
+        }
+        Cesta cesta = cestaOpt.get();
+
+        List<ProductoDto> productosDTO = cesta.getProductos().stream()
+                .map(p -> ProductoDto.builder()
+                        .nombre(p.getNombre())
+                        .precio(p.getPrecio().doubleValue())  // si tu precio es BigDecimal, conviértelo a Double
+                        .unidadMedida(p.getUnidadMedida())
+                        .supermercado(p.getSupermercado())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        CestaDTO cestaDTO = new CestaDTO();
+        cestaDTO.setId(cesta.getId());
+        cestaDTO.setNombreUsuario(usuario.getNombre());
+        cestaDTO.setProductos(productosDTO);
+
+        return cestaDTO;
+    }
+
+    }
