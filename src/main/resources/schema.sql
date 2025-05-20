@@ -56,3 +56,11 @@ CREATE TABLE IF NOT EXISTS favoritos (
      nombre varchar(255) not null,
      FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
     );
+
+CREATE TABLE if not exists cesta_productos (
+    cesta_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    PRIMARY KEY (cesta_id, producto_id),
+    FOREIGN KEY (cesta_id) REFERENCES cesta(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);

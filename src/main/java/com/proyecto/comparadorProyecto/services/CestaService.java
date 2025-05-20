@@ -69,7 +69,7 @@ public class CestaService {
 
         Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario));
         if (usuarioOpt.isEmpty()) {
-            return false; // Usuario no existe
+            return false;
         }
         Usuario usuario = usuarioOpt.get();
 
@@ -114,7 +114,7 @@ public class CestaService {
         List<ProductoDto> productosDTO = cesta.getProductos().stream()
                 .map(p -> ProductoDto.builder()
                         .nombre(p.getNombre())
-                        .precio(p.getPrecio().doubleValue())  // si tu precio es BigDecimal, conviértelo a Double
+                        .precio(p.getPrecio().doubleValue())
                         .unidadMedida(p.getUnidadMedida())
                         .supermercado(p.getSupermercado())
                         .build()

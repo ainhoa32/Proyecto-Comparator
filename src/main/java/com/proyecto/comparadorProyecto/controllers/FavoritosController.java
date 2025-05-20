@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/favoritos")
@@ -18,9 +19,14 @@ class FavoritosController {
     private FavoritosService favoritosService;
 
     @GetMapping("/{nombreUsuario}")
-    public ResponseEntity<List<Favoritos>> getFavoritosByNombreUsuario(@PathVariable String nombreUsuario) {
+    public ResponseEntity<List<FavoritoDTO>> getFavoritosByNombreUsuario(@PathVariable String nombreUsuario) {
         List<Favoritos> favoritos = favoritosService.obtenerFavoritosPorUsuario(nombreUsuario);
-        return ResponseEntity.ok(favoritos);
+
+        List<FavoritoDTO> favoritosDTO = favoritos.stream()
+                .map(f -> new FavoritoDTO(f.getUsuario().getNombre(), f.getNombre()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(favoritosDTO);
     }
 
     @PostMapping

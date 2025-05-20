@@ -48,9 +48,6 @@ VALUES
     (5, 'Huevos'),
     (5, 'Jamón');
 
-
-
-
 INSERT IGNORE INTO busquedas (nombre_busqueda, producto_id)
 VALUES
     ('Buscar arroz integral', 1),
@@ -59,5 +56,6 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
+select * from favoritos WHERE nombre like 'chocolate';
 
-select * from cesta
+DELETE FROM favoritos WHERE nombre like 'chocolate';
