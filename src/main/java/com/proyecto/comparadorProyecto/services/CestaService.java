@@ -119,6 +119,11 @@ public class CestaService {
                         .precio(p.getPrecio().doubleValue())
                         .unidadMedida(p.getUnidadMedida())
                         .supermercado(p.getSupermercado())
+                        .precioGranel(p.getPrecioGranel().doubleValue())
+                        .urlImagen(p.getUrlImagen())
+                        .tamanoUnidad(p.getTamanoUnidad().doubleValue())
+                        .index(p.getIndice())
+                        .prioridad(p.getPrioridad())
                         .build()
                 )
                 .collect(Collectors.toList());

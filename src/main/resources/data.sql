@@ -5,3 +5,4 @@ INSERT IGNORE INTO usuarios (nombre, contrasena) VALUES
 ('kevin@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe'),
 ('ainhoa@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe');
 
+select * from productos
