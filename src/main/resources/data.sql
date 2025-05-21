@@ -25,4 +25,6 @@ VALUES
     ('Buscar frijoles negros', 4),
     ('Buscar pan integral', 5);
 
-select * from cesta_productos;
+
+
+select * from favoritos;
