@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,22 +26,26 @@ class FavoritosController {
     }
 
     @PostMapping
-    public ResponseEntity<String> guardarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
-        if (favoritosService.existeFavorito(favoritoDTO.getUsuario(), favoritoDTO.getNombreBusqueda())) {
-            return ResponseEntity.badRequest().body("El favorito ya existe para este usuario.");
-        } else {
+    public ResponseEntity<?> guardarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
+        try {
             favoritosService.guardarFavorito(favoritoDTO);
             return ResponseEntity.ok("Guardado correctamente");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 
     @DeleteMapping
     public ResponseEntity<?> borrarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
-        if (favoritosService.existeFavorito(favoritoDTO.getUsuario(), favoritoDTO.getNombreBusqueda())) {
+        try {
             favoritosService.borrarFavorito(favoritoDTO);
             return ResponseEntity.ok("Eliminado correctamente");
-        } else {
-            return ResponseEntity.badRequest().body("El producto que intenta eliminar no existe en favoritos");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 }

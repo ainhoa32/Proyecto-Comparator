@@ -36,7 +36,7 @@ public class CestaService {
 
         Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(user));
         if (usuarioOpt.isEmpty()) {
-            return false;
+            throw new IllegalArgumentException("Usuario no encontrado.");
         }
         Usuario usuario = usuarioOpt.get();
 
@@ -48,7 +48,7 @@ public class CestaService {
         });
 
         if (cesta.getProductos() != null && cesta.getProductos().size() >= 8) {
-            return false;
+            throw new IllegalStateException("La cesta ya contiene el máximo de 50 productos.");
         }
 
         Producto producto = new Producto();
@@ -73,47 +73,30 @@ public class CestaService {
         }
 
         cestaRepository.save(cesta);
-
         return true;
     }
 
-
-    public boolean eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
+    public void eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
         String nombreUsuario = request.getNombreUsuario();
         ProductoDto productoDto = request.getProducto();
 
-        Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario));
-        if (usuarioOpt.isEmpty()) {
-            return false;
-        }
-        Usuario usuario = usuarioOpt.get();
+        Usuario usuario = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario))
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
 
-        Optional<Cesta> cestaOpt = cestaRepository.findByUsuario(usuario);
-        if (cestaOpt.isEmpty()) {
-            return false;
-        }
-        Cesta cesta = cestaOpt.get();
+        Cesta cesta = cestaRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException("La cesta del usuario esta vacia."));
 
         List<Producto> productosEnCesta = cesta.getProductos();
-        Producto productoAEliminar = null;
-
-        for (Producto p : productosEnCesta) {
-            if (p.getNombre().equals(productoDto.getNombre())) {
-                productoAEliminar = p;
-                break;
-            }
-        }
-
-        if (productoAEliminar == null) {
-            return false;
-        }
+        Producto productoAEliminar = productosEnCesta.stream()
+                .filter(p -> p.getNombre().equals(productoDto.getNombre()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("El producto no está en la cesta."));
 
         productosEnCesta.remove(productoAEliminar);
-
         cestaRepository.save(cesta);
-
-        return true;
     }
+
+
     public CestaDTO obtenerCestaPorUsuario(String nombreUsuario) {
         Optional<Usuario> usuarioOpt = Optional.ofNullable(usuarioRepository.findByNombre(nombreUsuario));
         if (usuarioOpt.isEmpty()) {
@@ -142,6 +125,12 @@ public class CestaService {
         cestaDTO.setProductos(productosDTO);
 
         return cestaDTO;
+    }
+    public CestaDTO crearCestaUserSiNoTiene(String nombreUsuario) {
+        CestaDTO vacia = new CestaDTO();
+        vacia.setNombreUsuario(nombreUsuario);
+        vacia.setProductos(new ArrayList<>());
+        return vacia;
     }
 
     }

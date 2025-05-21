@@ -38,16 +38,34 @@ public class FavoritosService {
     }
 
     public Favoritos guardarFavorito(FavoritoDTO favoritoDTO) {
-        Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
+        Usuario usuario = Optional.ofNullable(usuarioRepository.findByNombre(favoritoDTO.getUsuario()))
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        List<Favoritos> favoritosActuales = favoritosRepository.findByUsuario(usuario);
+        if (favoritosActuales.size() >= 8) {
+            throw new IllegalStateException("El usuario ya tiene el máximo de 8 favoritos.");
+        }
+
+        if (!favoritosRepository.findByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda()).isEmpty()) {
+            throw new IllegalStateException("Este favorito ya existe para el usuario.");
+        }
+
         Favoritos favorito = new Favoritos();
         favorito.setUsuario(usuario);
         favorito.setNombre(favoritoDTO.getNombreBusqueda());
+
         return favoritosRepository.save(favorito);
     }
     @Transactional
     public void borrarFavorito(FavoritoDTO favoritoDTO) {
-        Usuario usuario = usuarioRepository.findByNombre(favoritoDTO.getUsuario());
-        favoritosRepository.deleteByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda());
+        Usuario usuario = Optional.ofNullable(usuarioRepository.findByNombre(favoritoDTO.getUsuario()))
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        int eliminados = favoritosRepository.deleteByUsuarioAndNombre(usuario, favoritoDTO.getNombreBusqueda());
+
+        if (eliminados == 0) {
+            throw new IllegalStateException("El favorito no existe o ya fue eliminado.");
+        }
     }
 
     public List<FavoritoDTO> convertirAFavoritoDTO(List<Favoritos> favoritos) {

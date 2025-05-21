@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/cesta")
+@CrossOrigin(origins = "*")
 public class CestaController {
 
     @Autowired
@@ -20,29 +23,34 @@ public class CestaController {
     @GetMapping("/{nombreUsuario}")
     public ResponseEntity<CestaDTO> obtenerCesta(@PathVariable String nombreUsuario) {
         CestaDTO cesta = cestaService.obtenerCestaPorUsuario(nombreUsuario);
-        if (cesta == null) {
-            return ResponseEntity.notFound().build();
+        if (cesta == null || cesta.getProductos() == null) {
+            CestaDTO vacia = cestaService.crearCestaUserSiNoTiene(nombreUsuario);
+            return ResponseEntity.ok(vacia);
         }
         return ResponseEntity.ok(cesta);
     }
 
     @PostMapping("/agregar")
-    public ResponseEntity<String> agregarProducto(@RequestBody AgregarProductoCestaRequest request) {
-        boolean resultado = cestaService.agregarProductoACesta(request);
-        if (resultado) {
+    public ResponseEntity<?> agregarProducto(@RequestBody AgregarProductoCestaRequest request) {
+        try {
+            cestaService.agregarProductoACesta(request);
             return ResponseEntity.ok("Producto agregado a la cesta");
-        } else {
-            return ResponseEntity.badRequest().body("No se pudo agregar el producto. Verifica si el usuario existe o si se alcanzó el límite de 8 productos.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 
     @DeleteMapping("/eliminar")
-    public ResponseEntity<String> eliminarProducto(@RequestBody AgregarProductoCestaRequest request) {
-        boolean resultado = cestaService.eliminarProductoDeCesta(request);
-        if (resultado) {
+    public ResponseEntity<?> eliminarProducto(@RequestBody AgregarProductoCestaRequest request) {
+        try {
+            cestaService.eliminarProductoDeCesta(request);
             return ResponseEntity.ok("Producto eliminado de la cesta");
-        } else {
-            return ResponseEntity.status(404).body("Producto no encontrado o usuario inválido");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 }

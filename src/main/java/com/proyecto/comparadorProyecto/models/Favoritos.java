@@ -5,8 +5,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "favoritos")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,5 +27,11 @@ public class Favoritos {
     }
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+    public Usuario getUsuario() {
+        return usuario;
+    }
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
