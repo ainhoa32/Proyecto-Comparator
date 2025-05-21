@@ -56,10 +56,12 @@ public class CestaService {
         producto.setPrecio(BigDecimal.valueOf(prod.getPrecio()));
         producto.setPrecioGranel(BigDecimal.valueOf(prod.getPrecioGranel()));
         producto.setTamanoUnidad(BigDecimal.valueOf(prod.getTamanoUnidad()));
+        producto.setUrlImagen(prod.getUrlImagen());
         producto.setUnidadMedida(prod.getUnidadMedida());
         producto.setSupermercado(prod.getSupermercado());
         producto.setPrioridad(prod.getPrioridad());
         producto.setFechaCreacion(LocalDateTime.now());
+        producto.setIndice(prod.getIndex());
 
         producto = productoRepository.save(producto);
 
@@ -94,6 +96,8 @@ public class CestaService {
 
         productosEnCesta.remove(productoAEliminar);
         cestaRepository.save(cesta);
+
+        productoRepository.delete(productoAEliminar);
     }
 
 
