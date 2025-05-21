@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{/prueba}" method="post">
+        <label for="producto">Introduce el nombre del producto</label>
+        <input type="text" name="producto" id="producto">
+    </form>
+
+    <div th:if="${productosComparados}">
+        <div>hola</div>
+    </div>
+
+    <div th:if="${productosComparados}">
+        <li th:each="producto : ${productosComparados}" th:text="${producto.getNombre() + ' - Precio a granel: ' +
+            producto.getPrecioGranel() + ' €/' + producto.getUnidadMedida() + ' - Supermercado: ' + producto.getSupermercado()
+            + ' - Categoria prioritaria: ' +
+            producto.getCategoria1() + ' - Categoria 2: ' + producto.getCategoria2()}"></li>
+        <ul>
+        </ul>
+    </div>
+</body>
+</html>
