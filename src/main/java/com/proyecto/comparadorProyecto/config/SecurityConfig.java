@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/**").permitAll()
                         .requestMatchers("/productos/precioGranel/**").permitAll()
+                        .requestMatchers("/favoritos/**").permitAll()
+                        .requestMatchers("/cesta/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
