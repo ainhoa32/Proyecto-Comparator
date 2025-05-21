@@ -21,7 +21,6 @@ public class Favoritos {
     @Column(nullable = false)
     private String nombre;
 
-    //Aunque deberia funcionar con el @Getter y @Setter hay veces que falla asi que hemos añadido a mano estos metodos por si acaso da el error
     public String getNombre() {
         return nombre;
     }
@@ -33,5 +32,12 @@ public class Favoritos {
     }
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public int getId(){
+        return id;
+    }
+    public void setId(int id){
+        this.id = id;
     }
 }
