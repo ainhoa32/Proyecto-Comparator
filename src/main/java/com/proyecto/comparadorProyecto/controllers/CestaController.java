@@ -4,6 +4,7 @@ import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
 import com.proyecto.comparadorProyecto.dto.CestaDTO;
 import com.proyecto.comparadorProyecto.models.Cesta;
 import com.proyecto.comparadorProyecto.services.CestaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class CestaController {
     }
 
     @PostMapping("/agregar")
-    public ResponseEntity<?> agregarProducto(@RequestBody AgregarProductoCestaRequest request) {
+    public ResponseEntity<?> agregarProducto(@Valid @RequestBody AgregarProductoCestaRequest request) {
         try {
             cestaService.agregarProductoACesta(request);
             return ResponseEntity.ok("Producto agregado a la cesta");

@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ProductoDto implements Comparable<ProductoDto> {
     String nombre;

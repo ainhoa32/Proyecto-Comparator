@@ -47,7 +47,7 @@ public class CestaService {
             return nuevaCesta;
         });
 
-        if (cesta.getProductos() != null && cesta.getProductos().size() >= 8) {
+        if (cesta.getProductos() != null && cesta.getProductos().size() >= 50) {
             throw new IllegalStateException("La cesta ya contiene el máximo de 50 productos.");
         }
 

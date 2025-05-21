@@ -10,11 +10,11 @@ INSERT IGNORE INTO productos (
     indice, urlImagen, prioridad, supermercado, busqueda_id
 )
 VALUES
-    ('Arroz Integral', 20.50, 18.00, 1.00, 'kg', 1, 'https://ejemplo.com/imagen1.jpg', 1, 'Supermercado A', 101),
-    ('Aceite de Oliva', 55.00, 50.00, 0.75, 'L', 2, 'https://ejemplo.com/imagen2.jpg', 2, 'Supermercado B', 102),
-    ('Leche Deslactosada', 18.90, 17.00, 1.00, 'L', 3, 'https://ejemplo.com/imagen3.jpg', 0, 'Supermercado C', 103),
-    ('Frijoles Negros', 22.30, 20.00, 0.90, 'kg', 4, 'https://ejemplo.com/imagen4.jpg', 1, 'Supermercado A', 104),
-    ('Pan Integral', 25.00, 0.00, 0.50, 'kg', 5, 'https://ejemplo.com/imagen5.jpg', 3, 'Supermercado D', 105);
+    ('Arroz Integral', 20.50, 18.00, 1.00, 'kg', 1, 'https://ejemplo.com/imagen1.jpg', 1, 'Dia', 101),
+    ('Aceite de Oliva', 55.00, 50.00, 0.75, 'L', 2, 'https://ejemplo.com/imagen2.jpg', 2, 'Dia', 102),
+    ('Leche Deslactosada', 18.90, 17.00, 1.00, 'L', 3, 'https://ejemplo.com/imagen3.jpg', 0, 'Dia', 103),
+    ('Frijoles Negros', 22.30, 20.00, 0.90, 'kg', 4, 'https://ejemplo.com/imagen4.jpg', 1, 'Dia', 104),
+    ('Pan Integral', 25.00, 0.00, 0.50, 'kg', 5, 'https://ejemplo.com/imagen5.jpg', 3, 'Dia', 105);
 
 
 INSERT IGNORE INTO busquedas (nombre_busqueda, producto_id)
@@ -26,5 +26,4 @@ VALUES
     ('Buscar pan integral', 5);
 
 
-
-select * from favoritos;
+select * from cesta_productos;
