@@ -1,0 +1,30 @@
+/* Caja del encabezado */
+.header-box {
+    background-color: #ffece7; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Texto del párrafo */
+.header-box p {
+    color: #666;
+}
+
+.search-section {
+    background-color: #fff8e1; 
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-card .card-text:last-child {
+  transition: transform 0.2s;
+}
+
+.textoCarrito{
+  color: #dd4c3c;
+}
+
+.fav{
+  cursor: pointer;
+}
