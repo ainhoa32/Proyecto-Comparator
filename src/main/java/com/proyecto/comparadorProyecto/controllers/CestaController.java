@@ -56,10 +56,10 @@ public class CestaController {
         }
     }
 
-    @DeleteMapping("/eliminarCesta")
-    public ResponseEntity<?> eliminarCesta(@RequestBody String Usuario) {
+    @DeleteMapping("/eliminarCesta/{nombreUsuario}")
+    public ResponseEntity<?> eliminarCesta(@PathVariable String nombreUsuario) {
         try {
-            cestaService.eliminarCesta(Usuario);
+            cestaService.eliminarCesta(nombreUsuario);
             return ResponseEntity.ok("Producto eliminado de la cesta");
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

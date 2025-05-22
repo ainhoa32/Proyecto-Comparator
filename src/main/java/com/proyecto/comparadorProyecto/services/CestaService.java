@@ -80,6 +80,7 @@ public class CestaService {
 
     public void eliminarCesta(String user) {
 
+        System.out.println("eliminando cesta " + user);
         Usuario usuario = Optional.ofNullable(usuarioRepository.findByNombre(user))
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
 
