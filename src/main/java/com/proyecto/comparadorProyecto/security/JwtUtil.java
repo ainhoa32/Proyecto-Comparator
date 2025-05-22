@@ -2,6 +2,8 @@ package com.proyecto.comparadorProyecto.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -10,8 +12,18 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private SecretKey SECRET_KEY;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
     private final long EXPIRATION_TIME = 86400000;
+
+    @PostConstruct
+    public void init() {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
 
     public String generarToken(String nombreUsuario) {
         return Jwts.builder()
@@ -41,5 +53,8 @@ public class JwtUtil {
         } catch (JwtException e) {
             return false;
         }
+    }
+    public int getSecretLength() {
+        return secret.getBytes(StandardCharsets.UTF_8).length;
     }
 }

@@ -3,8 +3,10 @@ package com.proyecto.comparadorProyecto.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "usuarios") // en minúscula por convención SQL
+@Table(name = "usuarios")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +20,11 @@ public class Usuario {
     private String nombre;
 
     private String contrasena;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favoritos> favoritos;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cesta cesta;
 }
+

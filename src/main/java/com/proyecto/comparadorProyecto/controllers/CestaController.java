@@ -1,68 +1,72 @@
 package com.proyecto.comparadorProyecto.controllers;
 
+import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
+import com.proyecto.comparadorProyecto.dto.CestaDTO;
 import com.proyecto.comparadorProyecto.models.Cesta;
+import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.services.CestaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/cesta")
+@CrossOrigin(origins = "*")
 public class CestaController {
 
     @Autowired
     private CestaService cestaService;
 
-    @PostMapping
-    public Cesta crearCesta(@RequestBody Cesta cesta) {
-        return cestaService.guardarCesta(cesta);
+    @GetMapping("/{nombreUsuario}")
+    public ResponseEntity<CestaDTO> obtenerCesta(@PathVariable String nombreUsuario) {
+        CestaDTO cesta = cestaService.obtenerCestaPorUsuario(nombreUsuario);
+        if (cesta == null || cesta.getProductos() == null) {
+            CestaDTO vacia = cestaService.crearCestaUserSiNoTiene(nombreUsuario);
+            return ResponseEntity.ok(vacia);
+        }
+        return ResponseEntity.ok(cesta);
     }
 
-    @GetMapping("/{id}")
-    public Optional<Cesta> obtenerCesta(@PathVariable Integer id) {
-        return cestaService.obtenerCestaPorId(id);
-    }
-
-    @GetMapping
-    public Iterable<Cesta> obtenerTodasLasCestas() {
-        return cestaService.obtenerTodasLasCestas();
-    }
-
-    // ✅ Comprobar si existe una cesta por ID
-    @GetMapping("/comprobar/{id}")
-    public ResponseEntity<String> comprobarCesta(@PathVariable Integer id) {
-        boolean existe = cestaService.existeCestaPorId(id);
-        if (existe) {
-            return ResponseEntity.ok("La cesta con ID " + id + " existe.");
-        } else {
-            return ResponseEntity.notFound().build();
+    @PostMapping("/agregar")
+    public ResponseEntity<?> agregarProducto(@Valid @RequestBody AgregarProductoCestaRequest request) {
+        try {
+            cestaService.agregarProductoACesta(request);
+            return ResponseEntity.ok("Producto agregado a la cesta");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 
-    // ✅ Eliminar una cesta completa por ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarCesta(@PathVariable Integer id) {
-        boolean eliminado = cestaService.eliminarCestaPorId(id);
-        if (eliminado) {
-            return ResponseEntity.ok("Cesta eliminada correctamente.");
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<?> eliminarProducto(@RequestBody AgregarProductoCestaRequest request) {
+        try {
+            cestaService.eliminarProductoDeCesta(request);
+            return ResponseEntity.ok("Producto eliminado de la cesta");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
 
-    // ✅ Eliminar un producto específico de la cesta de un usuario
-    @DeleteMapping("/eliminar-producto")
-    public ResponseEntity<String> eliminarProductoDeCesta(
-            @RequestParam Integer idUsuario,
-            @RequestParam Integer idProducto) {
-
-        boolean eliminado = cestaService.eliminarProductoDeCesta(idUsuario, idProducto);
-        if (eliminado) {
-            return ResponseEntity.ok("Producto eliminado de la cesta.");
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/eliminarCesta")
+    public ResponseEntity<?> eliminarCesta(@RequestBody String Usuario) {
+        try {
+            cestaService.eliminarCesta(Usuario);
+            return ResponseEntity.ok("Producto eliminado de la cesta");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
+
+
 }

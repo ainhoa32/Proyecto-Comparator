@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 // TODO: para hacerlo mas limpio es mejor hacerlo con jsoup ya que tiene un script embebido con el json con todos los datos que necesito bien clasificados
+// TODO: OBLIGATORIO HACERLO YA QUE NO FUNCIONA CORRECTAMENTE EN CASOS MUY ESPECÍFICOS
 public class Dia implements Supermercado {
 
     private final ClienteHttp clienteHttp;
@@ -130,6 +131,7 @@ public class Dia implements Supermercado {
             tamanoUnidad = Double.parseDouble(producto[producto.length - 3]);
         } else {
             unidadMedida = producto[producto.length - 1];
+            System.out.println(unidadMedida);
             tamanoUnidad = Double.parseDouble(producto[producto.length - 2]);
         }
 
