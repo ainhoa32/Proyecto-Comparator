@@ -3,6 +3,7 @@ package com.proyecto.comparadorProyecto.controllers;
 import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
 import com.proyecto.comparadorProyecto.dto.CestaDTO;
 import com.proyecto.comparadorProyecto.models.Cesta;
+import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.services.CestaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +55,18 @@ public class CestaController {
             return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
         }
     }
+
+    @DeleteMapping("/eliminarCesta")
+    public ResponseEntity<?> eliminarCesta(@RequestBody String Usuario) {
+        try {
+            cestaService.eliminarCesta(Usuario);
+            return ResponseEntity.ok("Producto eliminado de la cesta");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor."));
+        }
+    }
+
+
 }

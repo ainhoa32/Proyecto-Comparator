@@ -78,6 +78,23 @@ public class CestaService {
         return true;
     }
 
+    public void eliminarCesta(String user) {
+
+        Usuario usuario = Optional.ofNullable(usuarioRepository.findByNombre(user))
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        Cesta cesta = cestaRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException("La cesta del usuario está vacía."));
+
+        List<Producto> productosEnCesta = new ArrayList<>(cesta.getProductos());
+
+        cesta.setProductos(new ArrayList<>());
+        cestaRepository.save(cesta);
+
+        productoRepository.deleteAll(productosEnCesta);
+    }
+
+
     public void eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
         String nombreUsuario = request.getNombreUsuario();
         ProductoDto productoDto = request.getProducto();
