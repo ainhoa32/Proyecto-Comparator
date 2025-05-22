@@ -88,7 +88,7 @@ public class CestaService {
 
         List<Producto> productosEnCesta = new ArrayList<>(cesta.getProductos());
 
-        cesta.setProductos(new ArrayList<>());
+        cesta.getProductos().clear();
         cestaRepository.save(cesta);
 
         productoRepository.deleteAll(productosEnCesta);
