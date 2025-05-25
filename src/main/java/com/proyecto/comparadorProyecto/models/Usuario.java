@@ -21,6 +21,8 @@ public class Usuario {
 
     private String contrasena;
 
+    private boolean esAdmin;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favoritos> favoritos;
 

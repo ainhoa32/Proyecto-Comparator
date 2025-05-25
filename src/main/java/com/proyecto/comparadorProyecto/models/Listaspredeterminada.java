@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -19,12 +20,7 @@ public class Listaspredeterminada {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @ManyToMany
-    @JoinTable(
-            name = "producto_lista",
-            joinColumns = @JoinColumn(name = "lista_id"),
-            inverseJoinColumns = @JoinColumn(name = "producto_id")
-    )
-    private List<Producto> productos;
+    @OneToMany(mappedBy = "lista", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ListaProducto> listaProductos;
 
 }

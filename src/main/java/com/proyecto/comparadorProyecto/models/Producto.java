@@ -50,8 +50,8 @@ public class Producto {
     @JsonManagedReference
     private List<Busqueda> busquedas;
 
-    @ManyToMany(mappedBy = "productos")
-    private List<Listaspredeterminada> listas;
+    @OneToMany(mappedBy = "producto")
+    private List<ListaProducto> listaProductos;
 
     public Producto() {}
 
