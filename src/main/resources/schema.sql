@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 CREATE TABLE IF NOT EXISTS listasPredeterminadas (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL
+    nombre VARCHAR(100) NOT NULL,
+    esVisible int default 0 not null
     );
 
 CREATE TABLE IF NOT EXISTS productos (

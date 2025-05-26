@@ -5,4 +5,10 @@ INSERT IGNORE INTO usuarios (nombre, contrasena, esAdmin) VALUES
 ('kevin@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe',1),
 ('ainhoa@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe',1);
 
-select * from productos
+INSERT IGNORE INTO listaspredeterminadas (id, nombre) VALUES
+(1, 'Despensa Básica'),
+(2, 'Productos de Limpieza'),
+(3, 'Cuidado Personal'),
+(4, 'Snacks Favoritos'),
+(5, 'Productos de Belleza');
+
