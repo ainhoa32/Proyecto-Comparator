@@ -61,7 +61,22 @@ public class ListaPredeterminadaService {
         listaRepo.save(lista);
     }
 
+    public List<Listaspredeterminada> obtenerTodasLasListas() {
+        return (List<Listaspredeterminada>) listaRepo.findAll();
+    }
 
+    public List<Listaspredeterminada> obtenerListasVisibles() {
+        return listaRepo.findByEsVisible(true);
+    }
+
+    public void alternarVisibilidadPorNombre(String nombre) {
+        Listaspredeterminada lista = listaRepo.findByNombre(nombre)
+                .orElseThrow(() -> new RuntimeException("Lista no encontrada con nombre: " + nombre));
+
+        boolean visibilidadActual = lista.getEsVisible();
+        lista.setEsVisible(visibilidadActual == true ? false : true);
+        listaRepo.save(lista);
+    }
     private Producto agregarDatosAProducto(ProductoDto p, Producto nuevo){
         Producto prod= new Producto();
         prod.setNombre(p.getNombre());
