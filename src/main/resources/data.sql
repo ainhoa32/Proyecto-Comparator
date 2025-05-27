@@ -5,7 +5,7 @@ INSERT IGNORE INTO usuarios (nombre, contrasena, esAdmin) VALUES
 ('kevin@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe',1),
 ('ainhoa@ejemplo.com', '$2a$10$RSKzsbNyH7xy.1w4VWbGPewBmMO4iNjKpjTSkWDL0fcBhD7T8Oowe',1);
 
-INSERT IGNORE INTO listaspredeterminadas (id, nombre, esVisible) VALUES
+INSERT IGNORE INTO listasPredeterminadas (id, nombre, esVisible) VALUES
 (1, 'Despensa Básica',0),
 (2, 'Productos de Limpieza',0),
 (3, 'Cuidado Personal',0),
