@@ -2,6 +2,7 @@ package com.proyecto.comparadorProyecto.controllers;
 
 import com.proyecto.comparadorProyecto.dto.LoginRequest;
 import com.proyecto.comparadorProyecto.dto.LoginResponse;
+import com.proyecto.comparadorProyecto.dto.SingUpRequest;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.security.JwtUtil;
 import com.proyecto.comparadorProyecto.services.UsuarioServicio;
@@ -44,7 +45,7 @@ public class UsuarioController {
         }
     }
     @PostMapping("/registro")
-    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> registrarUsuario(@RequestBody SingUpRequest usuario) {
         if (usuarioServicio.usuarioExiste(usuario.getNombre())) {
             return new ResponseEntity<>("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
         }

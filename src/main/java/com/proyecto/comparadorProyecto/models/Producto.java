@@ -49,9 +49,6 @@ public class Producto {
     @Column(name = "fecha_creacion", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "producto")
-    @JsonManagedReference
-    private List<Busqueda> busquedas;
 
     @OneToMany(mappedBy = "producto")
     @JsonBackReference

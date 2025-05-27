@@ -24,16 +24,7 @@ CREATE TABLE IF NOT EXISTS productos (
     urlImagen TEXT,
     prioridad INT DEFAULT 0,
     supermercado VARCHAR(100),
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    busqueda_id INT
-    );
-
-CREATE TABLE IF NOT EXISTS busquedas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_busqueda VARCHAR(255) NOT NULL,
-    fecha_busqueda DATETIME DEFAULT CURRENT_TIMESTAMP,
-    producto_id INT,
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
 

@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.services;
 
+import com.proyecto.comparadorProyecto.dto.SingUpRequest;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,10 @@ public class UsuarioServicio {
         return usuarioRepository.findById(id).orElse(null);
     }
 
-    public Usuario guardarUsuario(Usuario usuario) {
-        usuario.setContrasena(cifrarContrasena(usuario.getContrasena()));
+    public Usuario guardarUsuario(SingUpRequest user) {
+        Usuario usuario = new Usuario();
+        usuario.setNombre(user.getNombre());
+        usuario.setContrasena(cifrarContrasena(user.getContrasena()));
         return usuarioRepository.save(usuario);
     }
 

@@ -83,3 +83,4 @@ INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (5, 24),
                                                         (5, 25);
 
+select * from usuarios
