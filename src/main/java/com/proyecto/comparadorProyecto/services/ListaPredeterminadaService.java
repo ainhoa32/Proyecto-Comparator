@@ -5,7 +5,7 @@ import com.proyecto.comparadorProyecto.dto.ListaPredeterminadaDTO;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.ListaProducto;
 import com.proyecto.comparadorProyecto.models.ListaProductoId;
-import com.proyecto.comparadorProyecto.models.Listaspredeterminada;
+import com.proyecto.comparadorProyecto.models.ListasPredeterminada;
 import com.proyecto.comparadorProyecto.models.Producto;
 import com.proyecto.comparadorProyecto.repository.ListaPredeterminadaRepository;
 import com.proyecto.comparadorProyecto.repository.ProductoRepository;
@@ -39,7 +39,7 @@ public class ListaPredeterminadaService {
                     return productoRepo.save(nuevo);  // Persistimos el nuevo producto
                 });
 
-        Listaspredeterminada lista = listaRepo.findByNombre(dto.getNombre())
+        ListasPredeterminada lista = listaRepo.findByNombre(dto.getNombre())
                 .orElseThrow(() -> new RuntimeException("Lista no encontrada: " + dto.getNombre()));
 
         ListaProductoId id = new ListaProductoId();
@@ -61,16 +61,16 @@ public class ListaPredeterminadaService {
         listaRepo.save(lista);
     }
 
-    public List<Listaspredeterminada> obtenerTodasLasListas() {
-        return (List<Listaspredeterminada>) listaRepo.findAll();
+    public List<ListasPredeterminada> obtenerTodasLasListas() {
+        return (List<ListasPredeterminada>) listaRepo.findAll();
     }
 
-    public List<Listaspredeterminada> obtenerListasVisibles() {
+    public List<ListasPredeterminada> obtenerListasVisibles() {
         return listaRepo.findByEsVisible(true);
     }
 
     public void alternarVisibilidadPorNombre(String nombre) {
-        Listaspredeterminada lista = listaRepo.findByNombre(nombre)
+        ListasPredeterminada lista = listaRepo.findByNombre(nombre)
                 .orElseThrow(() -> new RuntimeException("Lista no encontrada con nombre: " + nombre));
 
         boolean visibilidadActual = lista.getEsVisible();
@@ -99,7 +99,7 @@ public class ListaPredeterminadaService {
 
 
 
-    private ListaPredeterminadaDTO convertirADTO(Listaspredeterminada lista) {
+    private ListaPredeterminadaDTO convertirADTO(ListasPredeterminada lista) {
         List<ProductoDto> productosDto = lista.getListaProductos().stream()
                 .map(lp -> {
                     Producto p = lp.getProducto();
@@ -126,7 +126,7 @@ public class ListaPredeterminadaService {
         if (listaRepo.findByNombre(nombreLista).isPresent()) {
             throw new RuntimeException("Ya existe una lista con ese nombre: " + nombreLista);
         }
-        Listaspredeterminada nuevaLista = new Listaspredeterminada();
+        ListasPredeterminada nuevaLista = new ListasPredeterminada();
         nuevaLista.setNombre(nombreLista);
         listaRepo.save(nuevaLista);
     }

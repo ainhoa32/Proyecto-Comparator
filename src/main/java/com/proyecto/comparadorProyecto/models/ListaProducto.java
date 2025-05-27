@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "lista_productos")
+@Table(name = "listaProductos")
 public class ListaProducto {
     @EmbeddedId
     private ListaProductoId id;
@@ -20,7 +20,7 @@ public class ListaProducto {
     @MapsId("listaId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "lista_id", nullable = false)
-    private Listaspredeterminada lista;
+    private ListasPredeterminada lista;
 
 
 }

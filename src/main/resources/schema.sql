@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS busquedas (
     );
 
 
-CREATE TABLE IF NOT EXISTS lista_Productos (
+CREATE TABLE IF NOT EXISTS listaProductos (
     lista_id INT NOT NULL,
     producto_id INT NOT NULL,
     PRIMARY KEY (lista_id, producto_id),

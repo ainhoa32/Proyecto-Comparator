@@ -48,35 +48,35 @@ INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidad
                                                                                                                       ('Desmaquillante', 45.00, 42.00, 0.25, 'L', 'Walmart', 'https://example.com/desmaquillante.jpg', 24),
                                                                                                                       ('Brochas de maquillaje', 70.00, 68.00, 1.00, 'set', 'Soriana', 'https://example.com/brochas.jpg', 25);
 
-INSERT ignore INTO lista_Productos (lista_id, producto_id) VALUES
+INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (1, 1),
                                                         (1, 2),
                                                         (1, 3),
                                                         (1, 4),
                                                         (1, 5);
 
-INSERT ignore INTO lista_Productos (lista_id, producto_id) VALUES
+INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (2, 6),
                                                         (2, 7),
                                                         (2, 8),
                                                         (2, 9),
                                                         (2, 10);
 
-INSERT ignore INTO lista_Productos (lista_id, producto_id) VALUES
+INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (3, 11),
                                                         (3, 12),
                                                         (3, 13),
                                                         (3, 14),
                                                         (3, 15);
 
-INSERT ignore INTO lista_Productos (lista_id, producto_id) VALUES
+INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (4, 16),
                                                         (4, 17),
                                                         (4, 18),
                                                         (4, 19),
                                                         (4, 20);
 
-INSERT ignore INTO lista_Productos (lista_id, producto_id) VALUES
+INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (5, 21),
                                                         (5, 22),
                                                         (5, 23),

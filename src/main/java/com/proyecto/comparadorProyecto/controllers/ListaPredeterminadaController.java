@@ -2,7 +2,7 @@ package com.proyecto.comparadorProyecto.controllers;
 
 import com.proyecto.comparadorProyecto.dto.AgregarProductoAListaDTO;
 import com.proyecto.comparadorProyecto.dto.ListaPredeterminadaDTO;
-import com.proyecto.comparadorProyecto.models.Listaspredeterminada;
+import com.proyecto.comparadorProyecto.models.ListasPredeterminada;
 import com.proyecto.comparadorProyecto.services.ListaPredeterminadaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +46,12 @@ public class ListaPredeterminadaController {
     }
 
     @GetMapping("/todas")
-    public ResponseEntity<List<Listaspredeterminada>> obtenerTodas() {
+    public ResponseEntity<List<ListasPredeterminada>> obtenerTodas() {
         return ResponseEntity.ok(listaService.obtenerTodasLasListas());
     }
 
     @GetMapping("/visibles")
-    public ResponseEntity<List<Listaspredeterminada>> obtenerVisibles() {
+    public ResponseEntity<List<ListasPredeterminada>> obtenerVisibles() {
         return ResponseEntity.ok(listaService.obtenerListasVisibles());
     }
 
