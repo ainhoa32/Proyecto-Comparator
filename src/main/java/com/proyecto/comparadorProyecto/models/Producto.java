@@ -1,5 +1,7 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import jakarta.persistence.*;
@@ -12,6 +14,7 @@ import java.util.List;
 @Table(name = "productos")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Producto {
 
     @Id
@@ -51,6 +54,7 @@ public class Producto {
     private List<Busqueda> busquedas;
 
     @OneToMany(mappedBy = "producto")
+    @JsonBackReference
     private List<ListaProducto> listaProductos;
 
     public Producto() {}
