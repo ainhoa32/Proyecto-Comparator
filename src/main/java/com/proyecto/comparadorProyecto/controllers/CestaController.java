@@ -2,6 +2,7 @@ package com.proyecto.comparadorProyecto.controllers;
 
 import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
 import com.proyecto.comparadorProyecto.dto.CestaDTO;
+import com.proyecto.comparadorProyecto.dto.UsuarioRequest;
 import com.proyecto.comparadorProyecto.models.Cesta;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.services.CestaService;
@@ -56,11 +57,11 @@ public class CestaController {
         }
     }
 
-    @DeleteMapping("/eliminarCesta/{nombreUsuario}")
-    public ResponseEntity<?> eliminarCesta(@PathVariable String nombreUsuario) {
+    @DeleteMapping("/eliminarCesta")
+    public ResponseEntity<?> eliminarCesta(@RequestBody UsuarioRequest request) {
         try {
-            cestaService.eliminarCesta(nombreUsuario);
-            return ResponseEntity.ok("Producto eliminado de la cesta");
+            cestaService.eliminarCesta(request.getNombreUsuario());
+            return ResponseEntity.ok("Cesta eliminada correctamente");
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
