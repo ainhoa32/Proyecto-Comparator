@@ -13,40 +13,40 @@ INSERT IGNORE INTO listasPredeterminadas (id, nombre, esVisible) VALUES
 (5, 'Productos de Belleza',0);
 
 
-INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
-                                                                                                                      ('Arroz', 22.50, 20.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/arroz.jpg', 1),
-                                                                                                                      ('Frijoles', 28.00, 25.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/frijoles.jpg', 2),
-                                                                                                                      ('Aceite vegetal', 40.00, 38.00, 1.00, 'L', 'Walmart', 'https://example.com/aceite.jpg', 3),
-                                                                                                                      ('Sal', 10.00, 9.50, 1.00, 'kg', 'Walmart', 'https://example.com/sal.jpg', 4),
-                                                                                                                      ('Azúcar', 25.00, 23.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/azucar.jpg', 5);
+INSERT ignore INTO productos (id, nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
+                                                                                                                      (1, 'Arroz', 22.50, 20.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/arroz.jpg', 1),
+                                                                                                                      (2, 'Frijoles', 28.00, 25.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/frijoles.jpg', 2),
+                                                                                                                      (3, 'Aceite vegetal', 40.00, 38.00, 1.00, 'L', 'Walmart', 'https://example.com/aceite.jpg', 3),
+                                                                                                                      (4, 'Sal', 10.00, 9.50, 1.00, 'kg', 'Walmart', 'https://example.com/sal.jpg', 4),
+                                                                                                                      (5, 'Azúcar', 25.00, 23.00, 1.00, 'kg', 'Bodega Aurrera', 'https://example.com/azucar.jpg', 5);
 
-INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
-                                                                                                                      ('Detergente líquido', 55.00, 50.00, 2.00, 'L', 'Soriana', 'https://example.com/detergente.jpg', 6),
-                                                                                                                      ('Suavizante', 35.00, 32.00, 2.00, 'L', 'Walmart', 'https://example.com/suavizante.jpg', 7),
-                                                                                                                      ('Limpiador multiusos', 30.00, 28.00, 1.00, 'L', 'Soriana', 'https://example.com/limpiador.jpg', 8),
-                                                                                                                      ('Cloro', 20.00, 18.00, 1.00, 'L', 'Bodega Aurrera', 'https://example.com/cloro.jpg', 9),
-                                                                                                                      ('Esponjas', 18.00, 17.00, 1.00, 'pza', 'Walmart', 'https://example.com/esponjas.jpg', 10);
+INSERT ignore INTO productos (id, nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
+                                                                                                                      (6, 'Detergente líquido', 55.00, 50.00, 2.00, 'L', 'Soriana', 'https://example.com/detergente.jpg', 6),
+                                                                                                                      (7, 'Suavizante', 35.00, 32.00, 2.00, 'L', 'Walmart', 'https://example.com/suavizante.jpg', 7),
+                                                                                                                      (8, 'Limpiador multiusos', 30.00, 28.00, 1.00, 'L', 'Soriana', 'https://example.com/limpiador.jpg', 8),
+                                                                                                                      (9, 'Cloro', 20.00, 18.00, 1.00, 'L', 'Bodega Aurrera', 'https://example.com/cloro.jpg', 9),
+                                                                                                                      (10, 'Esponjas', 18.00, 17.00, 1.00, 'pza', 'Walmart', 'https://example.com/esponjas.jpg', 10);
 
-INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
-                                                                                                                      ('Shampoo', 60.00, 55.00, 0.75, 'L', 'Walmart', 'https://example.com/shampoo.jpg', 11),
-                                                                                                                      ('Pasta dental', 22.00, 20.00, 0.15, 'kg', 'Soriana', 'https://example.com/pasta.jpg', 12),
-                                                                                                                      ('Jabón corporal', 15.00, 14.00, 1.00, 'pza', 'Walmart', 'https://example.com/jabon.jpg', 13),
-                                                                                                                      ('Desodorante', 35.00, 33.00, 0.20, 'kg', 'Bodega Aurrera', 'https://example.com/desodorante.jpg', 14),
-                                                                                                                      ('Cepillo de dientes', 20.00, 18.00, 1.00, 'pza', 'Soriana', 'https://example.com/cepillo.jpg', 15);
+INSERT ignore INTO productos (id, nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
+                                                                                                                      (11, 'Shampoo', 60.00, 55.00, 0.75, 'L', 'Walmart', 'https://example.com/shampoo.jpg', 11),
+                                                                                                                      (12, 'Pasta dental', 22.00, 20.00, 0.15, 'kg', 'Soriana', 'https://example.com/pasta.jpg', 12),
+                                                                                                                      (13, 'Jabón corporal', 15.00, 14.00, 1.00, 'pza', 'Walmart', 'https://example.com/jabon.jpg', 13),
+                                                                                                                      (14, 'Desodorante', 35.00, 33.00, 0.20, 'kg', 'Bodega Aurrera', 'https://example.com/desodorante.jpg', 14),
+                                                                                                                      (15, 'Cepillo de dientes', 20.00, 18.00, 1.00, 'pza', 'Soriana', 'https://example.com/cepillo.jpg', 15);
 
-INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
-                                                                                                                      ('Papas fritas', 17.00, 16.00, 0.15, 'kg', 'Walmart', 'https://example.com/papas.jpg', 16),
-                                                                                                                      ('Chocolate', 25.00, 24.00, 0.10, 'kg', 'Soriana', 'https://example.com/chocolate.jpg', 17),
-                                                                                                                      ('Galletas', 30.00, 28.00, 0.25, 'kg', 'Walmart', 'https://example.com/galletas.jpg', 18),
-                                                                                                                      ('Palomitas para microondas', 12.00, 11.50, 1.00, 'pza', 'Bodega Aurrera', 'https://example.com/palomitas.jpg', 19),
-                                                                                                                      ('Refresco', 18.00, 17.00, 2.00, 'L', 'Soriana', 'https://example.com/refresco.jpg', 20);
+INSERT ignore INTO productos (id, nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
+                                                                                                                      (16, 'Papas fritas', 17.00, 16.00, 0.15, 'kg', 'Walmart', 'https://example.com/papas.jpg', 16),
+                                                                                                                      (17, 'Chocolate', 25.00, 24.00, 0.10, 'kg', 'Soriana', 'https://example.com/chocolate.jpg', 17),
+                                                                                                                      (18, 'Galletas', 30.00, 28.00, 0.25, 'kg', 'Walmart', 'https://example.com/galletas.jpg', 18),
+                                                                                                                      (19, 'Palomitas para microondas', 12.00, 11.50, 1.00, 'pza', 'Bodega Aurrera', 'https://example.com/palomitas.jpg', 19),
+                                                                                                                      (20, 'Refresco', 18.00, 17.00, 2.00, 'L', 'Soriana', 'https://example.com/refresco.jpg', 20);
 
-INSERT ignore INTO productos (nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
-                                                                                                                      ('Base de maquillaje', 120.00, 110.00, 0.03, 'L', 'Walmart', 'https://example.com/base.jpg', 21),
-                                                                                                                      ('Delineador', 50.00, 48.00, 0.01, 'kg', 'Soriana', 'https://example.com/delineador.jpg', 22),
-                                                                                                                      ('Labial', 60.00, 58.00, 0.02, 'kg', 'Bodega Aurrera', 'https://example.com/labial.jpg', 23),
-                                                                                                                      ('Desmaquillante', 45.00, 42.00, 0.25, 'L', 'Walmart', 'https://example.com/desmaquillante.jpg', 24),
-                                                                                                                      ('Brochas de maquillaje', 70.00, 68.00, 1.00, 'set', 'Soriana', 'https://example.com/brochas.jpg', 25);
+INSERT ignore INTO productos (id, nombre, precio, precioGranel, tamanoUnidad, unidadMedida, supermercado, urlImagen, indice) VALUES
+                                                                                                                      (21, 'Base de maquillaje', 120.00, 110.00, 0.03, 'L', 'Walmart', 'https://example.com/base.jpg', 21),
+                                                                                                                      (22, 'Delineador', 50.00, 48.00, 0.01, 'kg', 'Soriana', 'https://example.com/delineador.jpg', 22),
+                                                                                                                      (23, 'Labial', 60.00, 58.00, 0.02, 'kg', 'Bodega Aurrera', 'https://example.com/labial.jpg', 23),
+                                                                                                                      (24, 'Desmaquillante', 45.00, 42.00, 0.25, 'L', 'Walmart', 'https://example.com/desmaquillante.jpg', 24),
+                                                                                                                      (25, 'Brochas de maquillaje', 70.00, 68.00, 1.00, 'set', 'Soriana', 'https://example.com/brochas.jpg', 25);
 
 INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (1, 1),
@@ -83,4 +83,4 @@ INSERT ignore INTO listaProductos (lista_id, producto_id) VALUES
                                                         (5, 24),
                                                         (5, 25);
 
-select * from listasPredeterminadas
+select  * from productos;

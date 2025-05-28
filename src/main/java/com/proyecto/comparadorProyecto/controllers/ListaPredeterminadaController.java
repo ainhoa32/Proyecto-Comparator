@@ -75,4 +75,14 @@ public class ListaPredeterminadaController {
         }
     }
 
+    @DeleteMapping("/eliminar-producto")
+    public ResponseEntity<String> eliminarProductoDeLista(@RequestBody AgregarProductoAListaDTO dto) {
+        try {
+            listaService.eliminarProductoDeLista(dto);
+            return ResponseEntity.ok("Producto eliminado correctamente de la lista: " + dto.getNombre());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
 }

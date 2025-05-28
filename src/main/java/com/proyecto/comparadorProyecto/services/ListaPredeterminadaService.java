@@ -143,5 +143,25 @@ public class ListaPredeterminadaService {
 
         productoRepo.deleteAll(productosAsociados);
     }
+    public void eliminarProductoDeLista(AgregarProductoAListaDTO dto) {
+        ListasPredeterminada lista = listaRepo.findByNombre(dto.getNombre())
+                .orElseThrow(() -> new RuntimeException("Lista no encontrada: " + dto.getNombre()));
+
+        Producto producto = productoRepo.findByNombre(dto.getProducto().getNombre())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + dto.getProducto().getNombre()));
+
+        ListaProductoId id = new ListaProductoId();
+        id.setProductoId(producto.getId());
+        id.setListaId(lista.getId());
+
+        boolean eliminado = lista.getListaProductos().removeIf(lp -> lp.getId().equals(id));
+
+        if (!eliminado) {
+            throw new RuntimeException("El producto no estaba en la lista.");
+        }
+
+        listaRepo.save(lista);
+    }
+
 }
 
