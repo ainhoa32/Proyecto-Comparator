@@ -1,6 +1,6 @@
 package com.proyecto.comparadorProyecto.controllers;
 
-import com.proyecto.comparadorProyecto.dto.AgregarProductoAListaDTO;
+import com.proyecto.comparadorProyecto.dto.ProductoAListaDTO;
 import com.proyecto.comparadorProyecto.dto.ListaPredeterminadaDTO;
 import com.proyecto.comparadorProyecto.models.ListasPredeterminada;
 import com.proyecto.comparadorProyecto.services.ListaPredeterminadaService;
@@ -27,7 +27,7 @@ public class ListaPredeterminadaController {
 
 
     @PostMapping("/agregar")
-    public ResponseEntity<String> agregarProducto(@RequestBody AgregarProductoAListaDTO dto) {
+    public ResponseEntity<String> agregarProducto(@RequestBody ProductoAListaDTO dto) {
         try {
             listaService.agregarProductoALista(dto);
             return ResponseEntity.ok("Producto agregado correctamente a la lista: " + dto.getNombre());
@@ -76,7 +76,7 @@ public class ListaPredeterminadaController {
     }
 
     @DeleteMapping("/eliminar-producto")
-    public ResponseEntity<String> eliminarProductoDeLista(@RequestBody AgregarProductoAListaDTO dto) {
+    public ResponseEntity<String> eliminarProductoDeLista(@RequestBody ProductoAListaDTO dto) {
         try {
             listaService.eliminarProductoDeLista(dto);
             return ResponseEntity.ok("Producto eliminado correctamente de la lista: " + dto.getNombre());

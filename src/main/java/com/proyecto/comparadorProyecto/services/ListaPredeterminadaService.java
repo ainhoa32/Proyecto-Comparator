@@ -1,6 +1,6 @@
 package com.proyecto.comparadorProyecto.services;
 
-import com.proyecto.comparadorProyecto.dto.AgregarProductoAListaDTO;
+import com.proyecto.comparadorProyecto.dto.ProductoAListaDTO;
 import com.proyecto.comparadorProyecto.dto.ListaPredeterminadaDTO;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.ListaProducto;
@@ -31,7 +31,7 @@ public class ListaPredeterminadaService {
                 .map(this::convertirADTO);
     }
 
-    public void agregarProductoALista(AgregarProductoAListaDTO dto) {
+    public void agregarProductoALista(ProductoAListaDTO dto) {
         Producto producto = productoRepo.findByNombre(dto.getProducto().getNombre())
                 .orElseGet(() -> {
                     Producto nuevo = new Producto();
@@ -143,7 +143,7 @@ public class ListaPredeterminadaService {
 
         productoRepo.deleteAll(productosAsociados);
     }
-    public void eliminarProductoDeLista(AgregarProductoAListaDTO dto) {
+    public void eliminarProductoDeLista(ProductoAListaDTO dto) {
         ListasPredeterminada lista = listaRepo.findByNombre(dto.getNombre())
                 .orElseThrow(() -> new RuntimeException("Lista no encontrada: " + dto.getNombre()));
 
