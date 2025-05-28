@@ -64,4 +64,15 @@ public class ListaPredeterminadaController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/eliminar/{nombre}")
+    public ResponseEntity<String> eliminarListaYProductos(@PathVariable String nombre) {
+        try {
+            listaService.eliminarListaYProductosPorNombre(nombre);
+            return ResponseEntity.ok("Lista y productos eliminados correctamente.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
 }

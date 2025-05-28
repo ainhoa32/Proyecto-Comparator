@@ -130,5 +130,18 @@ public class ListaPredeterminadaService {
         nuevaLista.setNombre(nombreLista);
         listaRepo.save(nuevaLista);
     }
+
+    public void eliminarListaYProductosPorNombre(String nombre) {
+        ListasPredeterminada lista = listaRepo.findByNombre(nombre)
+                .orElseThrow(() -> new RuntimeException("Lista no encontrada con nombre: " + nombre));
+
+        List<Producto> productosAsociados = lista.getListaProductos().stream()
+                .map(ListaProducto::getProducto)
+                .collect(Collectors.toList());
+
+        listaRepo.delete(lista);
+
+        productoRepo.deleteAll(productosAsociados);
+    }
 }
 
