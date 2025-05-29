@@ -35,8 +35,8 @@ public class ListaPredeterminadaService {
         Producto producto = productoRepo.findByNombre(dto.getProducto().getNombre())
                 .orElseGet(() -> {
                     Producto nuevo = new Producto();
-                    agregarDatosAProducto(dto.getProducto(), nuevo);
-                    return productoRepo.save(nuevo);  // Persistimos el nuevo producto
+                    nuevo = agregarDatosAProducto(dto.getProducto(), nuevo);
+                    return productoRepo.save(nuevo);
                 });
 
         ListasPredeterminada lista = listaRepo.findByNombre(dto.getNombre())
@@ -78,23 +78,22 @@ public class ListaPredeterminadaService {
         listaRepo.save(lista);
     }
     private Producto agregarDatosAProducto(ProductoDto p, Producto nuevo){
-        Producto prod= new Producto();
-        prod.setNombre(p.getNombre());
-        prod.setPrecio(BigDecimal.valueOf(p.getPrecio()));
-        prod.setPrecioGranel(BigDecimal.valueOf(p.getPrecioGranel()));
+        nuevo.setNombre(p.getNombre());
+        nuevo.setPrecio(BigDecimal.valueOf(p.getPrecio()));
+        nuevo.setPrecioGranel(BigDecimal.valueOf(p.getPrecioGranel()));
         if (p.getTamanoUnidad() != null) {
-            prod.setTamanoUnidad(BigDecimal.valueOf(p.getTamanoUnidad()));
+            nuevo.setTamanoUnidad(BigDecimal.valueOf(p.getTamanoUnidad()));
         }
-        prod.setUnidadMedida(p.getUnidadMedida());
+        nuevo.setUnidadMedida(p.getUnidadMedida());
         if (p.getIndex() != 0) {
-            prod.setIndice(p.getIndex());
+            nuevo.setIndice(p.getIndex());
         }
-        prod.setUrlImagen(p.getUrlImagen());
+        nuevo.setUrlImagen(p.getUrlImagen());
         if (p.getPrioridad() != 0) {
-            prod.setPrioridad(p.getPrioridad());
+            nuevo.setPrioridad(p.getPrioridad());
         }
-        prod.setSupermercado(p.getSupermercado());
-        return prod;
+        nuevo.setSupermercado(p.getSupermercado());
+        return nuevo;
     }
 
 
