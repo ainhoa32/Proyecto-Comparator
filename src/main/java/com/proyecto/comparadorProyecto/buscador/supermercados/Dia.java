@@ -9,6 +9,9 @@ import com.proyecto.comparadorProyecto.buscador.models.dia.RespuestaDia;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -153,13 +156,13 @@ public class Dia implements Supermercado {
         if (producto[producto.length - 3].equals("x")) {
             tamanoTotal = tamanoUnidad * Double.parseDouble(producto[producto.length - 4]);
         }
+        BigDecimal precioGranel = new BigDecimal(precio / tamanoTotal).setScale(1, RoundingMode.HALF_UP);
 
-        double precioGranel = precio / tamanoTotal;
 
         return ProductoDto.builder()
                 .nombre(nombre)
                 .precio(precio)
-                .precioGranel(precioGranel)
+                .precioGranel(precioGranel.doubleValue())
                 .index(index)
                 .tamanoUnidad(tamanoUnidad)
                 .unidadMedida(unidadMedida)

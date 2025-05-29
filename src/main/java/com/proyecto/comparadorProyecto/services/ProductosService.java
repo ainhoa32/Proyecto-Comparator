@@ -14,8 +14,14 @@ public class ProductosService {
     private final ComparadorService comparadorService;
 
     public ResponseEntity<?> getComparacionCompleta(
-            @PathVariable(name = "producto") String producto, String tipo){
-        List<ProductoDto> listaProductos = comparadorService.obtenerListaProductosComparados(producto, tipo);
+            @PathVariable(name = "producto") String producto){
+        List<ProductoDto> listaProductos = comparadorService.obtenerListaProductosComparadosTotal(producto);
+        return ResponseEntity.ok().body(listaProductos);
+    }
+
+    public ResponseEntity<?> getComparacionConcreta(
+            @PathVariable(name = "producto") String producto, @PathVariable(name = "supermercados") String supermercados){
+        List<ProductoDto> listaProductos = comparadorService.obtenerListaProductosComparadosConcreto(producto, supermercados);
         return ResponseEntity.ok().body(listaProductos);
     }
 }

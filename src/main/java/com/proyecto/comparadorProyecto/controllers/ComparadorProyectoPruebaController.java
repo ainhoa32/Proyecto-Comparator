@@ -12,7 +12,7 @@ public class ComparadorProyectoPruebaController {
         this.comparadorService = comparadorService;
     }
 
-    @GetMapping("/prueba")
+    @GetMapping("/prueba2")
     public String prueba(){
         return "prueba";
     }
