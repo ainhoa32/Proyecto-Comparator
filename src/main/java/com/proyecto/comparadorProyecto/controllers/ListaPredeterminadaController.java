@@ -79,7 +79,7 @@ public class ListaPredeterminadaController {
     public ResponseEntity<String> eliminarProductoDeLista(@RequestBody ProductoAListaDTO dto) {
         try {
             listaService.eliminarProductoDeLista(dto);
-            return ResponseEntity.ok("Producto eliminado correctamente de la lista: " + dto.getNombre());
+            return ResponseEntity.ok("Producto eliminado correctamente de la lista.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
