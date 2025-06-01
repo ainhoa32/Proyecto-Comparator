@@ -1,3 +1,4 @@
+drop database comparador_de_precios;
 create database if not exists comparador_de_precios;
 use comparador_de_precios;
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -49,7 +50,7 @@ CREATE TABLE IF NOT EXISTS favoritos (
      FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     );
 
-CREATE TABLE if not exists cesta_productos (
+CREATE TABLE if not exists cestaProductos (
     cesta_id INT NOT NULL,
     producto_id INT NOT NULL,
     PRIMARY KEY (cesta_id, producto_id),

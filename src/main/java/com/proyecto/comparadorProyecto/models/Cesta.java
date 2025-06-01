@@ -25,7 +25,7 @@ public class Cesta {
 
     @ManyToMany
     @JoinTable(
-            name = "cesta_productos",
+            name = "cestaProductos",
             joinColumns = @JoinColumn(name = "cesta_id"),
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
