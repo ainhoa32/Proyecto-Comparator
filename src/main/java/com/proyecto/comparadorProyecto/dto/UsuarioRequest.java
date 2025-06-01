@@ -2,13 +2,12 @@ package com.proyecto.comparadorProyecto.dto;
 
 import lombok.*;
 
+@Data
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Data
-public class LoginRequest {
-    private String nombre;
-    private String contrasena;
+@NoArgsConstructor
+public class UsuarioRequest {
+    private String nombreUsuario;
 }

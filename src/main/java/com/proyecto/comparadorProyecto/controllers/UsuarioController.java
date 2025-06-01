@@ -1,6 +1,8 @@
 package com.proyecto.comparadorProyecto.controllers;
 
 import com.proyecto.comparadorProyecto.dto.LoginRequest;
+import com.proyecto.comparadorProyecto.dto.LoginResponse;
+import com.proyecto.comparadorProyecto.dto.SingUpRequest;
 import com.proyecto.comparadorProyecto.models.Usuario;
 import com.proyecto.comparadorProyecto.security.JwtUtil;
 import com.proyecto.comparadorProyecto.services.UsuarioServicio;
@@ -33,15 +35,17 @@ public class UsuarioController {
         if (usuarioGuardado == null) {
             return new ResponseEntity<>("Nombre de usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
+
         if (usuarioServicio.verificarContrasena(loginRequest.getContrasena(), usuarioGuardado.getContrasena())) {
             String token = jwtUtil.generarToken(usuarioGuardado.getNombre());
-            return ResponseEntity.ok().body(token);
+            boolean esAdmin = usuarioGuardado.isEsAdmin();
+            return ResponseEntity.ok(new LoginResponse(token, esAdmin));
         } else {
             return new ResponseEntity<>("Contraseña incorrecta", HttpStatus.UNAUTHORIZED);
         }
     }
     @PostMapping("/registro")
-    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> registrarUsuario(@RequestBody SingUpRequest usuario) {
         if (usuarioServicio.usuarioExiste(usuario.getNombre())) {
             return new ResponseEntity<>("El nombre de usuario ya existe", HttpStatus.BAD_REQUEST);
         }

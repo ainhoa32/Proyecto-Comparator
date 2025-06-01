@@ -1,6 +1,6 @@
 package com.proyecto.comparadorProyecto.services;
 
-import com.proyecto.comparadorProyecto.dto.AgregarProductoCestaRequest;
+import com.proyecto.comparadorProyecto.dto.ProductoCestaRequest;
 import com.proyecto.comparadorProyecto.dto.CestaDTO;
 import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import com.proyecto.comparadorProyecto.models.Cesta;
@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class CestaService {
@@ -30,7 +29,7 @@ public class CestaService {
     @Autowired
     private ProductoRepository productoRepository;
 
-    public boolean agregarProductoACesta(AgregarProductoCestaRequest request) {
+    public boolean agregarProductoACesta(ProductoCestaRequest request) {
         String user = request.getNombreUsuario();
         ProductoDto prod = request.getProducto();
 
@@ -88,14 +87,14 @@ public class CestaService {
 
         List<Producto> productosEnCesta = new ArrayList<>(cesta.getProductos());
 
-        cesta.setProductos(new ArrayList<>());
+        cesta.getProductos().clear();
         cestaRepository.save(cesta);
 
         productoRepository.deleteAll(productosEnCesta);
     }
 
 
-    public void eliminarProductoDeCesta(AgregarProductoCestaRequest request) {
+    public void eliminarProductoDeCesta(ProductoCestaRequest request) {
         String nombreUsuario = request.getNombreUsuario();
         ProductoDto productoDto = request.getProducto();
 

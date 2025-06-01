@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "listaspredeterminadas")
-public class Listaspredeterminada {
+@Table(name = "listasPredeterminadas")
+public class ListasPredeterminada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -19,12 +19,13 @@ public class Listaspredeterminada {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @ManyToMany
-    @JoinTable(
-            name = "producto_lista",
-            joinColumns = @JoinColumn(name = "lista_id"),
-            inverseJoinColumns = @JoinColumn(name = "producto_id")
-    )
-    private List<Producto> productos;
+    @Column(name="esVisible", nullable = false)
+    private boolean esVisible;
 
+    @OneToMany(mappedBy = "lista", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ListaProducto> listaProductos;
+
+    public boolean getEsVisible() {
+        return esVisible ? true : false;
+    }
 }

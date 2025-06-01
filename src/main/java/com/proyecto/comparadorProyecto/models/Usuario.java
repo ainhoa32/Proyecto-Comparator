@@ -1,5 +1,6 @@
 package com.proyecto.comparadorProyecto.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,10 +22,14 @@ public class Usuario {
 
     private String contrasena;
 
+    private boolean esAdmin;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Favoritos> favoritos;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Cesta cesta;
 }
 
