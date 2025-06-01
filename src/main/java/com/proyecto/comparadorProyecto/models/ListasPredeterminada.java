@@ -1,6 +1,5 @@
 package com.proyecto.comparadorProyecto.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +23,6 @@ public class ListasPredeterminada {
     private boolean esVisible;
 
     @OneToMany(mappedBy = "lista", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<ListaProducto> listaProductos;
 
     public boolean getEsVisible() {
