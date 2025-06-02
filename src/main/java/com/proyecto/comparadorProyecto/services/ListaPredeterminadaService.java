@@ -123,7 +123,7 @@ public class ListaPredeterminadaService {
 
     public void crearLista(String nombreLista) {
         if (listaRepo.findByNombre(nombreLista).isPresent()) {
-            throw new RuntimeException("Ya existe una lista con ese nombre: " + nombreLista);
+            throw new RuntimeException("Ya existe una lista con el nombre introducido" );
         }
         ListasPredeterminada nuevaLista = new ListasPredeterminada();
         nuevaLista.setNombre(nombreLista);
@@ -132,7 +132,7 @@ public class ListaPredeterminadaService {
 
     public void eliminarListaYProductosPorNombre(String nombre) {
         ListasPredeterminada lista = listaRepo.findByNombre(nombre)
-                .orElseThrow(() -> new RuntimeException("Lista no encontrada con nombre: " + nombre));
+                .orElseThrow(() -> new RuntimeException("Lista no encontrada con el nombre introducido"));
 
         List<Producto> productosAsociados = lista.getListaProductos().stream()
                 .map(ListaProducto::getProducto)

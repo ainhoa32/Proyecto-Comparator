@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/favoritos")
-@CrossOrigin(origins = "*")
 class FavoritosController {
 
     @Autowired

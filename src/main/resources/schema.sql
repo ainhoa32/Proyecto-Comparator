@@ -1,4 +1,3 @@
-drop database comparador_de_precios;
 create database if not exists comparador_de_precios;
 use comparador_de_precios;
 CREATE TABLE IF NOT EXISTS usuarios (

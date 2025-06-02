@@ -25,9 +25,10 @@ public class JwtUtil {
     }
 
 
-    public String generarToken(String nombreUsuario) {
+    public String generarToken(String nombreUsuario, boolean esAdmin) {
         return Jwts.builder()
                 .setSubject(nombreUsuario)
+                .claim("esAdmin", esAdmin)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY)
@@ -41,6 +42,15 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public Boolean extraerEsAdmin(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("esAdmin", Boolean.class);
     }
 
     public boolean validarToken(String token) {

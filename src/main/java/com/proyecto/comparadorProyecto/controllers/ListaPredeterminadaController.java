@@ -6,18 +6,19 @@ import com.proyecto.comparadorProyecto.models.ListasPredeterminada;
 import com.proyecto.comparadorProyecto.services.ListaPredeterminadaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/listas")
-@CrossOrigin(origins = "*")
 public class ListaPredeterminadaController {
 
     @Autowired
     private ListaPredeterminadaService listaService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{nombre}")
     public ResponseEntity<?> obtenerListaPorNombre(@PathVariable String nombre) {
         return listaService.obtenerListaPorNombre(nombre)
@@ -25,7 +26,7 @@ public class ListaPredeterminadaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/agregar")
     public ResponseEntity<String> agregarProducto(@RequestBody ProductoAListaDTO dto) {
         try {
@@ -35,6 +36,8 @@ public class ListaPredeterminadaController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
     public ResponseEntity<String> crearLista(@RequestBody ListaPredeterminadaDTO dto) {
         try {
@@ -45,6 +48,7 @@ public class ListaPredeterminadaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/todas")
     public ResponseEntity<List<ListasPredeterminada>> obtenerTodas() {
         return ResponseEntity.ok(listaService.obtenerTodasLasListas());
@@ -54,7 +58,7 @@ public class ListaPredeterminadaController {
     public ResponseEntity<List<ListasPredeterminada>> obtenerVisibles() {
         return ResponseEntity.ok(listaService.obtenerListasVisibles());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/visibilidad/{nombre}")
     public ResponseEntity<String> alternarVisibilidad(@PathVariable String nombre) {
         try {
@@ -64,7 +68,7 @@ public class ListaPredeterminadaController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/{nombre}")
     public ResponseEntity<String> eliminarListaYProductos(@PathVariable String nombre) {
         try {
@@ -75,6 +79,7 @@ public class ListaPredeterminadaController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar-producto")
     public ResponseEntity<String> eliminarProductoDeLista(@RequestBody ProductoAListaDTO dto) {
         try {

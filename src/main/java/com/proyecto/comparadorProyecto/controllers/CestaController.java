@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/cesta")
-@CrossOrigin(origins = "*")
 public class CestaController {
 
     @Autowired

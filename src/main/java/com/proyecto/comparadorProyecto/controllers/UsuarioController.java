@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("usuarios")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     @Autowired
@@ -37,7 +36,7 @@ public class UsuarioController {
         }
 
         if (usuarioServicio.verificarContrasena(loginRequest.getContrasena(), usuarioGuardado.getContrasena())) {
-            String token = jwtUtil.generarToken(usuarioGuardado.getNombre());
+            String token = jwtUtil.generarToken(usuarioGuardado.getNombre(), usuarioGuardado.isEsAdmin());
             boolean esAdmin = usuarioGuardado.isEsAdmin();
             return ResponseEntity.ok(new LoginResponse(token, esAdmin));
         } else {
