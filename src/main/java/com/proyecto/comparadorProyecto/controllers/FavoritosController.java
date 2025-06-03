@@ -24,6 +24,15 @@ class FavoritosController {
         return ResponseEntity.ok(favoritosDTO);
     }
 
+    @PostMapping("/verificar")
+    public ResponseEntity<?> verificarSiEsFavorito(@RequestBody FavoritoDTO favoritoDTO) {
+        boolean esFavorito = favoritosService.existeFavorito(
+                favoritoDTO.getUsuario(),
+                favoritoDTO.getNombreBusqueda()
+        );
+        return ResponseEntity.ok(Map.of("esFavorito", esFavorito));
+    }
+
     @PostMapping
     public ResponseEntity<?> guardarFavorito(@RequestBody FavoritoDTO favoritoDTO) {
         try {

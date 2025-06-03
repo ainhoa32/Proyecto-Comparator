@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,13 +122,15 @@ public class ListaPredeterminadaService {
                 .build();
     }
 
-    public void crearLista(String nombreLista) {
+    public ListasPredeterminada crearLista(String nombreLista) {
         if (listaRepo.findByNombre(nombreLista).isPresent()) {
-            throw new RuntimeException("Ya existe una lista con el nombre introducido" );
+            throw new RuntimeException("Ya existe una lista con ese nombre: " + nombreLista);
         }
         ListasPredeterminada nuevaLista = new ListasPredeterminada();
         nuevaLista.setNombre(nombreLista);
+        nuevaLista.setListaProductos(new ArrayList<ListaProducto>());
         listaRepo.save(nuevaLista);
+        return nuevaLista;
     }
 
     public void eliminarListaYProductosPorNombre(String nombre) {

@@ -39,12 +39,12 @@ public class ListaPredeterminadaController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<String> crearLista(@RequestBody ListaPredeterminadaDTO dto) {
+    public ResponseEntity<ListasPredeterminada> crearLista(@RequestBody ListaPredeterminadaDTO dto) {
         try {
-            listaService.crearLista(dto.getNombre());
-            return ResponseEntity.ok("Lista creada correctamente: " + dto.getNombre());
+            ListasPredeterminada nuevaLista = listaService.crearLista(dto.getNombre());
+            return ResponseEntity.ok(nuevaLista);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
