@@ -10,9 +10,6 @@ import com.proyecto.comparadorProyecto.dto.ProductoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -21,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
-// TODO: Arreglar Carrefour para que funcione en cualquier ordenador
 @Component
 @RequiredArgsConstructor
 public class Carrefour implements Supermercado {
@@ -59,17 +55,17 @@ public class Carrefour implements Supermercado {
         // Usamos el CompletableFuture de manera asíncrona
         try {
             return clienteHttp.realizarPeticionHttp("GET", url, headers, null)
-                    // Cuando termine de realizarse la petición convierte el json a lista
+                    // Cuando termine de realizarse la petición convierte el json a lista.
                     .thenApply(respuesta -> {
                         if (respuesta.trim().startsWith("{") || respuesta.trim().startsWith("[")) {
                             return convertirJsonALista(respuesta);
                         }else{
                             return new ArrayList<ProductoDto>();
                         }
-                    })                    // En el caso de que falle devuelve una lista vacía
+                    })// En el caso de que falle devuelve una lista vacía
                     .exceptionally(e -> {
                         e.printStackTrace();
-                        return new ArrayList<>(); // Si hay error, devuelve lista vacía
+                        return new ArrayList<>();
                     });
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -80,6 +76,7 @@ public class Carrefour implements Supermercado {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             RespuestaCarrefour respuestaMappeada = objectMapper.readValue(respuesta, RespuestaCarrefour.class);
+            // Es necesario utilizar AtomicInteger porque en expresiones lambda no se pueden poner variables no finales, es decir que van a ser reasignadas.
             AtomicInteger index = new AtomicInteger(-1);
 
             return Optional.ofNullable(respuestaMappeada.getContent().getProductos())
@@ -97,8 +94,6 @@ public class Carrefour implements Supermercado {
 
     public ProductoDto mapearProducto(Producto producto, int index) {
         double precio = producto.getPrecio();
-        double tamanoUnidad = producto.getTamanoUnidad();
-
         Double precioGranel = producto.getPrecioGranel();
 
         return ProductoDto.builder()

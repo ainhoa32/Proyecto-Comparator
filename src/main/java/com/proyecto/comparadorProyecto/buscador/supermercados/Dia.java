@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-// TODO: para hacerlo mas limpio es mejor hacerlo con jsoup ya que tiene un script embebido con el json con todos los datos que necesito bien clasificados
-// TODO: OBLIGATORIO HACERLO YA QUE NO FUNCIONA CORRECTAMENTE EN CASOS MUY ESPECÍFICOS
 public class Dia implements Supermercado {
 
     private final ClienteHttp clienteHttp;
@@ -35,7 +33,6 @@ public class Dia implements Supermercado {
         String url = "https://www.dia.es/api/v1/search-insight/initial_analytics?q=" + productoCodificado + "&sort=rating,desc&page=1&page_size=30&filters=" +
                 "&attributesToRetrieve=search_products_analytics";
 
-        //Headers
         Map<String, String> headers = new HashMap<>();
         headers.put("accept", "application/json");
         headers.put("accept-language", "es-ES,es;q=0.9");
@@ -55,12 +52,9 @@ public class Dia implements Supermercado {
         headers.put("x-mobile", "");
         headers.put("x-requested-with", "XMLHttpRequest");
 
-        // Usamos el CompletableFuture de manera asíncrona
         try {
             return clienteHttp.realizarPeticionHttp("GET", url, headers, null)
-                    // Cuando termine de realizarse la petición convierte el json a lista
                     .thenApply(respuesta -> convertirJsonALista(respuesta))
-                    // En el caso de que falle devuelve una lista vacía
                     .exceptionally(e -> {
                         e.printStackTrace();
                         return new ArrayList<>();
@@ -75,9 +69,6 @@ public class Dia implements Supermercado {
             ObjectMapper objectMapper = new ObjectMapper();
             RespuestaDia respuestaMappeada = objectMapper.readValue(respuesta, RespuestaDia.class);
 
-            // Tenía esto:
-            // Producto primerProducto = respuestaMappeada.getProductos().entrySet().stream().findFirst().get().getValue();
-            // Pero no maneja nulos en el caso de que no exista el primer prod
             Producto primerProducto = Optional.ofNullable(respuestaMappeada.getProductos())
                     .orElse(Collections.emptyMap())
                     .entrySet()
@@ -85,7 +76,7 @@ public class Dia implements Supermercado {
                     .map(entry -> entry.getValue())
                     // Como los productos del día tienen un index
                     // y este está relacionado con la relevancia del producto
-                    // respecto a la búsqueda unicamente el primer producto
+                    // obtengo la categoría de este
                     .filter(producto -> producto.getIndex() == 1)
                     .findFirst()
                     .orElse(null);
@@ -98,13 +89,11 @@ public class Dia implements Supermercado {
             List<String> categoriasPrioritarias = obtenerCategorias(primerProducto);
 
             return Optional.ofNullable(respuestaMappeada.getProductos())
-                    .orElse(Collections.emptyMap()) // envía un mapa vacío si la respuesta es nula
-                    .entrySet()// entry set obtiene las entradas del mapa Respuesta Dia
+                    .orElse(Collections.emptyMap())
+                    .entrySet()
                     .stream()
-                    // Filtramos los productos por index para que aparezcan los más relevantes obtenidos de la búsqueda
-                    // Y así solo mapear los necesarios, es decir los 10 primeros
                     .filter(entry -> entry.getValue().getIndex() < 10)
-                    .map(entry -> mapearProducto(entry, categoriasPrioritarias)) // Pasamos por parámetro el valor, es decir el producto de cada elemento del Map
+                    .map(entry -> mapearProducto(entry, categoriasPrioritarias))
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
@@ -113,7 +102,6 @@ public class Dia implements Supermercado {
         }
     }
 
-    //Pasamos la clave valor del producto
     public ProductoDto mapearProducto(Map.Entry<String, Producto> productoEntry, List<String> categoriasPrioritarias) {
         String claveProducto = productoEntry.getKey();
         Producto valorProducto = productoEntry.getValue();

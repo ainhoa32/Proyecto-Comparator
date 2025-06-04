@@ -27,13 +27,10 @@ public class Mercadona implements Supermercado {
 
     @Override
     public CompletableFuture<List<ProductoDto>> obtenerListaSupermercado(String producto) {
-        // Codificamos el producto para poder incluirlo en la URL
         String productoCodificado = URLEncoder.encode(producto, StandardCharsets.UTF_8);
 
-        // Definimos la URL del servicio al que queremos hacer la petición
         String url = "https://7uzjkl1dj0-dsn.algolia.net/1/indexes/products_prod_mad1_es/query?x-algolia-agent=Algolia%20for%20JavaScript%20(3.35.1)%3B%20Browser&x-algolia-application-id=7UZJKL1DJ0&x-algolia-api-key=9d8f2e39e90df472b4f2e559a116fe17";
 
-        // Definimos el cuerpo de la petición en formato json y recibimos la menor información posible
         String jsonBody = "{ \"params\": \"query=" + productoCodificado +
                 "&attributesToRetrieve=categories,display_name,thumbnail,price_instructions.unit_price," +
                 "price_instructions.bulk_price,price_instructions.unit_size,price_instructions.size_format" +
@@ -48,12 +45,9 @@ public class Mercadona implements Supermercado {
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/x-www-form-urlencoded");
 
-        // Usamos el CompletableFuture de manera asíncrona
         try {
             return clienteHttp.realizarPeticionHttp("POST", url, headers, jsonBody)
-                    // Cuando termine de realizarse la petición convierte el json a lista
                     .thenApply(respuesta -> convertirJsonALista(respuesta))
-                    // En el caso de que falle devuelve una lista vacía
                     .exceptionally(e -> {
                         e.printStackTrace();
                         return new ArrayList<>(); // Si hay error, devuelve lista vacía
@@ -91,7 +85,7 @@ public class Mercadona implements Supermercado {
                     .orElse(List.of())
                     .stream()
                     // Solo vamos a manejar los primeros 10 productos que nos devuelve el json
-                    // de los productos del mercadona ya que son los más relevantre
+                    // de los productos del mercadona ya que son los más relevantes
                     .limit(10)
                     .map(prod -> mapearProducto(prod, index.getAndIncrement(), categoriasPrioritarias))
                     .collect(Collectors.toList());
@@ -104,7 +98,6 @@ public class Mercadona implements Supermercado {
 
     public ProductoDto mapearProducto(Producto producto, int index, List<String> categoriasPrioritarias) {
         PriceInstructions preciosProducto = producto.getPriceInstructions();
-        //int prioridad = calculadorPrioridad.calcularSegunCategorias(obtenerCategorias(producto), categoriasPrioritarias);
         int prioridad = calculadorPrioridad.calcularSegunIndex(index);
 
         return ProductoDto.builder()

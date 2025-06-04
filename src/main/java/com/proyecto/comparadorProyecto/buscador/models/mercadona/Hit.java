@@ -11,7 +11,6 @@ import java.util.List;
 public class Hit {
     @JsonProperty("categories")
     private List<Categoria> categoria;
-    //Mapea el objeto del json llamado display_name
     @JsonProperty("thumbnail")
     private String thumbnail;
     @JsonProperty("display_name")

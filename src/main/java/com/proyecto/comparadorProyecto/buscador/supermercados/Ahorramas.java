@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-// TODO: Convertir PeticionJsoup a ClienteJsoup y ponerlo como atributo de clase
 public class Ahorramas implements Supermercado {
     private final CalculadorPrioridad calculadorPrioridad;
     private final ClienteJsoup clienteJsoup;
