@@ -99,8 +99,6 @@ public class Carrefour implements Supermercado {
         double precio = producto.getPrecio();
         double tamanoUnidad = producto.getTamanoUnidad();
 
-        System.out.println(precio);
-        System.out.println(tamanoUnidad);
         Double precioGranel = producto.getPrecioGranel();
 
         return ProductoDto.builder()
